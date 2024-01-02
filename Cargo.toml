@@ -22,5 +22,5 @@ thiserror = "1.0.*"
 
 [dev-dependencies]
 anyhow = "1.0.78"
-clap = "4.4.12"
-tokio = "1.35.1"
+clap = { version = "4.4.12", features = ["derive"] }
+tokio = { version = "1.35.1", features = ["macros", "rt-multi-thread"] }
