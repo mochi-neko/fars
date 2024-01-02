@@ -678,7 +678,7 @@ impl AuthSession {
         // Take the first user from vector.
         let user = response
             .users
-            .get(0)
+            .first()
             .ok_or(Error::NotFoundAnyUserData)?;
 
         Ok(UserData {
@@ -691,11 +691,9 @@ impl AuthSession {
                 .provider_user_info
                 .clone(),
             password_hash: user.password_hash.clone(),
-            password_updated_at: user
-                .password_updated_at
-                .clone(),
+            password_updated_at: user.password_updated_at,
             valid_since: user.valid_since.clone(),
-            disabled: user.disabled.clone(),
+            disabled: user.disabled,
             last_login_at: user.last_login_at.clone(),
             created_at: user.created_at.clone(),
             last_refresh_at: user.last_refresh_at.clone(),

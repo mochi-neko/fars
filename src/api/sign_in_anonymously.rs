@@ -30,6 +30,12 @@ impl SignInAnonymouslyRequestBodyPayload {
     }
 }
 
+impl Default for SignInAnonymouslyRequestBodyPayload {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// Response payload for the sign in anonymously API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-sign-in-anonymously).

@@ -41,7 +41,7 @@ impl UnlinkProviderRequestBodyPayload {
             id_token,
             delete_provider: delete_provider
                 .into_iter()
-                .map(|provider_id| provider_id.to_string())
+                .map(|provider_id| provider_id.format())
                 .collect(),
         }
     }

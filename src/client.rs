@@ -51,7 +51,7 @@ where
     let response = builder
         .send()
         .await
-        .map_err(|error| Error::HttpError(error))?;
+        .map_err(Error::HttpError)?;
 
     // Check the response status code.
     let status_code = response.status();
@@ -95,7 +95,7 @@ where
         match error_code {
             // Take invalid ID token error as special case.
             | CommonErrorCode::InvalidIdToken => {
-                return Err(Error::InvalidIdTokenError);
+                Err(Error::InvalidIdTokenError)
             },
             | _ => Err(Error::ApiError {
                 status_code,
@@ -124,7 +124,7 @@ pub(crate) fn optional_locale_header(
                 reqwest::header::HeaderValue::from_str(&locale).map_err(
                     |error| Error::HeaderError {
                         key: "X-Firebase-Locale",
-                        error: error,
+                        error,
                     },
                 )?,
             );

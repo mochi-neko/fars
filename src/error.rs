@@ -155,16 +155,16 @@ pub enum CommonErrorCode {
     Unknown(String),
 }
 
-impl Into<CommonErrorCode> for String {
-    fn into(self) -> CommonErrorCode {
-        if self
+impl From<String> for CommonErrorCode {
+    fn from(val: String) -> Self {
+        if val
             .as_str()
             .starts_with("Invalid JSON payload received. Unknown name")
         {
-            return CommonErrorCode::InvalidJsonPayloadReceived(self);
+            return CommonErrorCode::InvalidJsonPayloadReceived(val);
         }
 
-        match self.as_str() {
+        match val.as_str() {
             | "OPERATION_NOT_ALLOWED" => CommonErrorCode::OperationNotAllowed,
             | "TOO_MANY_ATTEMPTS_TRY_LATER" => {
                 CommonErrorCode::TooManyAttemptsTryLater
@@ -197,7 +197,7 @@ impl Into<CommonErrorCode> for String {
             | "EXPIRED_OOB_CODE" => CommonErrorCode::ExpiredOobCode,
             | "INVALID_OOB_CODE" => CommonErrorCode::InvalidOobCode,
             | "ADMIN_ONLY_OPERATION" => CommonErrorCode::AdminOnlyOperation,
-            | _ => CommonErrorCode::Unknown(self),
+            | _ => CommonErrorCode::Unknown(val),
         }
     }
 }

@@ -42,7 +42,7 @@ impl AuthConfig {
         // NOTE: Timeout options are not supported on WASM.
         reqwest::ClientBuilder::new()
             .build()
-            .map_err(|error| Error::HttpClientBuildError(error))
+            .map_err(Error::HttpClientBuildError)
     }
 
     /// Signs up a new user with the given email and password.

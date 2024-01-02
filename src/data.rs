@@ -126,11 +126,11 @@ impl Display for ProviderId {
 }
 
 impl ProviderId {
-    /// Converts the provider ID to a string representation.
+    /// Formats the provider ID to a string representation of the Firebase Auth.
     ///
     /// ## Returns
-    /// String representation of the provider ID.
-    pub fn to_string(&self) -> String {
+    /// String representation of the provider ID of the Firebase Auth.
+    pub fn format(&self) -> String {
         match self {
             | ProviderId::Password => "password".to_string(),
             | ProviderId::Apple => "apple.com".to_string(),
