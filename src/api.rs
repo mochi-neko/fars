@@ -22,3 +22,7 @@ pub mod sign_up_with_email_password;
 pub mod unlink_provider;
 pub mod update_profile;
 pub mod verify_password_reset_code;
+
+pub use sign_in_with_email_password::sign_in_with_email_password;
+pub use sign_in_with_email_password::SignInWithEmailPasswordRequestBodyPayload;
+pub use sign_in_with_email_password::SignInWithEmailPasswordResponsePayload;
