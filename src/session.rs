@@ -10,9 +10,9 @@ use crate::result::Result;
 ///
 /// ## Example
 /// ```
-/// use fars::config::AuthConfig;
+/// use fars::config::Config;
 ///
-/// let config = AuthConfig::new(
+/// let config = Config::new(
 ///     "your-firebase-project-api-key".to_string(),
 /// );
 ///
@@ -24,7 +24,7 @@ use crate::result::Result;
 /// // Do something with session.
 /// ```
 #[derive(Clone)]
-pub struct AuthSession {
+pub struct Session {
     /// HTTP client.
     pub(crate) client: reqwest::Client,
     /// Firebase project API key.
@@ -40,7 +40,7 @@ pub struct AuthSession {
 
 // Defines macros for calling APIs with refreshing tokens.
 
-/// Calls an API with refreshing tokens then return value with new `AuthSession``.
+/// Calls an API with refreshing tokens then return value with new `Session``.
 macro_rules! call_api_with_refreshing_tokens_with_return_value {
     // Has arguments and return value with Auth.
     ($auth:expr, $api_call:expr, $retry_count:expr, $($api_call_args:expr), *) => {{
@@ -74,7 +74,7 @@ macro_rules! call_api_with_refreshing_tokens_with_return_value {
     }};
 }
 
-/// Calls an API with refreshing tokens then return not value with new `AuthSession`.
+/// Calls an API with refreshing tokens then return not value with new `Session`.
 macro_rules! call_api_with_refreshing_tokens_without_return_value {
     // Has arguments and return only Auth.
     ($auth:expr, $api_call_unit:expr, $retry_count:expr, $($api_call_args:expr), *) => {{
@@ -108,7 +108,7 @@ macro_rules! call_api_with_refreshing_tokens_without_return_value {
     }};
 }
 
-/// Calls an API with refreshing tokens then return new `AuthSession`.
+/// Calls an API with refreshing tokens then return new `Session`.
 macro_rules! call_api_with_refreshing_tokens_with_return_auth {
     // Has arguments and return Auth.
     ($auth:expr, $api_call:expr, $retry_count:expr, $($api_call_args:expr),*) => {{
@@ -142,7 +142,7 @@ macro_rules! call_api_with_refreshing_tokens_with_return_auth {
     }};
 }
 
-/// Calls an API with refreshing tokens then return no `AuthSession`.
+/// Calls an API with refreshing tokens then return no `Session`.
 macro_rules! call_api_with_refreshing_tokens_without_auth {
     // Has arguments and return no Auth.
     ($auth:expr, $api_call:expr, $retry_count:expr, $($api_call_args:expr),*) => {{
@@ -176,8 +176,8 @@ macro_rules! call_api_with_refreshing_tokens_without_auth {
     }};
 }
 
-// Implements public API callings for an `AuthSession` with automatic refreshing tokens.
-impl AuthSession {
+// Implements public API callings for an `Session` with automatic refreshing tokens.
+impl Session {
     /// Changes the email for the user.
     ///
     /// Automatically refreshes tokens if needed.
@@ -191,9 +191,9 @@ impl AuthSession {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     /// let session = config.sign_in_with_email_password(
@@ -212,10 +212,10 @@ impl AuthSession {
         self,
         new_email: String,
         locale: Option<String>,
-    ) -> Result<AuthSession> {
+    ) -> Result<Session> {
         call_api_with_refreshing_tokens_without_return_value!(
             self,
-            AuthSession::change_email_internal,
+            Session::change_email_internal,
             1,
             new_email.clone(),
             locale.clone()
@@ -235,9 +235,9 @@ impl AuthSession {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     /// let session = config.sign_in_with_email_password(
@@ -254,10 +254,10 @@ impl AuthSession {
     pub async fn change_password(
         self,
         new_password: String,
-    ) -> Result<AuthSession> {
+    ) -> Result<Session> {
         call_api_with_refreshing_tokens_without_return_value!(
             self,
-            AuthSession::change_password_internal,
+            Session::change_password_internal,
             1,
             new_password.clone()
         )
@@ -278,9 +278,9 @@ impl AuthSession {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     /// let session = config.sign_in_with_email_password(
@@ -301,10 +301,10 @@ impl AuthSession {
         display_name: String,
         photo_url: String,
         delete_attribute: Vec<crate::api::update_profile::DeleteAttribute>,
-    ) -> Result<AuthSession> {
+    ) -> Result<Session> {
         call_api_with_refreshing_tokens_without_return_value!(
             self,
-            AuthSession::update_profile_internal,
+            Session::update_profile_internal,
             1,
             display_name.clone(),
             photo_url.clone(),
@@ -323,9 +323,9 @@ impl AuthSession {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     /// let session = config.sign_in_with_email_password(
@@ -337,10 +337,10 @@ impl AuthSession {
     ///
     /// // Do something with new_session and user_data.
     /// ```
-    pub async fn get_user_data(self) -> Result<(AuthSession, UserData)> {
+    pub async fn get_user_data(self) -> Result<(Session, UserData)> {
         call_api_with_refreshing_tokens_with_return_value!(
             self,
-            AuthSession::get_user_data_internal,
+            Session::get_user_data_internal,
             1,
         )
         .await
@@ -359,10 +359,10 @@ impl AuthSession {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     /// use fars::api::sign_in_with_oauth_credential::IdpPostBody;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     /// let session = config.sign_in_oauth_credencial(
@@ -383,10 +383,10 @@ impl AuthSession {
         self,
         email: String,
         password: String,
-    ) -> Result<AuthSession> {
+    ) -> Result<Session> {
         call_api_with_refreshing_tokens_with_return_auth!(
             self,
-            AuthSession::link_with_email_password_internal,
+            Session::link_with_email_password_internal,
             1,
             email.clone(),
             password.clone()
@@ -407,10 +407,10 @@ impl AuthSession {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     /// use fars::data::IdpPostBody;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     /// let session = config.sign_in_with_email_password(
@@ -431,10 +431,10 @@ impl AuthSession {
         self,
         request_uri: String,
         post_body: crate::data::IdpPostBody,
-    ) -> Result<AuthSession> {
+    ) -> Result<Session> {
         call_api_with_refreshing_tokens_with_return_auth!(
             self,
-            AuthSession::link_with_oauth_credential_internal,
+            Session::link_with_oauth_credential_internal,
             1,
             request_uri.clone(),
             post_body.clone()
@@ -454,10 +454,10 @@ impl AuthSession {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     /// use fars::data::ProviderId;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     /// let session = config.sign_in_with_email_password(
@@ -474,10 +474,10 @@ impl AuthSession {
     pub async fn unlink_provider(
         self,
         delete_provider: HashSet<ProviderId>,
-    ) -> Result<AuthSession> {
+    ) -> Result<Session> {
         call_api_with_refreshing_tokens_without_return_value!(
             self,
-            AuthSession::unlink_provider_internal,
+            Session::unlink_provider_internal,
             1,
             delete_provider.clone()
         )
@@ -496,9 +496,9 @@ impl AuthSession {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     /// let session = config.sign_in_with_email_password(
@@ -515,10 +515,10 @@ impl AuthSession {
     pub async fn send_email_verification(
         self,
         locale: Option<String>,
-    ) -> Result<AuthSession> {
+    ) -> Result<Session> {
         call_api_with_refreshing_tokens_without_return_value!(
             self,
-            AuthSession::send_email_verification_internal,
+            Session::send_email_verification_internal,
             1,
             locale.clone()
         )
@@ -531,9 +531,9 @@ impl AuthSession {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     /// let session = config.sign_in_with_email_password(
@@ -546,15 +546,15 @@ impl AuthSession {
     pub async fn delete_account(self) -> Result<()> {
         call_api_with_refreshing_tokens_without_auth!(
             self,
-            AuthSession::delete_account_internal,
+            Session::delete_account_internal,
             1,
         )
         .await
     }
 }
 
-// Implements internal API callings for an `AuthSession`.
-impl AuthSession {
+// Implements internal API callings for an `Session`.
+impl Session {
     async fn refresh_tokens(self) -> Result<Self> {
         // Create request payload.
         let request_payload = crate::api::exchange_refresh_token::ExchangeRefreshTokenRequestBodyPayload::new(

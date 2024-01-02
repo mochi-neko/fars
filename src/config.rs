@@ -3,33 +3,26 @@
 use crate::data::IdpPostBody;
 use crate::error::Error;
 use crate::result::Result;
-use crate::session::AuthSession;
+use crate::session::Session;
 
 /// Configuration for the Firebase Auth.
 #[derive(Clone)]
-pub struct AuthConfig {
+pub struct Config {
     /// Firebase project API key.
     api_key: String,
 }
 
-impl AuthConfig {
-    /// Creates a new [`AuthConfig`] instance.
-    ///
+impl Config {
     /// ## Arguments
     /// - `api_key` - Your Firebase project API key.
     ///
-    /// ## Returns
-    /// The [`AuthConfig`] instance.
-    ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
-    ///
-    /// // Do something with config.
     /// ```
     pub fn new(api_key: String) -> Self {
         Self {
@@ -56,9 +49,9 @@ impl AuthConfig {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     ///
@@ -66,14 +59,12 @@ impl AuthConfig {
     ///     "user@example".to_string(),
     ///     "password".to_string(),
     /// ).await.unwrap();
-    ///
-    /// // Do something with session.
     /// ```
     pub async fn sign_up_with_email_password(
         &self,
         email: String,
         password: String,
-    ) -> Result<AuthSession> {
+    ) -> Result<Session> {
         // Create a HTTP client.
         let client = self.build_client()?;
 
@@ -91,7 +82,7 @@ impl AuthConfig {
         .await?;
 
         // Create session.
-        Ok(AuthSession {
+        Ok(Session {
             client,
             api_key: self.api_key.clone(),
             id_token: response_payload.id_token,
@@ -116,9 +107,9 @@ impl AuthConfig {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     ///
@@ -133,7 +124,7 @@ impl AuthConfig {
         &self,
         email: String,
         password: String,
-    ) -> Result<AuthSession> {
+    ) -> Result<Session> {
         // Create a HTTP client.
         let client = self.build_client()?;
 
@@ -151,7 +142,7 @@ impl AuthConfig {
         .await?;
 
         // Create session.
-        Ok(AuthSession {
+        Ok(Session {
             client,
             api_key: self.api_key.clone(),
             id_token: response_payload.id_token,
@@ -172,9 +163,9 @@ impl AuthConfig {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     ///
@@ -182,7 +173,7 @@ impl AuthConfig {
     ///
     /// // Do something with session.
     /// ```
-    pub async fn sign_in_anonymously(&self) -> Result<AuthSession> {
+    pub async fn sign_in_anonymously(&self) -> Result<Session> {
         // Create a HTTP client.
         let client = self.build_client()?;
 
@@ -200,7 +191,7 @@ impl AuthConfig {
             .await?;
 
         // Create session.
-        Ok(AuthSession {
+        Ok(Session {
             client,
             api_key: self.api_key.clone(),
             id_token: response_payload.id_token,
@@ -225,10 +216,10 @@ impl AuthConfig {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     /// use fars::data::IdpPostBody;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     ///
@@ -245,7 +236,7 @@ impl AuthConfig {
         &self,
         request_uri: String,
         post_body: IdpPostBody,
-    ) -> Result<AuthSession> {
+    ) -> Result<Session> {
         // Create a HTTP client.
         let client = self.build_client()?;
 
@@ -267,7 +258,7 @@ impl AuthConfig {
             .await?;
 
         // Create session.
-        Ok(AuthSession {
+        Ok(Session {
             client,
             api_key: self.api_key.clone(),
             id_token: response_payload.id_token,
@@ -291,9 +282,9 @@ impl AuthConfig {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     ///
@@ -306,7 +297,7 @@ impl AuthConfig {
     pub async fn exchange_refresh_tokens(
         &self,
         refresh_token: String,
-    ) -> Result<AuthSession> {
+    ) -> Result<Session> {
         // Create a HTTP client.
         let client = self.build_client()?;
 
@@ -325,7 +316,7 @@ impl AuthConfig {
             .await?;
 
         // Create session.
-        Ok(AuthSession {
+        Ok(Session {
             client,
             api_key: self.api_key.clone(),
             id_token: response_payload.id_token,
@@ -350,9 +341,9 @@ impl AuthConfig {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     ///
@@ -398,9 +389,9 @@ impl AuthConfig {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::AuthConfig;
+    /// use fars::config::Config;
     ///
-    /// let config = AuthConfig::new(
+    /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     ///

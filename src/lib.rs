@@ -13,3 +13,8 @@ pub mod result;
 pub mod session;
 
 pub(crate) mod client;
+
+pub use crate::config::Config;
+pub use crate::error::Error;
+pub use crate::result::Result;
+pub use crate::session::Session;
