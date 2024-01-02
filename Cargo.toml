@@ -1,0 +1,26 @@
+[package]
+name = "fars"
+version = "0.1.0"
+edition = "2021"
+authors = ["Mochineko <t.o.e.4315@gmail.com>"]
+rust-version = "1.75"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+description = "An unofficial Rust client for the Firebase Auth REST API."
+repository = "https://github.com/mochi-neko/fars"
+categories = ["api-bindings", "authentication"]
+keywords = ["firebase", "auth", "rest", "api", "client"]
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+reqwest = { version = "0.11.*", features = ["json"] }
+serde = { version = "1.0.*", features = ["derive"] }
+serde_json = "1.0.*"
+thiserror = "1.0.*"
+
+[dev-dependencies]
+anyhow = "1.0.78"
+clap = "4.4.12"
+tokio = "1.35.1"
