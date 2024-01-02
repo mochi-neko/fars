@@ -18,7 +18,7 @@ impl Config {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     ///
     /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
@@ -49,7 +49,7 @@ impl Config {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     ///
     /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
@@ -107,7 +107,7 @@ impl Config {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     ///
     /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
@@ -163,7 +163,7 @@ impl Config {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     ///
     /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
@@ -216,7 +216,7 @@ impl Config {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     /// use fars::data::IdpPostBody;
     ///
     /// let config = Config::new(
@@ -282,7 +282,7 @@ impl Config {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     ///
     /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
@@ -341,7 +341,7 @@ impl Config {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     ///
     /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
@@ -389,7 +389,7 @@ impl Config {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     ///
     /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),

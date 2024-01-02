@@ -3,7 +3,7 @@
 //!
 //! ## Usages
 //! 1. Use APIs directry by `fars::api::*`.
-//! 2. Use APIs via session-based interface by `fars::config::AuthConfig` and `fars::session::AuthSession`.
+//! 2. Use APIs via session-based interface by `fars::Config` and `fars::Session`.
 
 pub mod api;
 pub mod config;

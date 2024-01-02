@@ -10,7 +10,7 @@ use crate::result::Result;
 ///
 /// ## Example
 /// ```
-/// use fars::config::Config;
+/// use fars::Config;
 ///
 /// let config = Config::new(
 ///     "your-firebase-project-api-key".to_string(),
@@ -191,7 +191,7 @@ impl Session {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     ///
     /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
@@ -235,7 +235,7 @@ impl Session {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     ///
     /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
@@ -278,7 +278,7 @@ impl Session {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     ///
     /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
@@ -323,7 +323,7 @@ impl Session {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     ///
     /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
@@ -359,7 +359,7 @@ impl Session {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     /// use fars::api::sign_in_with_oauth_credential::IdpPostBody;
     ///
     /// let config = Config::new(
@@ -407,7 +407,7 @@ impl Session {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     /// use fars::data::IdpPostBody;
     ///
     /// let config = Config::new(
@@ -454,7 +454,7 @@ impl Session {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     /// use fars::data::ProviderId;
     ///
     /// let config = Config::new(
@@ -496,7 +496,7 @@ impl Session {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     ///
     /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
@@ -531,7 +531,7 @@ impl Session {
     ///
     /// ## Example
     /// ```
-    /// use fars::config::Config;
+    /// use fars::Config;
     ///
     /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),

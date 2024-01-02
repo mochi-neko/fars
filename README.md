@@ -98,24 +98,24 @@ async fn main() -> anyhow::Result<()> {
 
 ### 2. Session-based interface
 
-You can use semantic interface based on a session (`fars::session::Session`) as following steps.
+You can use semantic interface based on a session (`fars::Session`) as following steps.
 
 > [!IMPORTANT]
-> 1. ID token (`fars::session::Session.id_token`) has expiration date.
+> 1. ID token (`fars::Session.id_token`) has expiration date.
 > 2. API calling through a session automatically refresh an ID token by the [refresh token API](https://firebase.google.com/docs/reference/rest/auth#section-refresh-token) when the ID token has been expired.
 > 3. All APIs through session cosume session and return new session that has same ID token or refreshed one except for the [delete account API](https://firebase.google.com/docs/reference/rest/auth#section-delete-account).
 > 4. Therefore you have to **update** session every time you use APIs through a session by returned new session.
 
 #### 2-1. A usage for logged in user
 
-1. Create a config (`fars::config::Config`) with your Firebase project API key.
-2. Sign in or sign up by supported options (Email & password / OAuth / Anonymous / Stored refresh token) through the config then get the session (`fars::session::Session`) for logged in user.
-3. Use Auth APIs for logged in user through the session, or use ID token (`fars::session::Session.id_token`) for other Firebase APIs.
+1. Create a config (`fars::Config`) with your Firebase project API key.
+2. Sign in or sign up by supported options (Email & password / OAuth / Anonymous / Stored refresh token) through the config then get the session (`fars::Session`) for logged in user.
+3. Use Auth APIs for logged in user through the session, or use ID token (`fars::Session.id_token`) for other Firebase APIs.
 
 A sample code to [sign up with email / password](https://firebase.google.com/docs/reference/rest/auth#section-create-email-password) and to [get user data](https://firebase.google.com/docs/reference/rest/auth#section-get-account-info) with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 
 ```rust
-use fars::config::Config;
+use fars::Config;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -141,13 +141,13 @@ async fn main() -> anyhow::Result<()> {
 
 #### 2-2. A usage for not logged in user
 
-1. Create a config (`fars::config::Config`) with your Firebase project API key.
+1. Create a config (`fars::Config`) with your Firebase project API key.
 2. Use Auth APIs for not logged in user through the config.
 
 A sample code to [send password reset email](https://firebase.google.com/docs/reference/rest/auth#section-send-password-reset-email) with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 
 ```rust
-use fars::config::Config;
+use fars::Config;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
