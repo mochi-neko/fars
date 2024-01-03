@@ -2,8 +2,8 @@
 //! An unofficial Rust client for the Firebase Auth REST API.
 //!
 //! ## Usages
-//! 1. Use APIs directry by `fars::api::*`.
-//! 2. Use APIs via session-based interface by `fars::Config` and `fars::Session`.
+//! 1. Use APIs via raw interfaces by `fars::api::*`.
+//! 2. Use APIs via session-based interfaces by `fars::Config` and `fars::Session`.
 
 // public modules
 pub mod api;
