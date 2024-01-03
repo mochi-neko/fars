@@ -2,6 +2,21 @@
 
 An unofficial Rust client for the [Firebase Auth REST API](https://firebase.google.com/docs/reference/rest/auth) with [reqwest](https://github.com/seanmonstar/reqwest) backend.
 
+## Installation
+
+Please install this library by adding by CLI:
+
+```shell
+$ cargo add fars
+```
+
+or adding dependency to your `Cargo.toml`:
+
+```toml
+[dependencies]
+fars = "0.1"
+```
+
 ## Supported APIs
 
 Suppoted APIs of the [Firebase Auth REST API](https://firebase.google.com/docs/reference/rest/auth) are as follows:
