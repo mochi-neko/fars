@@ -101,6 +101,7 @@ You can use semantic interfaces based on a session (`fars::Session`) as followin
 > - ID token (`fars::Session.id_token`) has expiration date.
 > - API calling through a session automatically refresh an ID token by the [refresh token API](https://firebase.google.com/docs/reference/rest/auth#section-refresh-token) when the ID token has been expired.
 > - All APIs through session cosume session and return new session that has same ID token or refreshed one except for the [delete account API](https://firebase.google.com/docs/reference/rest/auth#section-delete-account).
+> 
 > Therefore you have to **update** session every time you use APIs through a session by returned new session.
 
 #### 2-1. A usage for a logged in user
@@ -157,7 +158,7 @@ async fn main() -> anyhow::Result<()> {
     config.send_reset_password_email(
         "user@example".to_string(),
         None, // Option: Locale
-    ).await;
+    ).await?;
 
     Ok(())
 }
@@ -179,7 +180,9 @@ use fars::Config;
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Create a config.
-    let config = Config::new("your-firebase-project-api-key".to_string());
+    let config = Config::new(
+        "your-firebase-project-api-key".to_string()
+    );
 
     // Create a session by signing in with email and password.
     match config
@@ -264,10 +267,6 @@ async fn main() -> anyhow::Result<()> {
 
 ## Todo for pulishing
 
-- [x] Review error types and descriptions.
-- [x] Write error handling documents.
-- [x] Add errors documents.
-- [x] Review re-export moudles.
 - [ ] Check reqwest accessibility.
 - [ ] Check `Cargo.toml` settings.
 - [ ] Write some examples to `./examples/`.
