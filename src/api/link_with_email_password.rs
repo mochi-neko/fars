@@ -8,13 +8,13 @@ use serde::{Deserialize, Serialize};
 
 use crate::client;
 use crate::data::ProviderUserInfo;
-use crate::result::Result;
+use crate::Result;
 
 /// Request body payload for the link with email password API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-link-with-email-password).
 #[derive(Serialize)]
-pub struct LinkWithEmailAndPasswordRequestBodyPayload {
+pub struct LinkWithEmailPasswordRequestBodyPayload {
     /// The Firebase ID token of the account you are trying to link the credential to.
     #[serde(rename = "idToken")]
     id_token: String,
@@ -29,7 +29,7 @@ pub struct LinkWithEmailAndPasswordRequestBodyPayload {
     return_secure_token: bool,
 }
 
-impl LinkWithEmailAndPasswordRequestBodyPayload {
+impl LinkWithEmailPasswordRequestBodyPayload {
     /// Creates a new request body payload for the link with email password API.
     ///
     /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-link-with-email-password).
@@ -56,7 +56,7 @@ impl LinkWithEmailAndPasswordRequestBodyPayload {
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-link-with-email-password).
 #[derive(Deserialize)]
-pub struct LinkWithEmailAndPasswordResponsePayload {
+pub struct LinkWithEmailPasswordResponsePayload {
     /// The uid of the current user.
     #[serde(rename = "localId")]
     pub local_id: String,
@@ -109,33 +109,28 @@ pub struct LinkWithEmailAndPasswordResponsePayload {
 ///
 /// ## Example
 /// ```
-/// use fars::api::link_with_email_password::{
-///     LinkWithEmailAndPasswordRequestBodyPayload,
-///     link_with_email_password,
-/// };
+/// use fars::api;
 ///
-/// let request_payload = LinkWithEmailAndPasswordRequestBodyPayload::new(
+/// let request_payload = api::LinkWithEmailPasswordRequestBodyPayload::new(
 ///     "id-token".to_string(),
 ///     "email".to_string(),
 ///     "password".to_string(),
 /// );
 ///
-/// let response_payload = link_with_email_password(
+/// let response_payload = api::link_with_email_password(
 ///     reqwest::Client::new(),
 ///     "your-firebase-project-api-key".to_string(),
 ///     request_payload,
-/// ).await.unwrap();
-///
-/// // Do something with the response payload.
+/// ).await?;
 /// ```
 pub async fn link_with_email_password(
     client: &reqwest::Client,
     api_key: &String,
-    request_payload: LinkWithEmailAndPasswordRequestBodyPayload,
-) -> Result<LinkWithEmailAndPasswordResponsePayload> {
+    request_payload: LinkWithEmailPasswordRequestBodyPayload,
+) -> Result<LinkWithEmailPasswordResponsePayload> {
     client::send_post::<
-        LinkWithEmailAndPasswordRequestBodyPayload,
-        LinkWithEmailAndPasswordResponsePayload,
+        LinkWithEmailPasswordRequestBodyPayload,
+        LinkWithEmailPasswordResponsePayload,
     >(
         client,
         "accounts:update",

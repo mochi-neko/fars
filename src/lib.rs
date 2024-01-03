@@ -5,15 +5,20 @@
 //! 1. Use APIs directry by `fars::api::*`.
 //! 2. Use APIs via session-based interface by `fars::Config` and `fars::Session`.
 
+// public modules
 pub mod api;
-pub mod config;
 pub mod data;
 pub mod error;
-pub mod result;
-pub mod session;
 
+// Internal modules
 pub(crate) mod client;
 
+// Private modules
+mod config;
+mod result;
+mod session;
+
+// Re-exports
 pub use crate::config::Config;
 pub use crate::error::Error;
 pub use crate::result::Result;

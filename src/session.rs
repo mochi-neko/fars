@@ -2,9 +2,10 @@
 
 use std::collections::HashSet;
 
-use crate::data::{ProviderId, UserData};
-use crate::error::Error;
-use crate::result::Result;
+use crate::api;
+use crate::data::{DeleteAttribute, IdpPostBody, ProviderId, UserData};
+use crate::Error;
+use crate::Result;
 
 /// Authentication session for a user of the Firebase Auth.
 ///
@@ -19,9 +20,7 @@ use crate::result::Result;
 /// let session = config.sign_in_with_email_password(
 ///     "user@example".to_string(),
 ///     "password".to_string(),
-/// ).await.unwrap();
-///
-/// // Do something with session.
+/// ).await?;
 /// ```
 #[derive(Clone)]
 pub struct Session {
@@ -40,22 +39,22 @@ pub struct Session {
 
 // Defines macros for calling APIs with refreshing tokens.
 
-/// Calls an API with refreshing tokens then return value with new `Session``.
-macro_rules! call_api_with_refreshing_tokens_with_return_value {
-    // Has arguments and return value with Auth.
-    ($auth:expr, $api_call:expr, $retry_count:expr, $($api_call_args:expr), *) => {{
+/// Calls an API with refreshing tokens then returns new session and value.
+macro_rules! call_refreshing_tokens_return_session_and_value {
+    // Has arguments and returns new session and value.
+    ($session:expr, $api_call:expr, $retry_count:expr, $($api_call_args:expr), *) => {{
         async move {
-            let mut auth = $auth;
+            let mut session = $session;
             let mut attempts = 0;
             loop {
-                match $api_call(&auth, $($api_call_args), *).await {
-                    Ok(result) => return Ok((auth, result)),
+                match $api_call(&session, $($api_call_args), *).await {
+                    Ok(value) => return Ok((session, value)),
                     Err(error) => match error {
                         // NOTE: Retry for invalid ID token error.
                         Error::InvalidIdTokenError if attempts < $retry_count => {
-                            match auth.refresh_tokens().await {
-                                Ok(new_auth) => {
-                                    auth = new_auth;
+                            match session.refresh_tokens().await {
+                                Ok(new_session) => {
+                                    session = new_session;
                                     attempts += 1;
                                 },
                                 Err(e) => return Err(e),
@@ -68,28 +67,28 @@ macro_rules! call_api_with_refreshing_tokens_with_return_value {
         }
     }};
 
-    // Has no arguments and return value with Auth.
-    ($auth:expr, $api_call:expr, $retry_count:expr,) => {{
-        call_api_with_refreshing_tokens_with_return_value!($auth, $api_call, $retry_count, ())
+    // Has no arguments and returns new session and value.
+    ($session:expr, $api_call:expr, $retry_count:expr,) => {{
+        call_refreshing_tokens_return_session_and_value!($session, $api_call, $retry_count, ())
     }};
 }
 
-/// Calls an API with refreshing tokens then return not value with new `Session`.
-macro_rules! call_api_with_refreshing_tokens_without_return_value {
-    // Has arguments and return only Auth.
-    ($auth:expr, $api_call_unit:expr, $retry_count:expr, $($api_call_args:expr), *) => {{
+/// Calls an API with refreshing tokens without value then returns new session.
+macro_rules! call_refreshing_tokens_without_value_return_session {
+    // Has arguments and returns new session.
+    ($session:expr, $api_call_unit:expr, $retry_count:expr, $($api_call_args:expr), *) => {{
         async move {
-            let mut auth = $auth;
+            let mut session = $session;
             let mut attempts = 0;
             loop {
-                match $api_call_unit(&auth, $($api_call_args), *).await {
-                    Ok(_) => return Ok(auth),
+                match $api_call_unit(&session, $($api_call_args), *).await {
+                    Ok(_) => return Ok(session),
                     Err(error) => match error {
                         // NOTE: Retry for invalid ID token error.
                         Error::InvalidIdTokenError if attempts < $retry_count => {
-                            match auth.refresh_tokens().await {
-                                Ok(new_auth) => {
-                                    auth = new_auth;
+                            match session.refresh_tokens().await {
+                                Ok(new_session) => {
+                                    session = new_session;
                                     attempts += 1;
                                 },
                                 Err(e) => return Err(e),
@@ -102,28 +101,29 @@ macro_rules! call_api_with_refreshing_tokens_without_return_value {
         }
     }};
 
-    // Has no arguments and return only Auth.
-    ($auth:expr, $api_call_unit:expr, $retry_count:expr,) => {{
-        call_api_with_refreshing_tokens_without_return_value!($auth, $api_call_unit, $retry_count, ())
+    // Has no arguments and returns new session.
+    ($session:expr, $api_call_unit:expr, $retry_count:expr,) => {{
+        call_refreshing_tokens_without_value_return_session!($session, $api_call_unit, $retry_count, ())
     }};
 }
 
-/// Calls an API with refreshing tokens then return new `Session`.
-macro_rules! call_api_with_refreshing_tokens_with_return_auth {
-    // Has arguments and return Auth.
-    ($auth:expr, $api_call:expr, $retry_count:expr, $($api_call_args:expr),*) => {{
+/// Calls an API with refreshing tokens then returns new session.
+#[allow(unused_macros)]
+macro_rules! call_refreshing_tokens_return_session {
+    // Has arguments and returns new session.
+    ($session:expr, $api_call:expr, $retry_count:expr, $($api_call_args:expr),*) => {{
         async move {
-            let mut auth = $auth;
+            let mut session = $session;
             let mut attempts = 0;
             loop {
-                match $api_call(&auth, $($api_call_args),*).await {
-                    Ok(new_auth) => return Ok(new_auth),
+                match $api_call(&session, $($api_call_args),*).await {
+                    Ok(new_session) => return Ok(new_session),
                     Err(error) => match error {
                         // NOTE: Retry for invalid ID token error.
                         Error::InvalidIdTokenError if attempts < $retry_count => {
-                            match auth.refresh_tokens().await {
-                                Ok(new_auth) => {
-                                    auth = new_auth;
+                            match session.refresh_tokens().await {
+                                Ok(new_session) => {
+                                    session = new_session;
                                     attempts += 1;
                                 },
                                 Err(e) => return Err(e),
@@ -136,28 +136,28 @@ macro_rules! call_api_with_refreshing_tokens_with_return_auth {
         }
     }};
 
-    // Has no arguments and return Auth.
-    ($auth:expr, $api_call:expr, $retry_count:expr) => {{
-        call_api_with_refreshing_tokens_with_return_auth!($auth, $api_call, $retry_count, )
+    // Has no arguments and returns new session.
+    ($session:expr, $api_call:expr, $retry_count:expr) => {{
+        call_refreshing_tokens_return_session!($session, $api_call, $retry_count, )
     }};
 }
 
-/// Calls an API with refreshing tokens then return no `Session`.
-macro_rules! call_api_with_refreshing_tokens_without_auth {
-    // Has arguments and return no Auth.
-    ($auth:expr, $api_call:expr, $retry_count:expr, $($api_call_args:expr),*) => {{
+/// Calls an API with refreshing tokens then returns nothing.
+macro_rules! call_refreshing_tokens_return_nothing {
+    // Has arguments and returns nothing.
+    ($session:expr, $api_call:expr, $retry_count:expr, $($api_call_args:expr),*) => {{
         async move {
-            let mut auth = $auth;
+            let mut session = $session;
             let mut attempts = 0;
             loop {
-                match $api_call(&auth, $($api_call_args),*).await {
+                match $api_call(&session, $($api_call_args),*).await {
                     Ok(_) => return Ok(()),
                     Err(error) => match error {
                         // NOTE: Retry for invalid ID token error.
                         Error::InvalidIdTokenError if attempts < $retry_count => {
-                            match auth.refresh_tokens().await {
-                                Ok(new_auth) => {
-                                    auth = new_auth;
+                            match session.refresh_tokens().await {
+                                Ok(new_session) => {
+                                    session = new_session;
                                     attempts += 1;
                                 },
                                 Err(e) => return Err(e),
@@ -170,9 +170,9 @@ macro_rules! call_api_with_refreshing_tokens_without_auth {
         }
     }};
 
-    // Has no arguments and return no Auth.
-    ($auth:expr, $api_call:expr, $retry_count:expr) => {{
-        call_api_with_refreshing_tokens_without_auth!($auth, $api_call, $retry_count, )
+    // Has no arguments and returns nothing.
+    ($session:expr, $api_call:expr, $retry_count:expr) => {{
+        call_refreshing_tokens_return_nothing!($session, $api_call, $retry_count, )
     }};
 }
 
@@ -199,21 +199,19 @@ impl Session {
     /// let session = config.sign_in_with_email_password(
     ///     "user@example".to_string(),
     ///     "password".to_string(),
-    /// ).await.unwrap();
+    /// ).await?;
     ///
     /// let new_session = session.change_email(
     ///     "new-user@example".to_string(),
     ///     None,
-    /// ).await.unwrap();
-    ///
-    /// // Do something with new_session.
+    /// ).await?;
     /// ```
     pub async fn change_email(
         self,
         new_email: String,
         locale: Option<String>,
     ) -> Result<Session> {
-        call_api_with_refreshing_tokens_without_return_value!(
+        call_refreshing_tokens_without_value_return_session!(
             self,
             Session::change_email_internal,
             1,
@@ -243,19 +241,17 @@ impl Session {
     /// let session = config.sign_in_with_email_password(
     ///     "user@example".to_string(),
     ///     "password".to_string(),
-    /// ).await.unwrap();
+    /// ).await?;
     ///
     /// let new_session = session.change_password(
     ///     "new-password".to_string(),
-    /// ).await.unwrap();
-    ///
-    /// // Do something with new session.
+    /// ).await?;
     /// ```
     pub async fn change_password(
         self,
         new_password: String,
     ) -> Result<Session> {
-        call_api_with_refreshing_tokens_without_return_value!(
+        call_refreshing_tokens_without_value_return_session!(
             self,
             Session::change_password_internal,
             1,
@@ -286,23 +282,21 @@ impl Session {
     /// let session = config.sign_in_with_email_password(
     ///     "user@example".to_string(),
     ///     "password".to_string(),
-    /// ).await.unwrap();
+    /// ).await?;
     ///
     /// let new_session = session.update_profile(
     ///     "new-display-name".to_string(),
     ///     "new-photo-url".to_string(),
     ///     Vec::new(),
-    /// ).await.unwrap();
-    ///
-    /// // Do something with new_session.
+    /// ).await?;
     /// ```
     pub async fn update_profile(
         self,
         display_name: String,
         photo_url: String,
-        delete_attribute: Vec<crate::api::update_profile::DeleteAttribute>,
+        delete_attribute: Vec<DeleteAttribute>,
     ) -> Result<Session> {
-        call_api_with_refreshing_tokens_without_return_value!(
+        call_refreshing_tokens_without_value_return_session!(
             self,
             Session::update_profile_internal,
             1,
@@ -331,14 +325,12 @@ impl Session {
     /// let session = config.sign_in_with_email_password(
     ///     "user@example".to_string(),
     ///     "password".to_string(),
-    /// ).await.unwrap();
+    /// ).await?;
     ///
-    /// let (new_session, user_data) = session.get_user_data().await.unwrap();
-    ///
-    /// // Do something with new_session and user_data.
+    /// let (new_session, user_data) = session.get_user_data().await?;
     /// ```
     pub async fn get_user_data(self) -> Result<(Session, UserData)> {
-        call_api_with_refreshing_tokens_with_return_value!(
+        call_refreshing_tokens_return_session_and_value!(
             self,
             Session::get_user_data_internal,
             1,
@@ -360,7 +352,7 @@ impl Session {
     /// ## Example
     /// ```
     /// use fars::Config;
-    /// use fars::api::sign_in_with_oauth_credential::IdpPostBody;
+    /// use fars::data::IdpPostBody;
     ///
     /// let config = Config::new(
     ///     "your-firebase-project-api-key".to_string(),
@@ -370,21 +362,19 @@ impl Session {
     ///     IdpPostBody::Google {
     ///         id_token: "user-google-oauth-open-id-token".to_string(),
     ///     },
-    /// ).await.unwrap();
+    /// ).await?;
     ///
     /// let new_session = session.link_with_email_password(
     ///    "new-user@example".to_string(),
     ///    "new-password".to_string(),
-    /// ).await.unwrap();
-    ///
-    /// // Do something with new_session.
+    /// ).await?;
     /// ```
     pub async fn link_with_email_password(
         self,
         email: String,
         password: String,
     ) -> Result<Session> {
-        call_api_with_refreshing_tokens_with_return_auth!(
+        call_refreshing_tokens_without_value_return_session!(
             self,
             Session::link_with_email_password_internal,
             1,
@@ -416,23 +406,21 @@ impl Session {
     /// let session = config.sign_in_with_email_password(
     ///     "user@example".to_string(),
     ///     "password".to_string(),
-    /// ).await.unwrap();
+    /// ).await?;
     ///
     /// let new_session = session.link_with_oauth_credential(
     ///     "https://your-app.com/redirect/path/auth/handler".to_string(),
     ///     IdpPostBody::Google {
     ///         id_token: "user-google-id-token-got-from-google-oauth-api".to_string(),
     ///     },
-    /// ).await.unwrap();
-    ///
-    /// // Do something with new_session.
+    /// ).await?;
     /// ```
     pub async fn link_with_oauth_credential(
         self,
         request_uri: String,
         post_body: crate::data::IdpPostBody,
     ) -> Result<Session> {
-        call_api_with_refreshing_tokens_with_return_auth!(
+        call_refreshing_tokens_without_value_return_session!(
             self,
             Session::link_with_oauth_credential_internal,
             1,
@@ -463,19 +451,17 @@ impl Session {
     /// let session = config.sign_in_with_email_password(
     ///     "user@example".to_string(),
     ///     "password".to_string(),
-    /// ).await.unwrap();
+    /// ).await?;
     ///
     /// let new_session = session.unlink_provider(
     ///    [ProviderId::Google].iter().cloned().collect(),
-    /// ).await.unwrap();
-    ///
-    /// // Do something with new_session.
+    /// ).await?;
     /// ```
     pub async fn unlink_provider(
         self,
         delete_provider: HashSet<ProviderId>,
     ) -> Result<Session> {
-        call_api_with_refreshing_tokens_without_return_value!(
+        call_refreshing_tokens_without_value_return_session!(
             self,
             Session::unlink_provider_internal,
             1,
@@ -504,19 +490,17 @@ impl Session {
     /// let session = config.sign_in_with_email_password(
     ///     "user@example".to_string(),
     ///     "password".to_string(),
-    /// ).await.unwrap();
+    /// ).await?;
     ///
     /// let new_session = session.send_email_verification(
     ///     None,
-    /// ).await.unwrap();
-    ///
-    /// // Do something with new_session.
+    /// ).await?;
     /// ```
     pub async fn send_email_verification(
         self,
         locale: Option<String>,
     ) -> Result<Session> {
-        call_api_with_refreshing_tokens_without_return_value!(
+        call_refreshing_tokens_without_value_return_session!(
             self,
             Session::send_email_verification_internal,
             1,
@@ -539,12 +523,12 @@ impl Session {
     /// let session = config.sign_in_with_email_password(
     ///     "user@example".to_string(),
     ///     "password".to_string(),
-    /// ).await.unwrap();;
+    /// ).await?;
     ///
-    /// session.delete_account().await.unwrap();
+    /// session.delete_account().await?;
     /// ```
     pub async fn delete_account(self) -> Result<()> {
-        call_api_with_refreshing_tokens_without_auth!(
+        call_refreshing_tokens_return_nothing!(
             self,
             Session::delete_account_internal,
             1,
@@ -557,18 +541,17 @@ impl Session {
 impl Session {
     async fn refresh_tokens(self) -> Result<Self> {
         // Create request payload.
-        let request_payload = crate::api::exchange_refresh_token::ExchangeRefreshTokenRequestBodyPayload::new(
+        let request_payload = api::ExchangeRefreshTokenRequestBodyPayload::new(
             self.refresh_token.clone(),
         );
 
         // Send request.
-        let response =
-            crate::api::exchange_refresh_token::exchange_refresh_token(
-                &self.client,
-                &self.api_key,
-                request_payload,
-            )
-            .await?;
+        let response = api::exchange_refresh_token(
+            &self.client,
+            &self.api_key,
+            request_payload,
+        )
+        .await?;
 
         // Create tokens.
         Ok(Self {
@@ -591,15 +574,14 @@ impl Session {
         locale: Option<String>,
     ) -> Result<()> {
         // Create request payload.
-        let request_payload =
-            crate::api::change_email::ChangeEmailRequestBodyPayload::new(
-                self.id_token.clone(),
-                new_email,
-                false,
-            );
+        let request_payload = api::ChangeEmailRequestBodyPayload::new(
+            self.id_token.clone(),
+            new_email,
+            false,
+        );
 
         // Send request.
-        crate::api::change_email::change_email(
+        api::change_email(
             &self.client,
             &self.api_key,
             request_payload,
@@ -615,15 +597,14 @@ impl Session {
         new_password: String,
     ) -> Result<()> {
         // Create request payload.
-        let request_payload =
-            crate::api::change_password::ChangePasswordRequestBodyPayload::new(
-                self.id_token.clone(),
-                new_password,
-                false,
-            );
+        let request_payload = api::ChangePasswordRequestBodyPayload::new(
+            self.id_token.clone(),
+            new_password,
+            false,
+        );
 
         // Send request.
-        crate::api::change_password::change_password(
+        api::change_password(
             &self.client,
             &self.api_key,
             request_payload,
@@ -637,20 +618,19 @@ impl Session {
         &self,
         display_name: String,
         photo_url: String,
-        delete_attribute: Vec<crate::api::update_profile::DeleteAttribute>,
+        delete_attribute: Vec<DeleteAttribute>,
     ) -> Result<()> {
         // Create request payload.
-        let request_payload =
-            crate::api::update_profile::UpdateProfileRequestBodyPayload::new(
-                self.id_token.clone(),
-                display_name,
-                photo_url,
-                delete_attribute,
-                false,
-            );
+        let request_payload = api::UpdateProfileRequestBodyPayload::new(
+            self.id_token.clone(),
+            display_name,
+            photo_url,
+            delete_attribute,
+            false,
+        );
 
         // Send request.
-        crate::api::update_profile::update_profile(
+        api::update_profile(
             &self.client,
             &self.api_key,
             request_payload,
@@ -663,12 +643,10 @@ impl Session {
     async fn get_user_data_internal(&self) -> Result<UserData> {
         // Create request payload.
         let request_payload =
-            crate::api::get_user_data::GetUserDataRequestBodyPayload::new(
-                self.id_token.clone(),
-            );
+            api::GetUserDataRequestBodyPayload::new(self.id_token.clone());
 
         // Send request.
-        let response = crate::api::get_user_data::get_user_data(
+        let response = api::get_user_data(
             &self.client,
             &self.api_key,
             request_payload,
@@ -707,21 +685,19 @@ impl Session {
         password: String,
     ) -> Result<Self> {
         // Create request payload.
-        let request_payload =
-            crate::api::link_with_email_password::LinkWithEmailAndPasswordRequestBodyPayload::new(
-                self.id_token.clone(),
-                email,
-                password,
-            );
+        let request_payload = api::LinkWithEmailPasswordRequestBodyPayload::new(
+            self.id_token.clone(),
+            email,
+            password,
+        );
 
         // Send request.
-        let response_payload =
-            crate::api::link_with_email_password::link_with_email_password(
-                &self.client,
-                &self.api_key,
-                request_payload,
-            )
-            .await?;
+        let response_payload = api::link_with_email_password(
+            &self.client,
+            &self.api_key,
+            request_payload,
+        )
+        .await?;
 
         // Update tokens.
         Ok(Self {
@@ -741,11 +717,11 @@ impl Session {
     async fn link_with_oauth_credential_internal(
         &self,
         request_uri: String,
-        post_body: crate::data::IdpPostBody,
+        post_body: IdpPostBody,
     ) -> Result<Self> {
         // Create request payload.
         let request_payload =
-            crate::api::link_with_oauth_credential::LinkWithOAuthCredentialRequestBodyPayload::new(
+            api::LinkWithOAuthCredentialRequestBodyPayload::new(
                 self.id_token.clone(),
                 request_uri,
                 post_body,
@@ -753,13 +729,12 @@ impl Session {
             );
 
         // Send request.
-        let response_payload =
-            crate::api::link_with_oauth_credential::link_with_oauth_credential(
-                &self.client,
-                &self.api_key,
-                request_payload,
-            )
-            .await?;
+        let response_payload = api::link_with_oauth_credential(
+            &self.client,
+            &self.api_key,
+            request_payload,
+        )
+        .await?;
 
         // Update tokens.
         Ok(Self {
@@ -781,14 +756,13 @@ impl Session {
         delete_provider: HashSet<ProviderId>,
     ) -> Result<()> {
         // Create request payload.
-        let request_payload =
-            crate::api::unlink_provider::UnlinkProviderRequestBodyPayload::new(
-                self.id_token.clone(),
-                delete_provider,
-            );
+        let request_payload = api::UnlinkProviderRequestBodyPayload::new(
+            self.id_token.clone(),
+            delete_provider,
+        );
 
         // Send request.
-        crate::api::unlink_provider::unlink_provider(
+        api::unlink_provider(
             &self.client,
             &self.api_key,
             request_payload,
@@ -803,13 +777,12 @@ impl Session {
         locale: Option<String>,
     ) -> Result<()> {
         // Create request payload.
-        let request_payload =
-            crate::api::send_email_verification::SendEmailVerificationRequestBodyPayload::new(
-                self.id_token.clone(),
-            );
+        let request_payload = api::SendEmailVerificationRequestBodyPayload::new(
+            self.id_token.clone(),
+        );
 
         // Send request.
-        crate::api::send_email_verification::send_email_verification(
+        api::send_email_verification(
             &self.client,
             &self.api_key,
             request_payload,
@@ -823,12 +796,10 @@ impl Session {
     async fn delete_account_internal(&self) -> Result<()> {
         // Create request payload.
         let request_payload =
-            crate::api::delete_account::DeleteAccountRequestBodyPayload::new(
-                self.id_token.clone(),
-            );
+            api::DeleteAccountRequestBodyPayload::new(self.id_token.clone());
 
         // Send request.
-        crate::api::delete_account::delete_account(
+        api::delete_account(
             &self.client,
             &self.api_key,
             request_payload,

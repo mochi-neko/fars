@@ -1,11 +1,21 @@
 //! Configuration for the Firebase Auth.
 
+use crate::api;
 use crate::data::IdpPostBody;
-use crate::error::Error;
-use crate::result::Result;
-use crate::session::Session;
+use crate::Error;
+use crate::Result;
+use crate::Session;
 
 /// Configuration for the Firebase Auth.
+///
+/// ## Example
+/// ```
+/// use fars::Config;
+///
+/// let config = Config::new(
+///     "your-firebase-project-api-key".to_string(),
+/// );
+/// ```
 #[derive(Clone)]
 pub struct Config {
     /// Firebase project API key.
@@ -58,7 +68,7 @@ impl Config {
     /// let session = config.sign_up_with_email_password(
     ///     "user@example".to_string(),
     ///     "password".to_string(),
-    /// ).await.unwrap();
+    /// ).await?;
     /// ```
     pub async fn sign_up_with_email_password(
         &self,
@@ -70,11 +80,12 @@ impl Config {
 
         // Create request payload.
         let request_payload =
-            crate::api::sign_up_with_email_password::SignUpWithEmailPasswordRequestBodyPayload::new(email, password);
+            api::SignUpWithEmailPasswordRequestBodyPayload::new(
+                email, password,
+            );
 
         // Send request.
-        let response_payload =
-        crate::api::sign_up_with_email_password::sign_up_with_email_password(
+        let response_payload = api::sign_up_with_email_password(
             &client,
             &self.api_key,
             request_payload,
@@ -116,9 +127,7 @@ impl Config {
     /// let session = config.sign_in_with_email_password(
     ///     "user@example".to_string(),
     ///     "password".to_string(),
-    /// ).await.unwrap();
-    ///
-    /// // Do something with session.
+    /// ).await?;
     /// ```
     pub async fn sign_in_with_email_password(
         &self,
@@ -130,11 +139,12 @@ impl Config {
 
         // Create request payload.
         let request_payload =
-            crate::api::sign_in_with_email_password::SignInWithEmailPasswordRequestBodyPayload::new(email, password);
+            api::SignInWithEmailPasswordRequestBodyPayload::new(
+                email, password,
+            );
 
         // Send request.
-        let response_payload =
-        crate::api::sign_in_with_email_password::sign_in_with_email_password(
+        let response_payload = api::sign_in_with_email_password(
             &client,
             &self.api_key,
             request_payload,
@@ -169,26 +179,19 @@ impl Config {
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     ///
-    /// let session = config.sign_in_anonymously().await.unwrap();
-    ///
-    /// // Do something with session.
+    /// let session = config.sign_in_anonymously().await?;
     /// ```
     pub async fn sign_in_anonymously(&self) -> Result<Session> {
         // Create a HTTP client.
         let client = self.build_client()?;
 
         // Create request payload.
-        let request_payload =
-            crate::api::sign_in_anonymously::SignInAnonymouslyRequestBodyPayload::new();
+        let request_payload = api::SignInAnonymouslyRequestBodyPayload::new();
 
         // Send request.
         let response_payload =
-            crate::api::sign_in_anonymously::sign_in_anonymously(
-                &client,
-                &self.api_key,
-                request_payload,
-            )
-            .await?;
+            api::sign_in_anonymously(&client, &self.api_key, request_payload)
+                .await?;
 
         // Create session.
         Ok(Session {
@@ -228,9 +231,7 @@ impl Config {
     ///     IdpPostBody::Google {
     ///         id_token: "user-google-oauth-open-id-token".to_string(),
     ///     },
-    /// ).await.unwrap();
-    ///
-    /// // Do something with session.
+    /// ).await?;
     /// ```
     pub async fn sign_in_oauth_credencial(
         &self,
@@ -242,20 +243,19 @@ impl Config {
 
         // Create request payload.
         let request_payload =
-            crate::api::sign_in_with_oauth_credential::SignInWithOAuthCredentialRequestBodyPayload::new(
+            api::SignInWithOAuthCredentialRequestBodyPayload::new(
                 request_uri,
                 post_body,
                 false,
             );
 
         // Send request.
-        let response_payload =
-            crate::api::sign_in_with_oauth_credential::sign_in_with_oauth_credential(
-                &client,
-                &self.api_key,
-                request_payload,
-            )
-            .await?;
+        let response_payload = api::sign_in_with_oauth_credential(
+            &client,
+            &self.api_key,
+            request_payload,
+        )
+        .await?;
 
         // Create session.
         Ok(Session {
@@ -290,9 +290,7 @@ impl Config {
     ///
     /// let session = config.exchange_refresh_tokens(
     ///     "user-firebase-refresh-token".to_string(),
-    /// ).await.unwrap();
-    ///
-    /// // Do something with session.
+    /// ).await?;
     /// ```
     pub async fn exchange_refresh_tokens(
         &self,
@@ -302,18 +300,16 @@ impl Config {
         let client = self.build_client()?;
 
         // Create request payload.
-        let request_payload = crate::api::exchange_refresh_token::ExchangeRefreshTokenRequestBodyPayload::new(
-            refresh_token,
-        );
+        let request_payload =
+            api::ExchangeRefreshTokenRequestBodyPayload::new(refresh_token);
 
         // Send request.
-        let response_payload =
-            crate::api::exchange_refresh_token::exchange_refresh_token(
-                &client,
-                &self.api_key,
-                request_payload,
-            )
-            .await?;
+        let response_payload = api::exchange_refresh_token(
+            &client,
+            &self.api_key,
+            request_payload,
+        )
+        .await?;
 
         // Create session.
         Ok(Session {
@@ -350,9 +346,7 @@ impl Config {
     /// let providers = config.fetch_providers_for_email(
     ///     "user@example".to_string(),
     ///     "https://your-app.com/redirect/path/auth/handler".to_string(),
-    /// ).await.unwrap();
-    ///
-    /// // Do something with providers.
+    /// ).await?;
     /// ```
     pub async fn fetch_providers_for_email(
         &self,
@@ -364,19 +358,18 @@ impl Config {
 
         // Create request payload.
         let request_payload =
-        crate::api::fetch_providers_for_email::FetchProvidersForEmailRequestBodyPayload::new(
-            email,
-            continue_uri,
-        );
+            api::FetchProvidersForEmailRequestBodyPayload::new(
+                email,
+                continue_uri,
+            );
 
         // Send request.
-        let response_payload =
-            crate::api::fetch_providers_for_email::fetch_providers_for_email(
-                &client,
-                &self.api_key,
-                request_payload,
-            )
-            .await?;
+        let response_payload = api::fetch_providers_for_email(
+            &client,
+            &self.api_key,
+            request_payload,
+        )
+        .await?;
 
         Ok(response_payload.all_providers)
     }
@@ -398,9 +391,7 @@ impl Config {
     /// config.send_reset_password_email(
     ///     "user@example".to_string(),
     ///     None,
-    /// ).await.unwrap();
-    ///
-    /// // Do something.
+    /// ).await?;
     /// ```
     pub async fn send_reset_password_email(
         &self,
@@ -412,10 +403,10 @@ impl Config {
 
         // Create request payload.
         let request_payload =
-            crate::api::send_password_reset_email::SendPasswordResetEmailRequestBodyPayload::new(email);
+            api::SendPasswordResetEmailRequestBodyPayload::new(email);
 
         // Send request.
-        crate::api::send_password_reset_email::send_password_reset_email(
+        api::send_password_reset_email(
             &client,
             &self.api_key,
             request_payload,

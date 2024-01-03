@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client;
 use crate::data::IdpPostBody;
-use crate::result::Result;
+use crate::Result;
 
 /// Request body payload for the link with OAuth credential API.
 ///
@@ -137,25 +137,21 @@ pub struct LinkWithOAuthCredentialResponsePayload {
 ///
 /// ## Example
 /// ```
-/// use fars::api::link_with_oauth_credential::{
-///     LinkWithOAuthCredentialRequestBodyPayload,
-///     link_with_oauth_credential,
-/// };
+/// use fars::api;
+/// use fars::data::IdpPostBody;
 ///
-/// let request_payload = LinkWithOAuthCredentialRequestBodyPayload::new(
+/// let request_payload = api::LinkWithOAuthCredentialRequestBodyPayload::new(
 ///     "id-token".to_string(),
 ///     "request-uri".to_string(),
 ///     IdpPostBody::Google{ id_token: "google-oauth-open-id-token".to_string() },
 ///     true,
 /// );
 ///
-/// let response_payload = link_with_oauth_credential(
+/// let response_payload = api::link_with_oauth_credential(
 ///     reqwest::Client::new(),
 ///     "your-firebase-project-api-key".to_string(),
 ///     request_payload,
-/// ).await.unwrap();
-///
-/// // Do something with the response payload.
+/// ).await?;
 /// ```
 pub async fn link_with_oauth_credential(
     client: &reqwest::Client,

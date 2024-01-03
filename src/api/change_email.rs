@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client;
 use crate::data::ProviderUserInfo;
-use crate::result::Result;
+use crate::Result;
 
 /// Request body payload for the change email API.
 ///
@@ -95,24 +95,20 @@ pub struct ChangeEmailResponsePayload {
 ///
 /// ## Example
 /// ```
-/// use fars::api::change_email::{
-///     change_email, ChangeEmailRequestBodyPayload,
-/// };
+/// use fars::api;
 ///
-/// let request_payload = ChangeEmailRequestBodyPayload::new(
+/// let request_payload = api::ChangeEmailRequestBodyPayload::new(
 ///     id_token,
 ///     email,
 ///     true,
 /// );
 ///
-/// let resopnse_payload = change_email(
+/// let resopnse_payload = api::change_email(
 ///     reqwest::Client::new(),
 ///     "your-firebase-project-api-key".to_string(),
 ///     request_payload,
 ///     None,
-/// ).await.unwrap();
-///
-/// // Do something with the response payload.
+/// ).await?;
 /// ```
 pub async fn change_email(
     client: &reqwest::Client,

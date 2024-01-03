@@ -7,7 +7,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::result::Result;
+use crate::Result;
 
 /// Request body payload for the send password reset email API.
 ///
@@ -65,23 +65,18 @@ pub struct SendPasswordResetEmailResponsePayload {
 ///
 /// ## Example
 /// ```
-/// use fars::api::send_password_reset_email::{
-///     SendPasswordResetEmailRequestBodyPayload,
-///     send_password_reset_email,
-/// };
+/// use fars::api;
 ///
-/// let request_payload = SendPasswordResetEmailRequestBodyPayload::new(
+/// let request_payload = api::SendPasswordResetEmailRequestBodyPayload::new(
 ///     "email".to_string(),
 /// );
 ///
-/// let response_payload = send_password_reset_email(
+/// let response_payload = api::send_password_reset_email(
 ///     reqwest::Client::new(),
 ///     "your-firebase-project-api-key".to_string(),
 ///     request_payload,
 ///     None,
-/// ).await.unwrap();
-///
-/// // Do something with the response payload.
+/// ).await?;
 /// ```
 pub async fn send_password_reset_email(
     client: &reqwest::Client,

@@ -7,7 +7,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::result::Result;
+use crate::Result;
 
 /// Request body payload for the sign up with email password API.
 ///
@@ -86,23 +86,18 @@ pub struct SignUpWithEmailPasswordResponsePayload {
 ///
 /// ## Example
 /// ```
-/// use fars::api::sign_up_with_email_password::{
-///     SignUpWithEmailPasswordRequestBodyPayload,
-///     sign_up_with_email_password,
-/// };
+/// use fars::api;
 ///
-/// let request_payload = SignUpWithEmailPasswordRequestBodyPayload::new(
+/// let request_payload = api::SignUpWithEmailPasswordRequestBodyPayload::new(
 ///     "email".to_string(),
 ///     "password".to_string(),
 /// );
 ///
-/// let response_payload = sign_up_with_email_password(
+/// let response_payload = api::sign_up_with_email_password(
 ///     reqwest::Client::new(),
 ///     "your-firebase-project-api-key".to_string(),
 ///     request_payload,
-/// ).await.unwrap();
-///
-/// // Do something with the response payload.
+/// ).await?;
 /// ```
 pub async fn sign_up_with_email_password(
     client: &reqwest::Client,

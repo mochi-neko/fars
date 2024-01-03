@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client;
 use crate::data::UserData;
-use crate::result::Result;
+use crate::Result;
 
 /// Request body payload for the get user data API.
 ///
@@ -62,22 +62,17 @@ pub struct GetUserDataResponsePayload {
 ///
 /// ## Example
 /// ```
-/// use fars::api::get_user_data::{
-///     GetUserDataRequestBodyPayload,
-///     get_user_data,
-/// };
+/// use fars::api;
 ///
-/// let request_payload = GetUserDataRequestBodyPayload::new(
+/// let request_payload = api::GetUserDataRequestBodyPayload::new(
 ///     "id-token".to_string(),
 /// );
 ///
-/// let response_payload = get_user_data(
+/// let response_payload = api::get_user_data(
 ///     reqwest::Client::new(),
 ///     "your-firebase-project-api-key".to_string(),
 ///     request_payload,
-/// ).await.unwrap();
-///
-/// // Do something with the response payload.
+/// ).await?;
 /// ```
 pub async fn get_user_data(
     client: &reqwest::Client,

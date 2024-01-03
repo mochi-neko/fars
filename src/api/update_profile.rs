@@ -6,8 +6,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::data::ProviderUserInfo;
-use crate::result::Result;
+use crate::data::{DeleteAttribute, ProviderUserInfo};
+use crate::Result;
 
 /// Request body payload for the update profile API.
 ///
@@ -29,15 +29,6 @@ pub struct UpdateProfileRequestBodyPayload {
     /// Whether or not to return an ID and refresh token.
     #[serde(rename = "returnSecureToken")]
     return_secure_token: bool,
-}
-
-/// Attributes to delete profile information.
-#[derive(Clone, Copy)]
-pub enum DeleteAttribute {
-    /// Delete the display name.
-    DisplayName,
-    /// Delete the photo url.
-    PhotoUrl,
 }
 
 impl UpdateProfileRequestBodyPayload {
@@ -127,24 +118,20 @@ pub struct UpdateProfileResponsePayload {
 ///
 /// ## Example
 /// ```
-/// use fars::api::update_profile::{
-///     UpdateProfileRequestBodyPayload, update_profile,
-/// };
+/// use fars::api;
 ///
-/// let request_payload = UpdateProfileRequestBodyPayload::new(
+/// let request_payload = api::UpdateProfileRequestBodyPayload::new(
 ///     "id-token".to_string(),
 ///     "new-display-name".to_string(),
 ///     "new-photo-url".to_string(),
 ///     vec![],
 /// );
 ///
-/// let response_payload = update_profile(
+/// let response_payload = api::update_profile(
 ///     reqwest::Client::new(),
 ///     "your-firebase-project-api-key".to_string(),
 ///     request_payload,
-/// ).await.unwrap();
-///
-/// // Do something with the response payload.
+/// ).await?;
 /// ```
 pub async fn update_profile(
     client: &reqwest::Client,

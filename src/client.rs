@@ -5,7 +5,7 @@
 use serde::{de::DeserializeOwned, Serialize};
 
 use crate::error::{ApiErrorResponse, CommonErrorCode, Error};
-use crate::result::Result;
+use crate::Result;
 
 /// Sends a POST request to the Firebase Auth API.
 ///

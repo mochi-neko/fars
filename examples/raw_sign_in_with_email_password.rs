@@ -1,5 +1,5 @@
 use clap::Parser;
-use fars::api::{self, SignInWithEmailPasswordRequestBodyPayload};
+use fars::api;
 
 #[derive(Parser)]
 struct Credentials {
@@ -22,7 +22,7 @@ async fn main() -> anyhow::Result<()> {
     let client = reqwest::Client::new();
 
     // Create a request payload
-    let request_payload = SignInWithEmailPasswordRequestBodyPayload::new(
+    let request_payload = api::SignInWithEmailPasswordRequestBodyPayload::new(
         credentials.email.clone(),
         credentials.password.clone(),
     );

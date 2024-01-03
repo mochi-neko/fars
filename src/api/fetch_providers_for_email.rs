@@ -7,7 +7,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::result::Result;
+use crate::Result;
 
 /// Request body payload for the fetch providers for email API.
 ///
@@ -71,23 +71,18 @@ pub struct FetchProvidersForEmailResponsePayload {
 ///
 /// ## Example
 /// ```
-/// use fars::api::fetch_providers_for_email::{
-///     FetchProvidersForEmailRequestBodyPayload,
-///     fetch_providers_for_email,
-/// };
+/// use fars::api;
 ///
-/// let request_payload = FetchProvidersForEmailRequestBodyPayload::new(
+/// let request_payload = api::FetchProvidersForEmailRequestBodyPayload::new(
 ///     "email".to_string(),
 ///     "continue-uri".to_string(),
 /// );
 ///
-/// let response_payload = fetch_providers_for_email(
+/// let response_payload = api::fetch_providers_for_email(
 ///     reqwest::Client::new(),
 ///     "your-firebase-project-api-key".to_string(),
 ///     request_payload,
-/// ).await.unwrap();
-///
-/// // Do something with the response payload.
+/// ).await?;
 /// ```
 pub async fn fetch_providers_for_email(
     client: &reqwest::Client,

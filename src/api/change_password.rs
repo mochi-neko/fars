@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client;
 use crate::data::ProviderUserInfo;
-use crate::result::Result;
+use crate::Result;
 
 /// Request body payload for the change password API.
 ///
@@ -94,23 +94,19 @@ pub struct ChangePasswordResponsePayload {
 ///
 /// # Example
 /// ```
-/// use fars::api::change_password::{
-///     change_password, ChangePasswordRequestBodyPayload,
-/// };
+/// use fars::api;
 ///
-/// let request_payload = ChangePasswordRequestBodyPayload::new(
+/// let request_payload = api::ChangePasswordRequestBodyPayload::new(
 ///     id_token,
 ///     password,
 ///     false,
 /// );
 ///
-/// let resopnse_payload = change_password(
+/// let resopnse_payload = api::change_password(
 ///     reqwest::Client::new(),
 ///     "your-firebase-project-api-key".to_string(),
 ///     request_payload,
-/// ).await.unwrap();
-///
-/// // Do something with the response payload.
+/// ).await?;
 /// ```
 pub async fn change_password(
     client: &reqwest::Client,

@@ -7,7 +7,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::result::Result;
+use crate::Result;
 
 /// Request body payload for the delete account API.
 ///
@@ -57,22 +57,17 @@ pub struct DeleteAccountResponsePayload {}
 ///
 /// ## Example
 /// ```
-/// use fars::api::delete_account::{
-///     DeleteAccountRequestBodyPayload,
-///     delete_account,
-/// };
+/// use fars::api;
 ///
-/// let request_payload = DeleteAccountRequestBodyPayload::new(
+/// let request_payload = api::DeleteAccountRequestBodyPayload::new(
 ///     "id-token".to_string(),
 /// );
 ///
-/// let response_payload = delete_account(
+/// let response_payload = api::delete_account(
 ///     reqwest::Client::new(),
 ///     "your-firebase-project-api-key".to_string(),
 ///     request_payload,
-/// ).await.unwrap();
-///
-/// // Do something with the response payload.
+/// ).await?;
 /// ```
 pub async fn delete_account(
     client: &reqwest::Client,

@@ -7,7 +7,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::result::Result;
+use crate::Result;
 
 /// Request body payload for the confirm password reset API.
 ///
@@ -74,23 +74,18 @@ pub struct ConfirmPasswordResetResponsePayload {
 ///
 /// ## Example
 /// ```
-/// use fars::api::confirm_password_reset::{
-///     confirm_password_reset,
-///     ConfirmPasswordResetRequestBodyPayload,
-/// };
+/// use fars::api;
 ///
-/// let response_payload = ConfirmPasswordResetRequestBodyPayload::new(
+/// let response_payload = api::ConfirmPasswordResetRequestBodyPayload::new(
 ///     "oob-code".to_string(),
 ///     "new-password".to_string(),
 /// );
 ///
-/// let response_payload = confirm_password_reset(
+/// let response_payload = api::confirm_password_reset(
 ///     reqwest::Client::new(),
 ///     "your-firebase-project-api-key".to_string(),
 ///     response_payload,
-/// ).await.unwrap();
-///
-/// // Do something with the response payload.
+/// ).await?;
 /// ```
 pub async fn confirm_password_reset(
     client: &reqwest::Client,

@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client;
 use crate::data::{ProviderId, ProviderUserInfo};
-use crate::result::Result;
+use crate::Result;
 
 /// Request body payload for the unlink provider API.
 ///
@@ -92,23 +92,19 @@ pub struct UnlinkProviderResponsePayload {
 ///
 /// ## Example
 /// ```
-/// use fars::api::unlink_provider::{
-///     UnlinkProviderRequestBodyPayload, unlink_provider,
-/// };
+/// use fars::api;
 /// use fars::data::ProviderId;
 ///
-/// let request_payload = UnlinkProviderRequestBodyPayload::new(
+/// let request_payload = api::UnlinkProviderRequestBodyPayload::new(
 ///     "id-token".to_string(),
 ///     [ProviderId::Google].iter().cloned().collect(),
 /// );
 ///
-/// let response_payload = unlink_provider(
+/// let response_payload = api::unlink_provider(
 ///     reqwest::Client::new(),
 ///     "your-firebase-project-api-key".to_string(),
 ///     request_payload,
-/// ).await.unwrap();
-///
-/// // Do something with the response payload.
+/// ).await?;
 /// ```
 pub async fn unlink_provider(
     client: &reqwest::Client,

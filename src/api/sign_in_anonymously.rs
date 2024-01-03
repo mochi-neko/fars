@@ -7,7 +7,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::result::Result;
+use crate::Result;
 
 /// Request body payload for the sign in anonymously API.
 ///
@@ -72,20 +72,15 @@ pub struct SignInAnonymouslyResponsePayload {
 ///
 /// ## Example
 /// ```
-/// use fars::api::sign_in_anonymously::{
-///     SignInAnonymouslyRequestBodyPayload,
-///     sign_in_anonymously,
-/// };
+/// use fars::api;
 ///
-/// let request_payload = SignInAnonymouslyRequestBodyPayload::new();
+/// let request_payload = api::SignInAnonymouslyRequestBodyPayload::new();
 ///
-/// let response_payload = sign_in_anonymously(
+/// let response_payload = api::sign_in_anonymously(
 ///     reqwest::Client::new(),
 ///     "your-firebase-project-api-key".to_string(),
 ///     request_payload,
-/// ).await.unwrap();
-///
-/// // Do something with the response payload.
+/// ).await?;
 /// ```
 pub async fn sign_in_anonymously(
     client: &reqwest::Client,

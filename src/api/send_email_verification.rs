@@ -7,7 +7,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::result::Result;
+use crate::Result;
 
 /// Request body payload for the send email verification API.
 ///
@@ -66,23 +66,18 @@ pub struct SendEmailVerificationResponsePayload {
 ///
 /// ## Example
 /// ```
-/// use fars::api::send_email_verification::{
-///     SendEmailVerificationRequestBodyPayload,
-///     send_email_verification,
-/// };
+/// use fars::api;
 ///
-/// let request_payload = SendEmailVerificationRequestBodyPayload::new(
+/// let request_payload = api::SendEmailVerificationRequestBodyPayload::new(
 ///     "id-token".to_string(),
 /// );
 ///
-/// let response_payload = send_email_verification(
+/// let response_payload = api::send_email_verification(
 ///     reqwest::Client::new(),
 ///     "your-firebase-project-api-key".to_string(),
 ///     request_payload,
 ///     None,
-/// ).await.unwrap();
-///
-/// // Do something with the response payload.
+/// ).await?;
 /// ```
 pub async fn send_email_verification(
     client: &reqwest::Client,

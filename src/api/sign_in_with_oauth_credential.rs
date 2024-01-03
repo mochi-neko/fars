@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client;
 use crate::data::IdpPostBody;
-use crate::result::Result;
+use crate::Result;
 
 /// Request body payload for the sign in with OAuth credential API.
 ///
@@ -135,25 +135,20 @@ pub struct SignInWithOAuthCredentialResponsePayload {
 ///
 /// ## Example
 /// ```
-/// use fars::api::sign_in_with_oauth_credential::{
-///     SignInWithOAuthCredentialRequestBodyPayload,
-///     sign_in_with_oauth_credential,
-/// };
-/// use fars::data::idp_post_body::IdpPostBody;
+/// use fars::api;
+/// use fars::data::IdpPostBody;
 ///
-/// let request_payload = SignInWithOAuthCredentialRequestBodyPayload::new(
+/// let request_payload = api::SignInWithOAuthCredentialRequestBodyPayload::new(
 ///     "request-uri".to_string(),
 ///     IdpPostBody::Google{ id_token: "google-oauth-open-id-token".to_string() },
 ///     false,
 /// );
 ///
-/// let response_payload = sign_in_with_oauth_credential(
+/// let response_payload = api::sign_in_with_oauth_credential(
 ///     reqwest::Client::new(),
 ///     "your-firebase-project-api-key".to_string(),
 ///     request_payload,
-/// ).await.unwrap();
-///
-/// // Do something with the response payload.
+/// ).await?;
 /// ```
 pub async fn sign_in_with_oauth_credential(
     client: &reqwest::Client,

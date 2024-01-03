@@ -7,7 +7,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::result::Result;
+use crate::Result;
 
 /// Request body payload for the exchange custom token for an ID and refresh token API.
 ///
@@ -71,22 +71,17 @@ pub struct ExchangeCustomTokenForAnIdAndRefreshTokenResponsePayload {
 ///
 /// ## Example
 /// ```
-/// use fars::api::exchange_custom_token_for_an_id_and_refresh_token::{
-///     ExchangeCustomTokenForAnIdAndRefreshTokenRequestBodyPayload,
-///     exchange_custom_token_for_an_id_and_refresh_token,
-/// };
+/// use fars::api;
 ///
-/// let request_payload = ExchangeCustomTokenForAnIdAndRefreshTokenRequestBodyPayload::new(
+/// let request_payload = api::ExchangeCustomTokenForAnIdAndRefreshTokenRequestBodyPayload::new(
 ///    "your-custom-token".to_string(),
 /// );
 ///
-/// let response_payload = exchange_custom_token_for_an_id_and_refresh_token
+/// let response_payload = api::exchange_custom_token_for_an_id_and_refresh_token(
 ///     reqwest::Client::new(),
 ///     "your-firebase-project-api-key".to_string(),
 ///     request_payload,
-/// ).await.unwrap();
-///
-/// // Do something with the response payload.
+/// ).await?;
 /// ```
 pub async fn exchange_custom_token_for_an_id_and_refresh_token(
     client: &reqwest::Client,
