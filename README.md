@@ -34,19 +34,19 @@ Suppoted APIs of the [Firebase Auth REST API](https://firebase.google.com/docs/r
 
 Supported OAuth ID provides 
 
-- [ ] Apple (`apple.com`)
-- [ ] Apple Game Center (`gc.apple.com`)
+- [ ] (Not implemented) Apple (`apple.com`)
+- [ ] (Not implemented) Apple Game Center (`gc.apple.com`)
 - [ ] (Not tested) Facebook (`facebook.com`)
-- [ ] GitHub (`github.com`)
+- [ ] (Not implemented) GitHub (`github.com`)
 - [x] Google (`google.com`)
-- [ ] Google Play Games (`playgames.google.com`)
-- [ ] LinkedIn (`linkedin.com`)
-- [ ] Microsoft (`microsoft.com`)
+- [ ] (Not implemented) Google Play Games (`playgames.google.com`)
+- [ ] (Not implemented) LinkedIn (`linkedin.com`)
+- [ ] (Not implemented) Microsoft (`microsoft.com`)
 - [ ] (Not tested) Twitter (`twitter.com`)
-- [ ] Yahoo (`yahoo.com`)
+- [ ] (Not implemented) Yahoo (`yahoo.com`)
 
 > [!NOTE]
-> Unsupported providers have either not been tested or the format of `IdpPostBody` is not documented.
+> Unsupported providers have either not been tested or the format of `IdpPostBody` is not documented at the [official API reference](https://firebase.google.com/docs/reference/rest/auth).
 
 ## Usages
 
@@ -68,26 +68,26 @@ use fars::api;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    // Specify your API key.
+    // 1. Specify your API key.
     let api_key = "your-firebase-project-api-key".to_string();
 
-    // Create a reqwest client.
+    // 2. Create a reqwest client.
     let client = reqwest::Client::new();
 
-    // Create a request payload for the sign in API.
+    // 3. Create a request payload for the sign in API.
     let request_payload = api::SignInWithEmailPasswordRequestBodyPayload::new(
         "user@example.com".to_string(),
         "password".to_string(),
     );
 
-    // Send a request and receive a response payload of the sign in API.
+    // 4. Send a request and receive a response payload of the sign in API.
     let response_payload = api::sign_in_with_email_password(
         client,
         api_key,
         request_payload,
     ).await?;
 
-    // Do something with the response payload.
+    // 5. Do something with the response payload.
 
     Ok(())
 }
@@ -98,16 +98,16 @@ async fn main() -> anyhow::Result<()> {
 You can use semantic interfaces based on a session (`fars::Session`) as following steps.
 
 > [!IMPORTANT]
-> 1. ID token (`fars::Session.id_token`) has expiration date.
-> 2. API calling through a session automatically refresh an ID token by the [refresh token API](https://firebase.google.com/docs/reference/rest/auth#section-refresh-token) when the ID token has been expired.
-> 3. All APIs through session cosume session and return new session that has same ID token or refreshed one except for the [delete account API](https://firebase.google.com/docs/reference/rest/auth#section-delete-account).
-> 4. Therefore you have to **update** session every time you use APIs through a session by returned new session.
+> - ID token (`fars::Session.id_token`) has expiration date.
+> - API calling through a session automatically refresh an ID token by the [refresh token API](https://firebase.google.com/docs/reference/rest/auth#section-refresh-token) when the ID token has been expired.
+> - All APIs through session cosume session and return new session that has same ID token or refreshed one except for the [delete account API](https://firebase.google.com/docs/reference/rest/auth#section-delete-account).
+> Therefore you have to **update** session every time you use APIs through a session by returned new session.
 
-#### 2-1. A usage for logged in user
+#### 2-1. A usage for a logged in user
 
 1. Create a config (`fars::Config`) with your Firebase project API key.
-2. Sign in or sign up by supported options (Email & password / OAuth / Anonymous / Stored refresh token) through the config then get the session (`fars::Session`) for logged in user.
-3. Use Auth APIs for logged in user through the session, or use ID token (`fars::Session.id_token`) for other Firebase APIs.
+2. Sign in or sign up by supported options (Email & password / OAuth / Anonymous / Stored refresh token) through the config then get the session (`fars::Session`) for the logged in user.
+3. Use Auth APIs for the logged in user through the session, or use ID token (`fars::Session.id_token`) for other Firebase APIs.
 
 A sample code to [sign up with email / password](https://firebase.google.com/docs/reference/rest/auth#section-create-email-password) and to [get user data](https://firebase.google.com/docs/reference/rest/auth#section-get-account-info) with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 
@@ -116,21 +116,21 @@ use fars::Config;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    // Create a config.
+    // 1. Create a config.
     let config = Config::new(
         "your-firebase-project-api-key".to_string(),
     );
     
-    // Sign up with email and password then get a session.
+    // 2. Sign up with email and password then get a session.
     let session = config.sign_up_with_email_password(
         "user@example.com".to_string(),
         "password".to_string(),
     ).await?;
 
-    // Get user data through the session and get a new session.
+    // 3. Get user data through the session and get a new session.
     let (new_session, user_data) = session.get_user_data().await?;
 
-    // Do something with new_session and user_data.
+    // 4. Do something with new_session and user_data.
 
     Ok(())
 }
@@ -139,7 +139,7 @@ async fn main() -> anyhow::Result<()> {
 #### 2-2. A usage for not logged in user
 
 1. Create a config (`fars::Config`) with your Firebase project API key.
-2. Use Auth APIs for not logged in user through the config.
+2. Use Auth APIs for a not logged in user through the config.
 
 A sample code to [send password reset email](https://firebase.google.com/docs/reference/rest/auth#section-send-password-reset-email) with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 
@@ -148,12 +148,12 @@ use fars::Config;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    // Create a config.
+    // 1. Create a config.
     let config = Config::new(
         "your-firebase-project-api-key".to_string(),
     );
     
-    // Send reset password email to specified email through the config if it has been registered.
+    // 2. Send reset password email to specified email through the config if it has been registered.
     config.send_reset_password_email(
         "user@example".to_string(),
         None, // Option: Locale
