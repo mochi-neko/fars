@@ -57,17 +57,14 @@ You can select usage from two options:
 
 ### 1. Use APIs directly
 
-You can use [supported APIs](#supported-apis) directly by `fars::api::*` modules.
+You can use [supported APIs](#supported-apis) directly by `fars::api` module.
 
 Please refer each document and API reference.
 
 A sample code to [sign in with email / password](https://firebase.google.com/docs/reference/rest/auth#section-sign-in-email-password) with [reqwest](https://github.com/seanmonstar/reqwest), [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 
 ```rust
-use fars::api::sign_in_with_email_password::{
-    SignInWithEmailPasswordRequestBodyPayload,
-    sign_in_with_email_password,
-};
+use fars::api;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -78,13 +75,13 @@ async fn main() -> anyhow::Result<()> {
     let client = reqwest::Client::new();
 
     // Create a request payload for the sign in API.
-    let request_payload = SignInWithEmailPasswordRequestBodyPayload::new(
+    let request_payload = api::SignInWithEmailPasswordRequestBodyPayload::new(
         "user@example.com".to_string(),
         "password".to_string(),
     );
 
     // Send a request and receive a response payload of the sign in API.
-    let response_payload = sign_in_with_email_password(
+    let response_payload = api::sign_in_with_email_password(
         client,
         api_key,
         request_payload,
@@ -175,7 +172,7 @@ TODO:
 - [ ] Review error types and descriptions.
 - [ ] Write error handling documents.
 - [ ] Add errors documents.
-- [ ] Review re-export moudles.
+- [x] Review re-export moudles.
 - [ ] Check reqwest accessibility.
 - [ ] Check `Cargo.toml` settings.
 - [ ] Write some examples to `./examples/`.
