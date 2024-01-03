@@ -86,8 +86,14 @@ pub struct ChangeEmailResponsePayload {
 /// - `request_payload` - Request body payload.
 /// - `locale` - (Optional) The BCP 47 language code, eg: en-US.
 ///
-/// ## Returns
-/// Result with a response payload.
+/// ## Errors
+/// - `Error::InvalidHeaderValue` - Invalid header value.
+/// - `Error::HttpRequestError` - Failed to send a request.
+/// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+/// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+/// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+/// - `Error::InvalidIdToken` - Invalid ID token.
+/// - `Error::ApiError` - API error on the Firebase Auth.
 ///
 /// ## Common error codes
 /// - EMAIL_EXISTS: The email address is already in use by another account.
@@ -98,8 +104,8 @@ pub struct ChangeEmailResponsePayload {
 /// use fars::api;
 ///
 /// let request_payload = api::ChangeEmailRequestBodyPayload::new(
-///     id_token,
-///     email,
+///     "id-token".to_string(),
+///     "new-email".to_string(),
 ///     true,
 /// );
 ///

@@ -1,17 +1,26 @@
-//! An error type for the Firebase Auth API.
+//! The error type in this crate.
 
 use serde::Deserialize;
 use std::fmt::{Display, Formatter};
 
-/// Error type for the Firebase API.
+/// The error type in this crate.
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
-    /// HTTP error.
-    #[error("HTTP error: {0:?}")]
-    HttpError(reqwest::Error),
-    /// API error.
+    // HTTP client errors
+    /// Invalid header value.
+    #[error("Invalid header value: {key:?} - {error:?}")]
+    InvalidHeaderValue {
+        key: &'static str,
+        error: reqwest::header::InvalidHeaderValue,
+    },
+    /// HTTP request error.
+    #[error("HTTP request error: {0:?}")]
+    HttpRequestError(reqwest::Error),
+
+    // API errors
+    /// API error on the Firebase Auth.
     #[error(
-        "Firebase API error: ({status_code:?}) {error_code:?} - {response:?}"
+        "Firebase Auth API error: ({status_code:?}) {error_code:?} - {response:?}"
     )]
     ApiError {
         status_code: reqwest::StatusCode,
@@ -19,45 +28,39 @@ pub enum Error {
         response: ApiErrorResponse,
     },
     /// Invalid ID token error.
-    #[error("Invalid ID token error")]
-    InvalidIdTokenError,
-    /// Read response failed.
-    #[error("Read response failed: {error:?}")]
-    ReadResponseFailed {
+    #[error("Invalid ID token")]
+    InvalidIdToken,
+
+    // Response errors
+    /// Read response text failed.
+    #[error("Read response text failed: {error:?}")]
+    ReadResponseTextFailed {
         error: reqwest::Error,
     },
-    /// Response JSON error.
-    #[error("Response JSON error: {error:?} - {json:?}")]
-    ResponseJsonError {
+    /// Deserialize response JSON failed.
+    #[error("Deserialize response JSON failed: {error:?} - {json:?}")]
+    DeserializeResponseJsonFailed {
         error: serde_json::Error,
         json: String,
     },
-    /// Error response JSON error.
-    #[error("Error response JSON error: {error:?} - {json:?}")]
-    ErrorResponseJsonError {
-        error: reqwest::Error,
+    /// Deserialize error response JSON failed.
+    #[error("Deserialize error response JSON failed: {error:?} - {json:?}")]
+    DeserializeErrorResponseJsonFailed {
+        error: serde_json::Error,
         json: String,
     },
-    /// Header error.
-    #[error("Header error: {key:?} - {error:?}")]
-    HeaderError {
-        key: &'static str,
-        error: reqwest::header::InvalidHeaderValue,
-    },
-    /// Number parse error.
-    #[error("Number parse error: {error:?}")]
-    NumberParseError {
+    /// Parse `expires_in` failed.
+    #[error("Parse expires_in failed: {error:?}")]
+    ParseExpriesInFailed {
         error: std::num::ParseIntError,
     },
     /// Not found any user data in a response.
     #[error("Not found any user data in a response")]
     NotFoundAnyUserData,
-    /// HTTP client build error.
-    #[error("HTTP client build error: {0:?}")]
-    HttpClientBuildError(reqwest::Error),
 }
 
 /// Error response payload for the auth endpoints.
+///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-error-response).
 #[derive(Debug, Deserialize)]
 pub struct ApiErrorResponse {
@@ -75,6 +78,7 @@ impl Display for ApiErrorResponse {
 }
 
 /// Error response payload for the auth endpoints.
+///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-error-response).
 #[derive(Debug, Deserialize)]
 pub struct ErrorResponse {
@@ -87,6 +91,7 @@ pub struct ErrorResponse {
 }
 
 /// Error response payload for the auth endpoints.
+///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-error-response).
 #[derive(Debug, Deserialize)]
 pub struct ErrorElement {

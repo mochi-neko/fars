@@ -1,4 +1,6 @@
-//! A result type for the Firebase Auth API.
+//! The result type in this crate.
 
-/// Result type for the Firebase Auth API.
+/// The result type in this crate.
+///
+/// Please handle the error case by [`crate::Error`].
 pub type Result<T> = std::result::Result<T, crate::Error>;

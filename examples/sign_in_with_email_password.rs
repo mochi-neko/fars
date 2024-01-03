@@ -1,3 +1,5 @@
+//! An example to sign in with email and password by session-based interface.
+
 use clap::Parser;
 use fars::Config;
 

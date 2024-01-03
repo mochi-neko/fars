@@ -1,4 +1,4 @@
-//! Implements the Firebase Auth API client.
+//! Implements an internal API client for the Firebase Auth.
 //!
 //! See also [API reference](https://firebase.google.com/docs/reference/rest/auth).
 
@@ -20,6 +20,14 @@ use crate::Result;
 ///
 /// ## Returns
 /// The result with the response payload of the API.
+///
+/// ## Errors
+/// - `Error::HttpRequestError` - Failed to send a request.
+/// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+/// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+/// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+/// - `Error::InvalidIdToken` - Invalid ID token.
+/// - `Error::ApiError` - API error on the Firebase Auth.
 pub(crate) async fn send_post<T, U>(
     client: &reqwest::Client,
     endpoint: &str,
@@ -51,7 +59,7 @@ where
     let response = builder
         .send()
         .await
-        .map_err(Error::HttpError)?;
+        .map_err(Error::HttpRequestError)?;
 
     // Check the response status code.
     let status_code = response.status();
@@ -60,7 +68,7 @@ where
     let response_text = response
         .text()
         .await
-        .map_err(|error| Error::ReadResponseFailed {
+        .map_err(|error| Error::ReadResponseTextFailed {
             error,
         })?;
 
@@ -68,7 +76,7 @@ where
     if status_code.is_success() {
         // Deserialize the response text to a payload.
         serde_json::from_str::<U>(&response_text).map_err(|error| {
-            Error::ResponseJsonError {
+            Error::DeserializeResponseJsonFailed {
                 error,
                 json: response_text,
             }
@@ -77,13 +85,13 @@ where
     // Error response.
     else {
         // Deserialize the response text to the error payload.
-        let error_response = serde_json::from_str::<ApiErrorResponse>(
-            &response_text,
-        )
-        .map_err(|error| Error::ResponseJsonError {
-            error,
-            json: response_text,
-        })?;
+        let error_response =
+            serde_json::from_str::<ApiErrorResponse>(&response_text).map_err(
+                |error| Error::DeserializeErrorResponseJsonFailed {
+                    error,
+                    json: response_text,
+                },
+            )?;
 
         // Check error message and create error code.
         let error_code: CommonErrorCode = error_response
@@ -94,9 +102,7 @@ where
 
         match error_code {
             // Take invalid ID token error as special case.
-            | CommonErrorCode::InvalidIdToken => {
-                Err(Error::InvalidIdTokenError)
-            },
+            | CommonErrorCode::InvalidIdToken => Err(Error::InvalidIdToken),
             | _ => Err(Error::ApiError {
                 status_code,
                 error_code,
@@ -113,6 +119,9 @@ where
 ///
 /// ## Returns
 /// Optional headers for the locale if some locale is provided.
+///
+/// ## Errors
+/// - `Error::InvalidHeaderValue` - Invalid header value.
 pub(crate) fn optional_locale_header(
     locale: Option<String>
 ) -> Result<Option<reqwest::header::HeaderMap>> {
@@ -122,7 +131,7 @@ pub(crate) fn optional_locale_header(
             headers.insert(
                 "X-Firebase-Locale",
                 reqwest::header::HeaderValue::from_str(&locale).map_err(
-                    |error| Error::HeaderError {
+                    |error| Error::InvalidHeaderValue {
                         key: "X-Firebase-Locale",
                         error,
                     },

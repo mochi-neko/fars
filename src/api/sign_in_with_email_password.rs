@@ -79,8 +79,12 @@ pub struct SignInWithEmailPasswordResponsePayload {
 /// - `api_key` - Your Firebase project's API key.
 /// - `request_payload` - Request body payload.
 ///
-/// ## Returns
-/// Result with a response payload.
+/// ## Errors
+/// - `Error::HttpRequestError` - Failed to send a request.
+/// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+/// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+/// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+/// - `Error::ApiError` - API error on the Firebase Auth.
 ///
 /// ## Common error codes
 /// - EMAIL_NOT_FOUND: There is no user record corresponding to this identifier. The user may have been deleted.

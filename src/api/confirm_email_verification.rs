@@ -68,8 +68,12 @@ pub struct ConfirmEmailVerificationResponsePayload {
 /// - `api_key` - Your Firebase project's API key.
 /// - `request_payload` - Request body payload.
 ///
-/// ## Returns
-/// Result with a response payload.
+/// ## Errors
+/// - `Error::HttpRequestError` - Failed to send a request.
+/// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+/// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+/// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+/// - `Error::ApiError` - API error on the Firebase Auth.
 ///
 /// ## Common error codes
 /// - EXPIRED_OOB_CODE: The action code has expired.

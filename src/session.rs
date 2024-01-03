@@ -51,8 +51,8 @@ macro_rules! call_refreshing_tokens_return_session_and_value {
                     Ok(value) => return Ok((session, value)),
                     Err(error) => match error {
                         // NOTE: Retry for invalid ID token error.
-                        Error::InvalidIdTokenError if attempts < $retry_count => {
-                            match session.refresh_tokens().await {
+                        Error::InvalidIdToken if attempts < $retry_count => {
+                            match session.refresh_token().await {
                                 Ok(new_session) => {
                                     session = new_session;
                                     attempts += 1;
@@ -85,8 +85,8 @@ macro_rules! call_refreshing_tokens_without_value_return_session {
                     Ok(_) => return Ok(session),
                     Err(error) => match error {
                         // NOTE: Retry for invalid ID token error.
-                        Error::InvalidIdTokenError if attempts < $retry_count => {
-                            match session.refresh_tokens().await {
+                        Error::InvalidIdToken if attempts < $retry_count => {
+                            match session.refresh_token().await {
                                 Ok(new_session) => {
                                     session = new_session;
                                     attempts += 1;
@@ -120,8 +120,8 @@ macro_rules! call_refreshing_tokens_return_session {
                     Ok(new_session) => return Ok(new_session),
                     Err(error) => match error {
                         // NOTE: Retry for invalid ID token error.
-                        Error::InvalidIdTokenError if attempts < $retry_count => {
-                            match session.refresh_tokens().await {
+                        Error::InvalidIdToken if attempts < $retry_count => {
+                            match session.refresh_token().await {
                                 Ok(new_session) => {
                                     session = new_session;
                                     attempts += 1;
@@ -154,8 +154,8 @@ macro_rules! call_refreshing_tokens_return_nothing {
                     Ok(_) => return Ok(()),
                     Err(error) => match error {
                         // NOTE: Retry for invalid ID token error.
-                        Error::InvalidIdTokenError if attempts < $retry_count => {
-                            match session.refresh_tokens().await {
+                        Error::InvalidIdToken if attempts < $retry_count => {
+                            match session.refresh_token().await {
                                 Ok(new_session) => {
                                     session = new_session;
                                     attempts += 1;
@@ -188,6 +188,15 @@ impl Session {
     ///
     /// ## Returns
     /// New session to replace the consumed session.
+    ///
+    /// ## Errors
+    /// - `Error::InvalidHeaderValue` - Invalid header value.
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::InvalidIdToken` - Invalid ID token.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
     ///
     /// ## Example
     /// ```
@@ -231,6 +240,15 @@ impl Session {
     /// ## Returns
     /// New session to replace the consumed session.
     ///
+    /// ## Errors
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::InvalidIdToken` - Invalid ID token.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
+    /// - `Error::ParseExpriesInFailed` - Failed to parse the expires in value.
+    ///
     /// ## Example
     /// ```
     /// use fars::Config;
@@ -271,6 +289,14 @@ impl Session {
     ///
     /// ## Returns
     /// New session to replace the consumed session.
+    ///
+    /// ## Errors
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::InvalidIdToken` - Invalid ID token.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
     ///
     /// ## Example
     /// ```
@@ -315,6 +341,16 @@ impl Session {
     /// 1. New session to replace the consumed session.
     /// 2. The user data.
     ///
+    /// ## Errors
+    /// - `Error::InvalidHeaderValue` - Invalid header value.
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::InvalidIdToken` - Invalid ID token.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
+    /// - `Error::NotFoundAnyUserData` - Not found any user data.
+    ///
     /// ## Example
     /// ```
     /// use fars::Config;
@@ -348,6 +384,15 @@ impl Session {
     ///
     /// ## Returns
     /// New session to replace the consumed session.
+    ///
+    /// ## Errors
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::InvalidIdToken` - Invalid ID token.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
+    /// - `Error::ParseExpriesInFailed` - Failed to parse the expires in value.
     ///
     /// ## Example
     /// ```
@@ -395,6 +440,16 @@ impl Session {
     /// ## Returns
     /// New session to replace the consumed session.
     ///
+    /// ## Errors
+    /// - `Error::InvalidHeaderValue` - Invalid header value.
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::InvalidIdToken` - Invalid ID token.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
+    /// - `Error::ParseExpriesInFailed` - Failed to parse the expires in value.
+    ///
     /// ## Example
     /// ```
     /// use fars::Config;
@@ -440,6 +495,14 @@ impl Session {
     /// ## Returns
     /// New session to replace the consumed session.
     ///
+    /// ## Errors
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::InvalidIdToken` - Invalid ID token.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
+    ///
     /// ## Example
     /// ```
     /// use fars::Config;
@@ -480,6 +543,15 @@ impl Session {
     /// ## Returns
     /// New session to replace the consumed session.
     ///
+    /// ## Errors
+    /// - `Error::InvalidHeaderValue` - Invalid header value.
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::InvalidIdToken` - Invalid ID token.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
+    ///
     /// ## Example
     /// ```
     /// use fars::Config;
@@ -513,6 +585,14 @@ impl Session {
     ///
     /// Automatically refreshes tokens if needed.
     ///
+    /// ## Errors
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::InvalidIdToken` - Invalid ID token.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
+    ///
     /// ## Example
     /// ```
     /// use fars::Config;
@@ -535,11 +615,40 @@ impl Session {
         )
         .await
     }
-}
 
-// Implements internal API callings for an `Session`.
-impl Session {
-    async fn refresh_tokens(self) -> Result<Self> {
+    /// Refreshes the ID token.
+    ///
+    /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-refresh-token).
+    ///
+    /// ## Returns
+    /// New session with refreshed ID token.
+    ///
+    /// ## Errors
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
+    /// - `Error::ParseExpriesInFailed` - Failed to parse the expires in value.
+    ///
+    /// ## Example
+    /// ```
+    /// use fars::Config;
+    ///
+    /// let config = Config::new(
+    ///     "your-firebase-project-api-key".to_string(),
+    /// );
+    ///
+    /// let session = config.sign_in_with_email_password(
+    ///     "user@example".to_string(),
+    ///     "password".to_string(),
+    /// ).await?;
+    ///
+    /// // Expire the ID token.
+    ///
+    /// let new_session = session.refresh_token().await?;
+    /// ```
+    pub async fn refresh_token(self) -> Result<Self> {
         // Create request payload.
         let request_payload = api::ExchangeRefreshTokenRequestBodyPayload::new(
             self.refresh_token.clone(),
@@ -561,13 +670,16 @@ impl Session {
             expires_in: response
                 .expires_in
                 .parse()
-                .map_err(|error| Error::NumberParseError {
+                .map_err(|error| Error::ParseExpriesInFailed {
                     error,
                 })?,
             refresh_token: response.refresh_token,
         })
     }
+}
 
+// Implements internal API callings for an `Session`.
+impl Session {
     async fn change_email_internal(
         &self,
         new_email: String,
@@ -707,7 +819,7 @@ impl Session {
             expires_in: response_payload
                 .expires_in
                 .parse()
-                .map_err(|error| Error::NumberParseError {
+                .map_err(|error| Error::ParseExpriesInFailed {
                     error,
                 })?,
             refresh_token: response_payload.refresh_token,
@@ -744,7 +856,7 @@ impl Session {
             expires_in: response_payload
                 .expires_in
                 .parse()
-                .map_err(|error| Error::NumberParseError {
+                .map_err(|error| Error::ParseExpriesInFailed {
                     error,
                 })?,
             refresh_token: response_payload.refresh_token,

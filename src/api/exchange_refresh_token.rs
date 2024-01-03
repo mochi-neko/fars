@@ -71,8 +71,12 @@ pub struct ExchangeRefreshTokenResponsePayload {
 /// - `api_key` - Your Firebase project's API key.
 /// - `request` - Request body payload.
 ///
-/// ## Returns
-/// Result with a response payload.
+/// ## Errors
+/// - `Error::HttpRequestError` - Failed to send a request.
+/// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+/// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+/// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+/// - `Error::ApiError` - API error on the Firebase Auth.
 ///
 /// ## Common error codes
 /// - TOKEN_EXPIRED: The user's credential is no longer valid. The user must sign in again.

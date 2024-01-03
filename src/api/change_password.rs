@@ -85,8 +85,13 @@ pub struct ChangePasswordResponsePayload {
 /// - `api_key` - Your Firebase project's API key.
 /// - `request_payload` - Request body payload.
 ///
-/// ## Returns
-/// Result with a response payload.
+/// ## Errors
+/// - `Error::HttpRequestError` - Failed to send a request.
+/// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+/// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+/// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+/// - `Error::InvalidIdToken` - Invalid ID token.
+/// - `Error::ApiError` - API error on the Firebase Auth.
 ///
 /// ## Common error codes
 /// - INVALID_ID_TOKEN:The user's credential is no longer valid. The user must sign in again.
@@ -97,8 +102,8 @@ pub struct ChangePasswordResponsePayload {
 /// use fars::api;
 ///
 /// let request_payload = api::ChangePasswordRequestBodyPayload::new(
-///     id_token,
-///     password,
+///     "id-token".to_string(),
+///     "new-password".to_string(),
 ///     false,
 /// );
 ///

@@ -40,14 +40,6 @@ impl Config {
         }
     }
 
-    /// Builds a new HTTP client from config.
-    fn build_client(&self) -> Result<reqwest::Client> {
-        // NOTE: Timeout options are not supported on WASM.
-        reqwest::ClientBuilder::new()
-            .build()
-            .map_err(Error::HttpClientBuildError)
-    }
-
     /// Signs up a new user with the given email and password.
     ///
     /// ## Arguments
@@ -56,6 +48,14 @@ impl Config {
     ///
     /// ## Returns
     /// The session for the signed up user.
+    ///
+    /// ## Errors
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
+    /// - `Error::ParseExpriesInFailed` - Failed to parse the expires in value.
     ///
     /// ## Example
     /// ```
@@ -76,7 +76,7 @@ impl Config {
         password: String,
     ) -> Result<Session> {
         // Create a HTTP client.
-        let client = self.build_client()?;
+        let client = reqwest::Client::new();
 
         // Create request payload.
         let request_payload =
@@ -100,7 +100,7 @@ impl Config {
             expires_in: response_payload
                 .expires_in
                 .parse()
-                .map_err(|error| Error::NumberParseError {
+                .map_err(|error| Error::ParseExpriesInFailed {
                     error,
                 })?,
             refresh_token: response_payload.refresh_token,
@@ -115,6 +115,14 @@ impl Config {
     ///
     /// ## Returns
     /// The session for the signed in user.
+    ///
+    /// ## Errors
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
+    /// - `Error::ParseExpriesInFailed` - Failed to parse the expires in value.
     ///
     /// ## Example
     /// ```
@@ -135,7 +143,7 @@ impl Config {
         password: String,
     ) -> Result<Session> {
         // Create a HTTP client.
-        let client = self.build_client()?;
+        let client = reqwest::Client::new();
 
         // Create request payload.
         let request_payload =
@@ -159,7 +167,7 @@ impl Config {
             expires_in: response_payload
                 .expires_in
                 .parse()
-                .map_err(|error| Error::NumberParseError {
+                .map_err(|error| Error::ParseExpriesInFailed {
                     error,
                 })?,
             refresh_token: response_payload.refresh_token,
@@ -170,6 +178,14 @@ impl Config {
     ///
     /// ## Returns
     /// The session for the signed in user.
+    ///
+    /// ## Errors
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
+    /// - `Error::ParseExpriesInFailed` - Failed to parse the expires in value.
     ///
     /// ## Example
     /// ```
@@ -183,7 +199,7 @@ impl Config {
     /// ```
     pub async fn sign_in_anonymously(&self) -> Result<Session> {
         // Create a HTTP client.
-        let client = self.build_client()?;
+        let client = reqwest::Client::new();
 
         // Create request payload.
         let request_payload = api::SignInAnonymouslyRequestBodyPayload::new();
@@ -201,7 +217,7 @@ impl Config {
             expires_in: response_payload
                 .expires_in
                 .parse()
-                .map_err(|error| Error::NumberParseError {
+                .map_err(|error| Error::ParseExpriesInFailed {
                     error,
                 })?,
             refresh_token: response_payload.refresh_token,
@@ -216,6 +232,14 @@ impl Config {
     ///
     /// ## Returns
     /// The session for the signed in user.
+    ///
+    /// ## Errors
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
+    /// - `Error::ParseExpriesInFailed` - Failed to parse the expires in value.
     ///
     /// ## Example
     /// ```
@@ -239,7 +263,7 @@ impl Config {
         post_body: IdpPostBody,
     ) -> Result<Session> {
         // Create a HTTP client.
-        let client = self.build_client()?;
+        let client = reqwest::Client::new();
 
         // Create request payload.
         let request_payload =
@@ -265,7 +289,7 @@ impl Config {
             expires_in: response_payload
                 .expires_in
                 .parse()
-                .map_err(|error| Error::NumberParseError {
+                .map_err(|error| Error::ParseExpriesInFailed {
                     error,
                 })?,
             refresh_token: response_payload.refresh_token,
@@ -279,6 +303,14 @@ impl Config {
     ///
     /// ## Returns
     /// The session for the signed in user.
+    ///
+    /// ## Errors
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
+    /// - `Error::ParseExpriesInFailed` - Failed to parse the expires in value.
     ///
     /// ## Example
     /// ```
@@ -297,7 +329,7 @@ impl Config {
         refresh_token: String,
     ) -> Result<Session> {
         // Create a HTTP client.
-        let client = self.build_client()?;
+        let client = reqwest::Client::new();
 
         // Create request payload.
         let request_payload =
@@ -319,7 +351,7 @@ impl Config {
             expires_in: response_payload
                 .expires_in
                 .parse()
-                .map_err(|error| Error::NumberParseError {
+                .map_err(|error| Error::ParseExpriesInFailed {
                     error,
                 })?,
             refresh_token: response_payload.refresh_token,
@@ -334,6 +366,13 @@ impl Config {
     ///
     /// ## Returns
     /// The list of all IDPs for the specified email.
+    ///
+    /// ## Errors
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
     ///
     /// ## Example
     /// ```
@@ -354,7 +393,7 @@ impl Config {
         continue_uri: String,
     ) -> Result<Vec<String>> {
         // Create a HTTP client.
-        let client = self.build_client()?;
+        let client = reqwest::Client::new();
 
         // Create request payload.
         let request_payload =
@@ -380,6 +419,14 @@ impl Config {
     /// - `email` - The email of the user to send password reset email.
     /// - `locale` - The optional language code corresponding to the user's locale.
     ///
+    /// ## Errors
+    /// - `Error::InvalidHeaderValue` - Invalid header value.
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
+    ///
     /// ## Example
     /// ```
     /// use fars::Config;
@@ -399,7 +446,7 @@ impl Config {
         locale: Option<String>,
     ) -> Result<()> {
         // Create a HTTP client.
-        let client = self.build_client()?;
+        let client = reqwest::Client::new();
 
         // Create request payload.
         let request_payload =
