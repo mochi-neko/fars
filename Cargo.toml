@@ -15,6 +15,7 @@ keywords = ["firebase", "auth", "rest", "api", "client"]
 path = "src/lib.rs"
 
 [dependencies]
+jsonwebtoken = "9.2.0"
 reqwest = { version = "0.11.*", features = ["json"] }
 serde = { version = "1.0.*", features = ["derive"] }
 serde_json = "1.0.*"
