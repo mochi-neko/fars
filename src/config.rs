@@ -250,14 +250,14 @@ impl Config {
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     ///
-    /// let session = config.sign_in_oauth_credencial(
+    /// let session = config.sign_in_oauth_credential(
     ///     "https://your-app.com/redirect/path/auth/handler".to_string(),
     ///     IdpPostBody::Google {
     ///         id_token: "user-google-oauth-open-id-token".to_string(),
     ///     },
     /// ).await?;
     /// ```
-    pub async fn sign_in_oauth_credencial(
+    pub async fn sign_in_oauth_credential(
         &self,
         request_uri: String,
         post_body: IdpPostBody,
@@ -320,11 +320,11 @@ impl Config {
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     ///
-    /// let session = config.exchange_refresh_tokens(
+    /// let session = config.exchange_refresh_token(
     ///     "user-firebase-refresh-token".to_string(),
     /// ).await?;
     /// ```
-    pub async fn exchange_refresh_tokens(
+    pub async fn exchange_refresh_token(
         &self,
         refresh_token: String,
     ) -> Result<Session> {
