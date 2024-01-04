@@ -1,7 +1,7 @@
 //! An example to sign in Google OAuth credential by session-based interface.
 //!
 //! ```shell
-//! $ cargo run --example sign_in_oauth_credential -- --request_uri <request_uri> --id_token <id_token>
+//! $ cargo run --example sign_in_google_oauth_credential -- --request_uri <request_uri> --id_token <id_token>
 //! ```
 
 use clap::Parser;
@@ -27,7 +27,7 @@ async fn main() -> anyhow::Result<()> {
     // Create a config.
     let config = Config::new(api_key);
 
-    // Get a session by signing in with email and password.
+    // Get a session by signing in Google OAuth credential.
     let _session = config
         .sign_in_oauth_credential(
             credentials
