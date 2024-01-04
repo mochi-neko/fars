@@ -1,18 +1,19 @@
-//! An example to sign in with email and password by session-based interface.
+//! An example to sign in Google OAuth credential by session-based interface.
 //!
 //! ```shell
-//! $ cargo run --example sign_in_with_email_password -- --email <email> --password <password>
+//! $ cargo run --example sign_in_oauth_credential -- --request_uri <request_uri> --id_token <id_token>
 //! ```
 
 use clap::Parser;
+use fars::data::IdpPostBody;
 use fars::Config;
 
 #[derive(Parser)]
 struct Credentials {
     #[arg(short, long)]
-    email: String,
+    request_uri: String,
     #[arg(short, long)]
-    password: String,
+    id_token: String,
 }
 
 #[tokio::main]
@@ -28,16 +29,17 @@ async fn main() -> anyhow::Result<()> {
 
     // Get a session by signing in with email and password.
     let _session = config
-        .sign_in_with_email_password(
-            credentials.email.clone(),
-            credentials.password.clone(),
+        .sign_in_oauth_credential(
+            credentials
+                .request_uri
+                .clone(),
+            IdpPostBody::Google {
+                id_token: credentials.id_token.clone(),
+            },
         )
         .await?;
 
-    println!(
-        "Succeeded to sign in with email/password: {}",
-        credentials.email
-    );
+    println!("Succeeded to sign in with Google OAuth credential");
 
     Ok(())
 }

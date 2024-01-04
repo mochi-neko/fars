@@ -179,6 +179,10 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
+## Login by OAuth
+
+TODO:
+
 ## Error handling
 
 If you handle error in this crate, please handle `fars::Result` and `fars::Error`.

@@ -1,4 +1,8 @@
 //! An example to handle error with signing in.
+//!
+//! ```shell
+//! $ cargo run --example handle_error -- --email <email> --password <password>
+//! ```
 
 use clap::Parser;
 use fars::{error::CommonErrorCode, Config};
@@ -11,7 +15,6 @@ struct Credentials {
     password: String,
 }
 
-/// cargo run --example sign_in_with_email_password -- --email <email> --password <password>
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Parse the command line arguments.

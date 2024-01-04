@@ -1,4 +1,8 @@
 //! An example to sign in with email and password by raw API interface.
+//!
+//! ```shell
+//! $ cargo run --example raw_sign_in_with_email_password -- --email <email> --password <password>
+//! ```
 
 use clap::Parser;
 use fars::api;
@@ -11,7 +15,6 @@ struct Credentials {
     password: String,
 }
 
-/// cargo run --example raw_sign_in_with_email_password -- --email <email> --password <password>
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Parse the command line arguments.
@@ -29,12 +32,11 @@ async fn main() -> anyhow::Result<()> {
         credentials.password.clone(),
     );
 
-    // Create a session by signing in with email and password.
+    // Get a response by signing in with email and password.
     let response_payload =
         api::sign_in_with_email_password(&client, &api_key, request_payload)
             .await?;
 
-    // Print the session.
     println!(
         "Succeeded to sign in with email/password: {}",
         response_payload.email
