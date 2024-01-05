@@ -1,7 +1,7 @@
-//! An example to send a password reset email by session-based interface.
+//! An example to fetch ID providers for specified email by session-based interface.
 //!
 //! ```shell
-//! $ cargo run --example send_password_reset_email -- --email <email>
+//! $ cargo run --example fetch_providers_for_email -- --email <email>
 //! ```
 
 use clap::Parser;
@@ -24,14 +24,17 @@ async fn main() -> anyhow::Result<()> {
     // Create a config.
     let config = Config::new(api_key);
 
-    // Send a password reset email.
-    config
-        .send_reset_password_email(arguments.email.clone(), None)
+    // Fetch ID providers for specified email.
+    let providers = config
+        .fetch_providers_for_email(
+            arguments.email.clone(),
+            "http://localhost".to_string(),
+        )
         .await?;
 
     println!(
-        "Succeeded to send a password reset email to {}",
-        arguments.email
+        "Succeeded to fetch ID providers for email: {:?}",
+        providers
     );
 
     Ok(())

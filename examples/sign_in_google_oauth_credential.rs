@@ -19,7 +19,7 @@ struct Arguments {
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Parse the command line arguments.
-    let credentials = Arguments::parse();
+    let arguments = Arguments::parse();
 
     // Read API key from the environment variable.
     let api_key = std::env::var("FIREBASE_API_KEY")?;
@@ -30,11 +30,9 @@ async fn main() -> anyhow::Result<()> {
     // Get a session by signing in Google OAuth credential.
     let session = config
         .sign_in_oauth_credential(
-            credentials
-                .request_uri
-                .clone(),
+            arguments.request_uri.clone(),
             IdpPostBody::Google {
-                id_token: credentials.id_token.clone(),
+                id_token: arguments.id_token.clone(),
             },
         )
         .await?;

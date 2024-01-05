@@ -21,7 +21,7 @@ struct Arguments {
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Parse the command line arguments.
-    let credentials = Arguments::parse();
+    let arguments = Arguments::parse();
 
     // Read API key from the environment variable.
     let api_key = std::env::var("FIREBASE_API_KEY")?;
@@ -32,14 +32,10 @@ async fn main() -> anyhow::Result<()> {
     // Get a session by signing in Twitter OAuth credential.
     let session = config
         .sign_in_oauth_credential(
-            credentials
-                .request_uri
-                .clone(),
+            arguments.request_uri.clone(),
             IdpPostBody::Twitter {
-                access_token: credentials
-                    .access_token
-                    .clone(),
-                oauth_token_secret: credentials
+                access_token: arguments.access_token.clone(),
+                oauth_token_secret: arguments
                     .oauth_token_secret
                     .clone(),
             },

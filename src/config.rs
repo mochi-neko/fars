@@ -95,6 +95,7 @@
 
 use crate::api;
 use crate::data::IdpPostBody;
+use crate::data::ProviderId;
 use crate::Error;
 use crate::Result;
 use crate::Session;
@@ -484,7 +485,7 @@ impl Config {
         &self,
         email: String,
         continue_uri: String,
-    ) -> Result<Vec<String>> {
+    ) -> Result<Vec<ProviderId>> {
         // Create a HTTP client.
         let client = reqwest::Client::new();
 
@@ -503,7 +504,18 @@ impl Config {
         )
         .await?;
 
-        Ok(response_payload.all_providers)
+        match response_payload.all_providers {
+            | None => Ok(vec![]),
+            | Some(providers) => {
+                // Parse provider IDs from string to `ProviderId`.
+                let provider_ids = providers
+                    .iter()
+                    .map(|provider_id| ProviderId::parse(provider_id.clone()))
+                    .collect();
+
+                Ok(provider_ids)
+            },
+        }
     }
 
     /// Sends a password reset email to the given email address.

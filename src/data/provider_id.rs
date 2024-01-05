@@ -3,7 +3,7 @@
 use std::fmt::Display;
 
 /// ID provider identifiers defined at [document](https://firebase.google.com/docs/projects/provisioning/configure-oauth#add-idp).
-#[derive(Clone, Copy, Debug, PartialEq, Hash, Eq)]
+#[derive(Clone, Debug, PartialEq, Hash, Eq)]
 pub enum ProviderId {
     /// Password,
     Password,
@@ -27,6 +27,8 @@ pub enum ProviderId {
     Twitter,
     /// Yahoo.
     Yahoo,
+    /// Unknown.
+    Unknown(String),
 }
 
 impl Display for ProviderId {
@@ -46,6 +48,7 @@ impl Display for ProviderId {
             | ProviderId::Microsoft => write!(f, "microsoft.com"),
             | ProviderId::Twitter => write!(f, "twitter.com"),
             | ProviderId::Yahoo => write!(f, "yahoo.com"),
+            | ProviderId::Unknown(string) => write!(f, "{}", string),
         }
     }
 }
@@ -68,6 +71,7 @@ impl ProviderId {
             | ProviderId::Microsoft => "microsoft.com".to_string(),
             | ProviderId::Twitter => "twitter.com".to_string(),
             | ProviderId::Yahoo => "yahoo.com".to_string(),
+            | ProviderId::Unknown(string) => string.clone(),
         }
     }
 
@@ -77,21 +81,21 @@ impl ProviderId {
     /// - `string` - String to parse.
     ///
     /// ## Returns
-    /// Provider ID if the string is a valid provider ID, otherwise None.
-    pub fn try_parse(string: String) -> Option<Self> {
+    /// Provider ID if the string is a valid provider ID.
+    pub fn parse(string: String) -> Self {
         match string.as_str() {
-            | "password" => Some(ProviderId::Password),
-            | "apple.com" => Some(ProviderId::Apple),
-            | "gc.apple.com" => Some(ProviderId::AppleGameCenter),
-            | "facebook.com" => Some(ProviderId::Facebook),
-            | "github.com" => Some(ProviderId::GitHub),
-            | "google.com" => Some(ProviderId::Google),
-            | "playgames.google.com" => Some(ProviderId::GooglePlayGames),
-            | "linkedin.com" => Some(ProviderId::LinkedIn),
-            | "microsoft.com" => Some(ProviderId::Microsoft),
-            | "twitter.com" => Some(ProviderId::Twitter),
-            | "yahoo.com" => Some(ProviderId::Yahoo),
-            | _ => None,
+            | "password" => ProviderId::Password,
+            | "apple.com" => ProviderId::Apple,
+            | "gc.apple.com" => ProviderId::AppleGameCenter,
+            | "facebook.com" => ProviderId::Facebook,
+            | "github.com" => ProviderId::GitHub,
+            | "google.com" => ProviderId::Google,
+            | "playgames.google.com" => ProviderId::GooglePlayGames,
+            | "linkedin.com" => ProviderId::LinkedIn,
+            | "microsoft.com" => ProviderId::Microsoft,
+            | "twitter.com" => ProviderId::Twitter,
+            | "yahoo.com" => ProviderId::Yahoo,
+            | _ => ProviderId::Unknown(string),
         }
     }
 }

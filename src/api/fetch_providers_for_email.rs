@@ -48,10 +48,10 @@ impl FetchProvidersForEmailRequestBodyPayload {
 pub struct FetchProvidersForEmailResponsePayload {
     /// The list of providers that the user has previously signed in with.
     #[serde(rename = "allProviders")]
-    pub all_providers: Vec<String>,
+    pub all_providers: Option<Vec<String>>,
     /// Whether the email address is for an existing account.
     #[serde(rename = "registered")]
-    pub registered: bool,
+    pub registered: Option<bool>,
 }
 
 /// Fetches the list of sign-in methods available for the specified email address.

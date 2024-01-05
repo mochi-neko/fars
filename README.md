@@ -351,13 +351,6 @@ async fn main() -> anyhow::Result<()> {
 
 Please refer [/examples](./examples/) directory.
 
-## Todo for pulishing
-
-- [ ] Write some examples to `./examples/`.
-- [ ] Update changelog.
-- [ ] Check examples in documents.
-
-
 ## Changelog
 
 See [CHANGELOG](./CHANGELOG.md).

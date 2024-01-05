@@ -18,7 +18,7 @@ struct Arguments {
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Parse the command line arguments.
-    let credentials = Arguments::parse();
+    let arguments = Arguments::parse();
 
     // Read API key from the environment variable.
     let api_key = std::env::var("FIREBASE_API_KEY")?;
@@ -29,8 +29,8 @@ async fn main() -> anyhow::Result<()> {
     // Create a session by signing in with email and password.
     match config
         .sign_in_with_email_password(
-            credentials.email.clone(),
-            credentials.password.clone(),
+            arguments.email.clone(),
+            arguments.password.clone(),
         )
         .await
     {
