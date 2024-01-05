@@ -55,7 +55,7 @@ impl SignInWithOAuthCredentialRequestBodyPayload {
 /// Response payload for the sign in with OAuth credential API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-sign-in-with-oauth-credential).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct SignInWithOAuthCredentialResponsePayload {
     /// The unique ID identifies the IdP account.
     #[serde(rename = "federatedId")]

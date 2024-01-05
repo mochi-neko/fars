@@ -1,7 +1,7 @@
-//! An example to sign in with email and password by session-based interface.
+//! An example to send a password reset email by session-based interface.
 //!
 //! ```shell
-//! $ cargo run --example sign_in_with_email_password -- --email <email> --password <password>
+//! $ cargo run --example send_password_reset_email -- --email <email>
 //! ```
 
 use clap::Parser;
@@ -11,8 +11,6 @@ use fars::Config;
 struct Arguments {
     #[arg(short, long)]
     email: String,
-    #[arg(short, long)]
-    password: String,
 }
 
 #[tokio::main]
@@ -26,17 +24,14 @@ async fn main() -> anyhow::Result<()> {
     // Create a config.
     let config = Config::new(api_key);
 
-    // Get a session by signing in with email and password.
-    let session = config
-        .sign_in_with_email_password(
-            credentials.email.clone(),
-            credentials.password.clone(),
-        )
+    // Send a password reset email.
+    config
+        .send_reset_password_email(credentials.email.clone(), None)
         .await?;
 
     println!(
-        "Succeeded to sign in with email/password: {:?}",
-        session
+        "Succeeded to send a password reset email to {}",
+        credentials.email
     );
 
     Ok(())

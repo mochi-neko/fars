@@ -3,7 +3,7 @@
 use serde::Serialize;
 
 /// Post body for ID providers contains the OAuth credential and provider ID.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum IdpPostBody {
     /// Google OAuth.
     Google {

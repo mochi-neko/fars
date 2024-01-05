@@ -50,7 +50,7 @@ impl UnlinkProviderRequestBodyPayload {
 /// Response payload for the unlink provider API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-unlink-provider).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct UnlinkProviderResponsePayload {
     /// The uid of the current user.
     #[serde(rename = "localId")]

@@ -39,7 +39,7 @@ impl Default for SignInAnonymouslyRequestBodyPayload {
 /// Response payload for the sign in anonymously API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-sign-in-anonymously).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct SignInAnonymouslyResponsePayload {
     /// A Firebase Auth ID token for the newly created user.
     #[serde(rename = "idToken")]

@@ -1,7 +1,7 @@
-//! An example to sign in with email and password by session-based interface.
+//! An example to get user data by session-based interface.
 //!
 //! ```shell
-//! $ cargo run --example sign_in_with_email_password -- --email <email> --password <password>
+//! $ cargo run --example get_user_data -- --email <email> --password <password>
 //! ```
 
 use clap::Parser;
@@ -34,9 +34,14 @@ async fn main() -> anyhow::Result<()> {
         )
         .await?;
 
+    // Get user data.
+    let (_new_session, user_data) = session
+        .get_user_data()
+        .await?;
+
     println!(
-        "Succeeded to sign in with email/password: {:?}",
-        session
+        "Succeeded to get user data: {:?}",
+        user_data
     );
 
     Ok(())

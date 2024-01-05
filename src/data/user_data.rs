@@ -5,7 +5,7 @@ use serde::Deserialize;
 use crate::data::ProviderUserInfo;
 
 /// User data of the Firebase Auth.
-#[derive(Deserialize, PartialEq, Clone)]
+#[derive(Deserialize, PartialEq, Clone, Debug)]
 pub struct UserData {
     /// The uid of the current user.
     #[serde(rename = "localId")]

@@ -8,7 +8,7 @@ use clap::Parser;
 use fars::Config;
 
 #[derive(Parser)]
-struct Credentials {
+struct Arguments {
     #[arg(short, long)]
     refresh_token: String,
 }
@@ -16,7 +16,7 @@ struct Credentials {
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Parse the command line arguments.
-    let credentials = Credentials::parse();
+    let credentials = Arguments::parse();
 
     // Read API key from the environment variable.
     let api_key = std::env::var("FIREBASE_API_KEY")?;
@@ -25,7 +25,7 @@ async fn main() -> anyhow::Result<()> {
     let config = Config::new(api_key);
 
     // Get a session by exchanging refresh token.
-    let _session = config
+    let session = config
         .exchange_refresh_token(
             credentials
                 .refresh_token
@@ -34,8 +34,8 @@ async fn main() -> anyhow::Result<()> {
         .await?;
 
     println!(
-        "Succeeded to sign in by refresh token: {}",
-        credentials.refresh_token
+        "Succeeded to sign in by refresh token: {:?}",
+        session
     );
 
     Ok(())

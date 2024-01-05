@@ -37,7 +37,7 @@ impl ConfirmEmailVerificationRequestBodyPayload {
 /// Response payload for the confirm email verification API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-confirm-email-verification).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct ConfirmEmailVerificationResponsePayload {
     /// The email of the account.
     #[serde(rename = "email")]

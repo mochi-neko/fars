@@ -16,7 +16,7 @@ use crate::Session;
 ///     "your-firebase-project-api-key".to_string(),
 /// );
 /// ```
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Config {
     /// Firebase project API key.
     api_key: String,

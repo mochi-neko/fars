@@ -1,7 +1,7 @@
-//! An example to sign in with email and password by session-based interface.
+//! An example to delete account by session-based interface.
 //!
 //! ```shell
-//! $ cargo run --example sign_in_with_email_password -- --email <email> --password <password>
+//! $ cargo run --example delete account -- --email <email> --password <password>
 //! ```
 
 use clap::Parser;
@@ -34,10 +34,12 @@ async fn main() -> anyhow::Result<()> {
         )
         .await?;
 
-    println!(
-        "Succeeded to sign in with email/password: {:?}",
-        session
-    );
+    // Delete account.
+    session
+        .delete_account()
+        .await?;
+
+    println!("Succeeded to delete account");
 
     Ok(())
 }

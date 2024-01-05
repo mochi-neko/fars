@@ -51,7 +51,7 @@ impl ChangeEmailRequestBodyPayload {
 /// Response payload for the the change email API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-change-email).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct ChangeEmailResponsePayload {
     /// The uid of the current user.
     #[serde(rename = "localId")]

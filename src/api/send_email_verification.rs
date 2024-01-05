@@ -40,7 +40,7 @@ impl SendEmailVerificationRequestBodyPayload {
 /// Response payload for the the send email verification API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-send-email-verification).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct SendEmailVerificationResponsePayload {
     /// The email of the account.
     #[serde(rename = "email")]

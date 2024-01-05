@@ -40,7 +40,7 @@ impl ExchangeRefreshTokenRequestBodyPayload {
 /// Response payload for the exchange refresh token API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-refresh-token).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct ExchangeRefreshTokenResponsePayload {
     /// The number of seconds in which the ID token expires.
     #[serde(rename = "expires_in")]

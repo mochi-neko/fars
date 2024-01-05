@@ -44,7 +44,7 @@ impl FetchProvidersForEmailRequestBodyPayload {
 /// Response payload for the fetch providers for email API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-fetch-providers-for-email).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct FetchProvidersForEmailResponsePayload {
     /// The list of providers that the user has previously signed in with.
     #[serde(rename = "allProviders")]

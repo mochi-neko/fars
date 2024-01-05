@@ -9,7 +9,7 @@ use fars::data::IdpPostBody;
 use fars::Config;
 
 #[derive(Parser)]
-struct Credentials {
+struct Arguments {
     #[arg(short, long)]
     request_uri: String,
     #[arg(short, long)]
@@ -19,7 +19,7 @@ struct Credentials {
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Parse the command line arguments.
-    let credentials = Credentials::parse();
+    let credentials = Arguments::parse();
 
     // Read API key from the environment variable.
     let api_key = std::env::var("FIREBASE_API_KEY")?;
@@ -28,7 +28,7 @@ async fn main() -> anyhow::Result<()> {
     let config = Config::new(api_key);
 
     // Get a session by signing in Facebook OAuth credential.
-    let _session = config
+    let session = config
         .sign_in_oauth_credential(
             credentials
                 .request_uri
@@ -41,7 +41,10 @@ async fn main() -> anyhow::Result<()> {
         )
         .await?;
 
-    println!("Succeeded to sign in with Facebook OAuth credential");
+    println!(
+        "Succeeded to sign in with Facebook OAuth credential: {:?}",
+        session
+    );
 
     Ok(())
 }

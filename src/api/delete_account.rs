@@ -36,7 +36,7 @@ impl DeleteAccountRequestBodyPayload {
 /// Response payload for the delete account API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-delete-account).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct DeleteAccountResponsePayload {}
 
 /// Deletes the account of the user specified by the given ID token.

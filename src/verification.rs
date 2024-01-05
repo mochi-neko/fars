@@ -10,7 +10,7 @@ use std::collections::HashMap;
 
 /// The result type for ID token verification.
 ///
-/// Please handle error case by [`crate::error::VerificationError`].
+/// Please handle error case by [`VerificationError`].
 pub type VerificationResult = std::result::Result<
     crate::verification::IdTokenPayloadClaims,
     VerificationError,

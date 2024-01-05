@@ -35,7 +35,7 @@ impl VerifyPasswordResetCodeRequestBodyPayload {
 /// Response payload for the verify password reset code API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-verify-password-reset-code).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct VerifyPasswordResetCodeResponsePayload {
     /// User's email address.
     #[serde(rename = "email")]

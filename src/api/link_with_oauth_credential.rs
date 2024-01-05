@@ -61,7 +61,7 @@ impl LinkWithOAuthCredentialRequestBodyPayload {
 /// Response payload for the link with OAuth credential API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-link-with-oauth-credential).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct LinkWithOAuthCredentialResponsePayload {
     /// The unique ID identifies the IdP account.
     #[serde(rename = "federatedId")]

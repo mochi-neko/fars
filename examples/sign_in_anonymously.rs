@@ -15,11 +15,14 @@ async fn main() -> anyhow::Result<()> {
     let config = Config::new(api_key);
 
     // Get a session by signing in anonymously.
-    let _session = config
+    let session = config
         .sign_in_anonymously()
         .await?;
 
-    println!("Succeeded to sign in anonymously");
+    println!(
+        "Succeeded to sign in anonymously: {:?}",
+        session
+    );
 
     Ok(())
 }

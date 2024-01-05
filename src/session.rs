@@ -22,7 +22,7 @@ use crate::Result;
 ///     "password".to_string(),
 /// ).await?;
 /// ```
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Session {
     /// HTTP client.
     pub(crate) client: reqwest::Client,

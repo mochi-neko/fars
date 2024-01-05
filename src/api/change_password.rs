@@ -51,7 +51,7 @@ impl ChangePasswordRequestBodyPayload {
 /// Response payload for the `setAccountInfo` endpoint.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-change-password).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct ChangePasswordResponsePayload {
     /// The uid of the current user.
     #[serde(rename = "localId")]

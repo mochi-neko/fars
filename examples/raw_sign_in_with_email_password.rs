@@ -8,7 +8,7 @@ use clap::Parser;
 use fars::api;
 
 #[derive(Parser)]
-struct Credentials {
+struct Arguments {
     #[arg(short, long)]
     email: String,
     #[arg(short, long)]
@@ -18,7 +18,7 @@ struct Credentials {
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Parse the command line arguments.
-    let credentials = Credentials::parse();
+    let credentials = Arguments::parse();
 
     // Read API key from the environment variable.
     let api_key = std::env::var("FIREBASE_API_KEY")?;
@@ -38,8 +38,8 @@ async fn main() -> anyhow::Result<()> {
             .await?;
 
     println!(
-        "Succeeded to sign in with email/password: {}",
-        response_payload.email
+        "Succeeded to sign in with email/password: {:?}",
+        response_payload
     );
 
     Ok(())

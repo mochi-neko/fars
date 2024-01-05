@@ -37,7 +37,7 @@ impl GetUserDataRequestBodyPayload {
 /// Response payload for the get user data API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-get-account-info).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct GetUserDataResponsePayload {
     /// The account associated with the given Firebase ID token.
     #[serde(rename = "users")]

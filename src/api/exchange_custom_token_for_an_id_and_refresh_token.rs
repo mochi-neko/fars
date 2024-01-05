@@ -40,7 +40,7 @@ impl ExchangeCustomTokenForAnIdAndRefreshTokenRequestBodyPayload {
 /// Response payload for the exchange custom token for an ID and refresh token API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-verify-custom-token).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct ExchangeCustomTokenForAnIdAndRefreshTokenResponsePayload {
     /// A Firebase Auth ID token generated from the provided custom token.
     #[serde(rename = "idToken")]

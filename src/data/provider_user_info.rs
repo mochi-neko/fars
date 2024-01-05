@@ -3,7 +3,7 @@
 use serde::Deserialize;
 
 /// Provider user information.
-#[derive(Deserialize, PartialEq, Clone)]
+#[derive(Deserialize, PartialEq, Clone, Debug)]
 pub struct ProviderUserInfo {
     /// The provider identifier.
     #[serde(rename = "providerId")]

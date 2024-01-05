@@ -44,7 +44,7 @@ impl ConfirmPasswordResetRequestBodyPayload {
 /// Response payload for the confirm password reset API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-confirm-password-reset).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct ConfirmPasswordResetResponsePayload {
     /// User's email address.
     #[serde(rename = "email")]

@@ -48,7 +48,7 @@ impl SignInWithEmailPasswordRequestBodyPayload {
 /// Response payload for the sign in with email password API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-sign-in-email-password).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct SignInWithEmailPasswordResponsePayload {
     /// A Firebase Auth ID token for the authenticated user.
     #[serde(rename = "idToken")]

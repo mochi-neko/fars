@@ -55,7 +55,7 @@ impl LinkWithEmailPasswordRequestBodyPayload {
 /// Response payload for the link with email password API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-link-with-email-password).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct LinkWithEmailPasswordResponsePayload {
     /// The uid of the current user.
     #[serde(rename = "localId")]

@@ -70,7 +70,7 @@ impl UpdateProfileRequestBodyPayload {
 /// Response payload for the update profile API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-update-profile).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct UpdateProfileResponsePayload {
     /// The uid of the current user.
     #[serde(rename = "localId")]

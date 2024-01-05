@@ -40,7 +40,7 @@ impl SendPasswordResetEmailRequestBodyPayload {
 /// Response payload for the send password reset email API.
 ///
 /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-send-password-reset-email).
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct SendPasswordResetEmailResponsePayload {
     /// User's email address.
     #[serde(rename = "email")]
