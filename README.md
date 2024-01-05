@@ -17,6 +17,14 @@ or adding dependency to your `Cargo.toml`:
 fars = "0.1"
 ```
 
+## Features
+
+- [x] default
+    - [Raw API interfaces](#1-raw-api-interfaces)
+    - [Session-based interfaces](#2-session-based-interfaces)
+- [ ] verify
+    - [ID token verification](#id-token-verification)
+
 ## Supported APIs
 
 Suppoted APIs of the [Firebase Auth REST API](https://firebase.google.com/docs/reference/rest/auth) are as follows:
@@ -63,7 +71,7 @@ Supported OAuth ID provides
 > [!NOTE]
 > Unsupported providers have either not been tested or the format of `IdpPostBody` is not documented at the [official API reference](https://firebase.google.com/docs/reference/rest/auth).
 
-## Usages
+## API Usages
 
 You can select usage from two options:
 
@@ -72,7 +80,7 @@ You can select usage from two options:
 
 ### 1. Raw API interfaces
 
-You can use raw [supported APIs](#supported-apis) by `fars::api` module.
+Provides raw [supported APIs](#supported-apis) by `fars::api` module.
 
 Please refer each document, API reference and examples.
 
@@ -110,7 +118,7 @@ async fn main() -> anyhow::Result<()> {
 
 ### 2. Session-based interfaces
 
-You can use semantic interfaces based on a session (`fars::Session`) as following steps.
+Provides semantic interfaces based on a session (`fars::Session`) as following steps.
 
 > [!IMPORTANT]
 > - ID token (`fars::Session.id_token`) has expiration date.
@@ -281,6 +289,50 @@ async fn main() -> anyhow::Result<()> {
             }
         },
     }
+}
+```
+
+## ID token verification
+
+Provides ID token verification of the Firebase Auth.
+
+> [!NOTE]
+> ID token verification is an optional feature.
+> 
+> Please activate this feature by CLI:
+> 
+> ```shell
+> $ cargo add fars --features verify
+> ```
+> 
+> or adding features to your `Cargo.toml`:
+> 
+> ```toml
+> [dependencies]
+> fars = { version = "0.1", features = ["verify"] }
+> ```
+
+A sample code to [verify ID token](https://firebase.google.com/docs/auth/admin/verify-id-tokens#verify_id_tokens_using_a_third-party_jwt_library) with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
+
+```rust
+use fars::verification;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let client = reqwest::Client::new();
+    let id_token = "id-token".to_string();
+    let project_id = "firebase-project-id".to_string();
+
+    match verification::verify_id_token(&client, &id_token, &project_id).await {
+        Ok(claims) => {
+            // Verification succeeded.
+        }
+        Err(error) => {
+            // Verification failed.
+        }
+    }
+
+    Ok(())
 }
 ```
 

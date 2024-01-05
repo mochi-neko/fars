@@ -1,12 +1,125 @@
 //! Verification of an ID token of the Firebase Auth.
 //!
 //! See also [document](https://firebase.google.com/docs/auth/admin/verify-id-tokens#verify_id_tokens_using_a_third-party_jwt_library).
+//!
+//! ## NOTE
+//! This feature is only available when the feature "verify" is enabled.
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-use crate::error::VerificationError;
-use crate::result::VerificationResult;
+/// The result type for ID token verification.
+///
+/// Please handle error case by [`crate::error::VerificationError`].
+pub type VerificationResult = std::result::Result<
+    crate::verification::IdTokenPayloadClaims,
+    VerificationError,
+>;
+
+/// The error type for ID token verification.
+#[derive(Debug, thiserror::Error)]
+pub enum VerificationError {
+    /// Decode ID token header failed.
+    #[error("Decode ID token header failed: {0:?}")]
+    DecodeTokenHeaderFailed(jsonwebtoken::errors::Error),
+    /// Invalid type in ID token header.
+    /// Must be "JWT".
+    #[error("Invalid type in ID token header: {0:?}")]
+    InvalidTokenType(Option<String>),
+    /// Invalid algorithm in ID token header
+    /// Must be "RS256".
+    #[error("Invalid algorithm in ID token header: {0:?}")]
+    InvalidAlgorithm(jsonwebtoken::Algorithm),
+    /// No kid in the ID token header.
+    #[error("No kid in the ID token header")]
+    KidNotFound,
+    /// HTTP request error to get public key from [public keys list](https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com).
+    #[error("HTTP request error to get public key from https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com: {0:?}")]
+    HttpRequestError(reqwest::Error),
+    /// Invalid response status code to get public key from [public keys list](https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com).
+    #[error("Invalid response status code to get public key from https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com: {0:?}")]
+    InvalidResponseStatusCode(reqwest::StatusCode),
+    /// Deserialize response JSON to hash map failed to get public key from [public keys list](https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com).
+    #[error("Deserialize response JSON to hash map failed to get public key from https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com")]
+    DeserializeResponseJsonFailed(reqwest::Error),
+    /// Target public key specified by kid not found in key map.
+    #[error("Target public key specified by kid not found in key map: {0:?}")]
+    PublicKeyNotFound(String),
+    /// Get decoding key failed.
+    #[error("Get decoding key failed: {0:?}")]
+    GetDecodingKeyFailed(jsonwebtoken::errors::Error),
+    /// Decode or verify ID token failed.
+    #[error("Decode ID token failed: {0:?}")]
+    DecodeTokenFailed(jsonwebtoken::errors::Error),
+    /// The ID token is expired.
+    #[error("The ID token is expired at {0:?}")]
+    TokenExpired(u64),
+    /// The ID token is issued in the future.
+    #[error("The ID token is issued in the future at {0:?}")]
+    TokenIssuedInTheFuture(u64),
+}
+
+/// Configuration for the ID token verification.
+///
+/// ## NOTE
+/// This feature is only available when the feature "verify" is enabled.
+pub struct VerificationConfig {
+    /// A HTTP client.
+    client: reqwest::Client,
+    /// Your project ID of the Firebase project.
+    project_id: String,
+}
+
+impl VerificationConfig {
+    /// Creates a new configuration for the ID token verification.
+    ///
+    /// ## NOTE
+    /// This feature is only available when the feature "verify" is enabled.
+    ///
+    /// ## Arguments
+    /// - `project_id` - Your project ID of the Firebase project.
+    pub fn new(project_id: String) -> Self {
+        Self {
+            client: reqwest::Client::new(),
+            project_id,
+        }
+    }
+
+    /// Verifies an ID token of the Firebase Auth.
+    ///
+    /// See also [document](https://firebase.google.com/docs/auth/admin/verify-id-tokens#verify_id_tokens_using_a_third-party_jwt_library).
+    ///
+    /// ## NOTE
+    /// This feature is only available when the feature "verify" is enabled.
+    ///
+    /// ## Arguments
+    /// - `id_token` - An ID token of the Firebase Auth.
+    ///
+    /// ## Returns
+    /// Decoded ID token payload claims if the ID token is valid.
+    ///
+    /// ## Errors
+    /// [`VerificationError`] if the ID token is invalid.
+    ///
+    /// ## Example
+    /// ```
+    /// use fars::verification::VerificationConfig;
+    ///
+    /// let config = VerificationConfig::new(
+    ///     "firebase-project-id".to_string()
+    /// );
+    ///
+    /// let claims = config.verify_id_token(
+    ///     "id-token".to_string(),
+    /// ).await?;
+    /// ```
+    pub async fn verify_id_token(
+        &self,
+        id_token: &String,
+    ) -> VerificationResult {
+        verify_id_token(&self.client, id_token, &self.project_id).await
+    }
+}
 
 /// ID token payload claims for the Firebase Auth.
 ///
@@ -25,7 +138,7 @@ pub struct IdTokenPayloadClaims {
     /// Must be your Firebase project ID, the unique identifier for your Firebase project, which can be found in the URL of that project's console.
     pub aud: String,
     /// Issuer.
-    /// Must be "https://securetoken.google.com/<projectId>", where <projectId> is the same project ID used for aud above.
+    /// Must be `"https://securetoken.google.com/<projectId>"`, where <projectId> is the same project ID used for aud above.
     pub iss: String,
     /// Subject.
     /// Must be a non-empty string and must be the uid of the user or device.
@@ -51,13 +164,13 @@ pub struct IdTokenPayloadClaims {
 /// ## Errors
 /// [`crate::error::VerificationError`] if the ID token is invalid.
 ///
-/// ## Examples
+/// ## Example
 /// ```
 /// let client = reqwest::Client::new();
 /// let id_token = "id-token".to_string();
 /// let project_id = "project-id".to_string();
 ///
-/// match fars::verification::verify_id_token(&client, &id_token, &project_id).await? {
+/// match fars::verification::verify_id_token(&client, &id_token, &project_id).await {
 ///     Ok(claims) => {
 ///         // Verify succeeded.
 ///     }
