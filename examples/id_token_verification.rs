@@ -41,31 +41,24 @@ async fn main() -> anyhow::Result<()> {
 
     #[cfg(feature = "verify")]
     {
-        return verify(&session.id_token, &project_id).await;
+        // Create a verification config.
+        let config =
+            fars::verification::VerificationConfig::new(project_id.clone());
+
+        // Verify the ID token.
+        let claims = config
+            .verify_id_token(&session.id_token)
+            .await?;
+
+        println!(
+            "Token ID verification succeeded: {:?}",
+            claims
+        );
+
+        return Ok(());
     }
 
     Err(anyhow::anyhow!(
         "Feature \"verify\" is not enabled.",
     ))
-}
-
-#[cfg(feature = "verify")]
-async fn verify(
-    id_token: &String,
-    project_id: &String,
-) -> anyhow::Result<()> {
-    // Verify the ID token.
-    let claims = fars::verification::verify_id_token(
-        &reqwest::Client::new(),
-        id_token,
-        &project_id,
-    )
-    .await?;
-
-    println!(
-        "Token ID verification succeeded: {:?}",
-        claims
-    );
-
-    Ok(())
 }

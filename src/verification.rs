@@ -162,7 +162,7 @@ pub struct IdTokenPayloadClaims {
 /// ID token payload claims if the ID token is valid.
 ///
 /// ## Errors
-/// [`crate::error::VerificationError`] if the ID token is invalid.
+/// [`VerificationError`] if the ID token is invalid.
 ///
 /// ## Example
 /// ```
