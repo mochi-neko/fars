@@ -17,4 +17,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
-      run: cargo build --features raw,verify --verbose
+      run: cargo build --verbose
+    - name: Build raw
+      run: cargo build --features raw --verbose
+    - name: Build verify
+      run: cargo build --features verify --verbose
+    - name: Build raw,verify
+      run: cargo build --features verify --verbose
