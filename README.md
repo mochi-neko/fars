@@ -18,14 +18,13 @@ fars = "0.1"
 ```
 
 ## Features
+All features in this crate are as follows:
 
-Default enabled features are as follows:
-
-- [x] default
+- default
     - [Session-based interfaces](#api-usages)
-- [ ] raw
+- (Optional) raw
     - [Raw API interfaces](#optional-raw-api-interfaces)
-- [ ] verify
+- (Optional) verify
     - [ID token verification](#optional-id-token-verification)
 
 ## Supported APIs

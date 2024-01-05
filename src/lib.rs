@@ -2,9 +2,12 @@
 //! An unofficial Rust client for the Firebase Auth REST API.
 //!
 //! ## Features
-//! 1. APIs via session-based interfaces. See [`crate::config`] and [`crate::session`].
-//! 2. (Optional) APIs via raw interfaces in the future `raw`. See [`crate::api`].
-//! 3. (Optional) ID token verification in the feature `verify`. See [`crate::verification`].
+//! - default
+//!     -  APIs via session-based interfaces. See [`crate::config`] and [`crate::session`].
+//! - (Optional) raw
+//!     - APIs via raw interfaces. See [`crate::api`].
+//! - (Optional) verify
+//!     - ID token verification. See [`crate::verification`].
 
 // public modules
 pub mod config;
