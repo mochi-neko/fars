@@ -459,7 +459,8 @@ impl Config {
     /// - `continue_uri` - The URI to which the IDP redirects the user back.
     ///
     /// ## Returns
-    /// The list of all IDPs for the specified email.
+    /// - None - The email address is not registered or protected. See also the [issue](https://github.com/firebase/firebase-ios-sdk/issues/11810).
+    /// - Some - The list of all IDPs for the specified email if the email is registered and not protected.
     ///
     /// ## Errors
     /// - `Error::HttpRequestError` - Failed to send a request.
@@ -485,7 +486,7 @@ impl Config {
         &self,
         email: String,
         continue_uri: String,
-    ) -> Result<Vec<ProviderId>> {
+    ) -> Result<Option<Vec<ProviderId>>> {
         // Create a HTTP client.
         let client = reqwest::Client::new();
 
@@ -505,7 +506,7 @@ impl Config {
         .await?;
 
         match response_payload.all_providers {
-            | None => Ok(vec![]),
+            | None => Ok(None),
             | Some(providers) => {
                 // Parse provider IDs from string to `ProviderId`.
                 let provider_ids = providers
@@ -513,7 +514,7 @@ impl Config {
                     .map(|provider_id| ProviderId::parse(provider_id.clone()))
                     .collect();
 
-                Ok(provider_ids)
+                Ok(Some(provider_ids))
             },
         }
     }

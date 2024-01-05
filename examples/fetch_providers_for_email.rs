@@ -32,6 +32,10 @@ async fn main() -> anyhow::Result<()> {
         )
         .await?;
 
+    // NOTE:
+    // Because email enumeration protection is enabled by default,
+    // the response may be `None`.
+    // See also the issue: https://github.com/firebase/firebase-ios-sdk/issues/11810
     println!(
         "Succeeded to fetch ID providers for email: {:?}",
         providers
