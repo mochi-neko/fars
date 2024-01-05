@@ -348,17 +348,15 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
+## Other examples
+
+Please refer [/examples](./examples/) directory.
 
 ## Todo for pulishing
 
-- [ ] Check `Cargo.toml` settings.
 - [ ] Write some examples to `./examples/`.
 - [ ] Update changelog.
-- [ ] Check no panic.
-- [ ] Add CI to build.
-- [ ] Check documentation format.
 - [ ] Check examples in documents.
-- [ ] Add documents for modules.
 
 
 ## Changelog

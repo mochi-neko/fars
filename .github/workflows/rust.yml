@@ -2,25 +2,34 @@ name: Rust
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build
-      run: cargo build --verbose
-    - name: Build raw
-      run: cargo build --features raw --verbose
-    - name: Build verify
-      run: cargo build --features verify --verbose
-    - name: Build raw,verify
-      run: cargo build --features verify --verbose
+      - uses: actions/checkout@v3
+      - name: Build
+        run: cargo build --verbose
+      - name: Build raw
+        run: cargo build --features raw --verbose
+      - name: Build verify
+        run: cargo build --features verify --verbose
+      - name: Build raw,verify
+        run: cargo build --features verify --verbose
+      - name: Check document
+        run: cargo doc --no-deps --verbose
+      - name: Check document raw
+        run: cargo doc --no-deps --verbose --features raw
+      - name: Check document verify
+        run: cargo doc --no-deps --verbose --features verify
+      - name: Check document raw,verify
+        run: cargo doc --no-deps --verbose --features raw,verify
+      - name: Check format
+        run: cargo fmt --all -- --check
