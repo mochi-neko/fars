@@ -1,4 +1,59 @@
 //! Authentication session for a user of the Firebase Auth.
+//!
+//! ## Features
+//! Provides APIs that require an ID token.
+//!
+//! ## NOTE
+//! ID token (`fars::Session.id_token`) has expiration date.
+//!
+//! API calling through a session (`fars::Session`) automatically refresh an ID token by the [refresh token API](https://firebase.google.com/docs/reference/rest/auth#section-refresh-token) when the ID token has been expired.
+//!
+//! All APIs through session cosume session and return new session that has same ID token or refreshed one except for the [delete account API](https://firebase.google.com/docs/reference/rest/auth#section-delete-account).
+//!
+//! Therefore you have to **update** session every time you use APIs through a session by returned new session.
+//!
+//! ## Supported APIs
+//! Supported APIs are as follows:
+//!
+//! - [Change email](`crate::Session::change_email`)
+//! - [Change password](`crate::Session::change_password`)
+//! - [Update profile](`crate::Session::update_profile`)
+//! - [Get user data](`crate::Session::get_user_data`)
+//! - [Link with email and password](`crate::Session::link_with_email_password`)
+//! - [Link with OAuth credential](`crate::Session::link_with_oauth_credential`)
+//! - [Unlink provider](`crate::Session::unlink_provider`)
+//! - [Send email verification](`crate::Session::send_email_verification`)
+//! - [Delete account](`crate::Session::delete_account`)
+//! - [Refresh token](`crate::Session::refresh_token`)
+//!
+//! ## Examples
+//! An example to get user data through a session with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
+//!
+//! ```rust
+//! use fars::Config;
+//!
+//! #[tokio::main]
+//! async fn main() -> anyhow::Result<()> {
+//!     // Create config.
+//!     let config = Config::new(
+//!         "your-firebase-project-api-key".to_string(),
+//!     );
+//!
+//!     // Sign in with email and password.
+//!     let session = config.sign_in_with_email_password(
+//!         "user@example".to_string(),
+//!         "password".to_string(),
+//!     ).await?;
+//!
+//!     // Get user data.
+//!     let (new_session, user_data) = session.get_user_data().await?;
+//!     
+//!     // Do something with user data.
+//!     println!("User data: {:?}", user_data);
+//!
+//!     Ok(())
+//! }
+//! ```
 
 use std::collections::HashSet;
 

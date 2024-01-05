@@ -4,6 +4,38 @@
 //!
 //! ## NOTE
 //! This feature is only available when the feature "verify" is enabled.
+//!
+//! ## Examples
+//!
+//! An example of ID token verification with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows;
+//!
+//! ```rust
+//! use fars::verification::VerificationConfig;
+//!
+//! #[tokio::main]
+//! async fn main() -> anyhow::Result<()> {
+//!     // Create a verification config.
+//!     let config = VerificationConfig::new(
+//!         "firebase-project-id".to_string(),
+//!     );
+//!
+//!     // Verify the ID token.
+//!     match config.verify_id_token(
+//!          "id-token".to_string(),
+//!     ).await {
+//!         Ok(claims) => {
+//!             // Verification succeeded.
+//!             println!("Token ID verification succeeded: {:?}", claims);
+//!         },
+//!         Err(error) => {
+//!             // Verification failed.
+//!             eprintln!("Token ID verification failed: {:?}", error);
+//!         }
+//!     }
+//!
+//!     Ok(())
+//! }
+//! ```
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;

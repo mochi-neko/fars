@@ -27,6 +27,7 @@ async fn main() -> anyhow::Result<()> {
         let api_key = std::env::var("FIREBASE_API_KEY")?;
 
         // Create a reqwest client.
+        // NOTE: fars crate re-exports reqwest, so you can use it directly without importing reqwest.
         let client = fars::reqwest::Client::new();
 
         // Create a request payload

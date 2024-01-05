@@ -1,4 +1,97 @@
 //! Configuration for the Firebase Auth.
+//!
+//! ## Features
+//! 1. Provides a session ([`crate::Session`]) via sigining in (or equivalent method).
+//! 2. Provides APIs that do not require an ID token.
+//!
+//! About APIs that require an ID token, see [`crate::Session`].
+//!
+//! ## 1. Siging in methods
+//! Supported sigining in methods are as follows:
+//!
+//! - [Sign up with email and password](`crate::Config::sign_up_with_email_password`)
+//! - [Sign in with email and password](`crate::Config::sign_in_with_email_password`)
+//! - [Sign in OAuth](`crate::Config::sign_in_oauth_credential`)
+//! - [Sign in anounymously](`crate::Config::sign_in_anonymously`)
+//! - [Exchange a refresh token to an ID token](`crate::Config::exchange_refresh_token`)
+//!
+//! ## 2. Supported APIs that do not require an ID token
+//! Supported APIs that do not require an ID token are as follows:
+//!
+//! - [Fetch providers for email](`crate::Config::fetch_providers_for_email`)
+//! - [Send password reset email](`crate::Config::send_reset_password_email`)
+//!
+//! ## Supported OAuth ID providers
+//! Supported OAuth ID provides are as follows:
+//!
+//! - [ ] (Not implemented) Apple (`apple.com`)
+//! - [ ] (Not implemented) Apple Game Center (`gc.apple.com`)
+//! - [ ] (Not tested) Facebook (`facebook.com`)
+//! - [ ] (Not implemented) GitHub (`github.com`)
+//! - [x] Google (`google.com`)
+//! - [ ] (Not implemented) Google Play Games (`playgames.google.com`)
+//! - [ ] (Not implemented) LinkedIn (`linkedin.com`)
+//! - [ ] (Not implemented) Microsoft (`microsoft.com`)
+//! - [ ] (Not tested) Twitter (`twitter.com`)
+//! - [ ] (Not implemented) Yahoo (`yahoo.com`)
+//!
+//! Unsupported providers have either not been tested or the format of [`crate::data::IdpPostBody`] is not documented at the [official API reference](https://firebase.google.com/docs/reference/rest/auth).
+//!
+//! ## Examples
+//!
+//! ### Sign in with email / password
+//! An example of sign in with email and password with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
+//!
+//! ```rust
+//! use fars::Config;
+//!
+//! #[tokio::main]
+//! async fn main() -> anyhow::Result<()> {
+//!     // Create a config.
+//!     let config = Config::new(
+//!         "your-firebase-project-api-key".to_string(),
+//!     );
+//!
+//!     // Get a session by signing in with email and password.
+//!     let session = config.sign_in_with_email_password(
+//!         "user@example".to_string(),
+//!         "password".to_string(),
+//!     ).await?;
+//!
+//!     // Do something with the session.
+//!     println!(
+//!         "Succeeded to sign in with email and password: {:?}",
+//!         session
+//!     );
+//!
+//!     Ok(())
+//! }
+//! ```
+//!
+//! ### Send password reset email
+//! An example of sending password reset email with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
+//!
+//! ```rust
+//! use fars::Config;
+//!
+//! #[tokio::main]
+//! async fn main() -> anyhow::Result<()> {
+//!     // Create a config.
+//!     let config = Config::new(
+//!         "your-firebase-project-api-key".to_string(),
+//!     );
+//!
+//!     // Send reset password email to specified email.
+//!     config.send_reset_password_email(
+//!         "user@example".to_string(),
+//!     ).await?;
+//!
+//!     // Do something with the resutl.
+//!     println!("Succeeded to send reset password email");
+//!
+//!     Ok(())
+//! }
+//! ```
 
 use crate::api;
 use crate::data::IdpPostBody;

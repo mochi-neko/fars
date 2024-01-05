@@ -34,7 +34,7 @@
 //! ## Examples
 //!
 //! ### Sign up with email / password
-//! An example of sign up with email and password is as follows;
+//! An example of sign up with email and password with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 //!
 //! ```rust
 //! use fars::api;
@@ -62,7 +62,7 @@
 //! ```
 //!
 //! ### Get user data
-//! An example of getting user data is as follows;
+//! An example of getting user data with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows;
 //!
 //! ```rust
 //! use fars::api;

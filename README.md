@@ -1,6 +1,6 @@
 # fars
 
-An unofficial Rust client for the [Firebase Auth REST API](https://firebase.google.com/docs/reference/rest/auth) with [reqwest](https://github.com/seanmonstar/reqwest) backend.
+An unofficial Rust client for the [Firebase Auth REST API](https://firebase.google.com/docs/reference/rest/auth).
 
 ## Installation
 
@@ -58,7 +58,7 @@ Suppoted APIs of the [Firebase Auth REST API](https://firebase.google.com/docs/r
 
 ## Supported OAuth ID providers
 
-Supported OAuth ID provides 
+Supported OAuth ID provides are as follows:
 
 - [ ] (Not implemented) Apple (`apple.com`)
 - [ ] (Not implemented) Apple Game Center (`gc.apple.com`)
@@ -85,11 +85,11 @@ Provides semantic interfaces based on a session (`fars::Session`) as following s
 > 
 > Therefore you have to **update** session every time you use APIs through a session by returned new session.
 
-### A usage for a logged in user
+### A usage for a siging in user
 
 1. Create a config (`fars::Config`) with your Firebase project API key.
-2. Sign in or sign up by supported options (Email & password / OAuth / Anonymous / Stored refresh token) through the config then get the session (`fars::Session`) for the logged in user.
-3. Use Auth APIs for the logged in user through the session, or use ID token (`fars::Session.id_token`) for other Firebase APIs.
+2. Sign in or sign up by supported options (Email & password / OAuth / Anonymous / Stored refresh token) through the config then get the session (`fars::Session`) for the siging in user.
+3. Use Auth APIs for the siging in user through the session, or use ID token (`fars::Session.id_token`) for other Firebase APIs.
 
 A sample code to [sign up with email / password](https://firebase.google.com/docs/reference/rest/auth#section-create-email-password) and to [get user data](https://firebase.google.com/docs/reference/rest/auth#section-get-account-info) with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 
@@ -118,10 +118,10 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
-### A usage for not logged in user
+### A usage for not siging in user
 
 1. Create a config (`fars::Config`) with your Firebase project API key.
-2. Use Auth APIs for a not logged in user through the config.
+2. Use Auth APIs for a not siging in user through the config.
 
 A sample code to [send password reset email](https://firebase.google.com/docs/reference/rest/auth#section-send-password-reset-email) with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 
