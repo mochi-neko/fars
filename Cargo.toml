@@ -16,6 +16,7 @@ path = "src/lib.rs"
 
 [features]
 default = []
+raw = []
 verify = ["jsonwebtoken"]
 
 [dependencies]

@@ -1,6 +1,94 @@
 //! The Firebase Auth REST API impelemntations.
 //!
 //! See also [API reference](https://firebase.google.com/docs/reference/rest/auth).
+//!
+//! ## NOTE
+//! This feature is only available when the feature "raw" is enabled.
+//!
+//! ## Supported APIs
+//!
+//! - [x] [Exchange custom token for an ID and refresh token](https://firebase.google.com/docs/reference/rest/auth#section-verify-custom-token)
+//! - [x] [Exchange a refresh token for an ID token](https://firebase.google.com/docs/reference/rest/auth#section-refresh-token)
+//! - [x] [Sign up with email / password](https://firebase.google.com/docs/reference/rest/auth#section-create-email-password)
+//! - [x] [Sign in with email / password](https://firebase.google.com/docs/reference/rest/auth#section-sign-in-email-password)
+//! - [x] [Sign in anonymously](https://firebase.google.com/docs/reference/rest/auth#section-sign-in-anonymously)
+//! - [x] [Sign in with OAuth credential](https://firebase.google.com/docs/reference/rest/auth#section-sign-in-with-oauth-credential)
+//! - [x] [Fetch providers for email](https://firebase.google.com/docs/reference/rest/auth#section-fetch-providers-for-email)
+//! - [x] [Send password reset email](https://firebase.google.com/docs/reference/rest/auth#section-send-password-reset-email)
+//! - [ ] (Not tested) [Verify password reset code](https://firebase.google.com/docs/reference/rest/auth#section-verify-password-reset-code)
+//! - [ ] (Not tested) [Confirm password reset](https://firebase.google.com/docs/reference/rest/auth#section-confirm-reset-password)
+//! - [x] [Change email](https://firebase.google.com/docs/reference/rest/auth#section-change-email)
+//! - [x] [Change password](https://firebase.google.com/docs/reference/rest/auth#section-change-password)
+//! - [x] [Update profile](https://firebase.google.com/docs/reference/rest/auth#section-update-profile)
+//! - [x] [Get user data](https://firebase.google.com/docs/reference/rest/auth#section-get-account-info)
+//! - [x] [Link with email/password](https://firebase.google.com/docs/reference/rest/auth#section-link-with-email-password)
+//! - [x] [Link with OAuth credential](https://firebase.google.com/docs/reference/rest/auth#section-link-with-oauth-credential)
+//! - [x] [Unlink provider](https://firebase.google.com/docs/reference/rest/auth#section-unlink-provider)
+//! - [x] [Send email verification](https://firebase.google.com/docs/reference/rest/auth#section-send-email-verification)
+//! - [ ] (Not tested) [Confirm email verification](https://firebase.google.com/docs/reference/rest/auth#section-confirm-email-verification)
+//! - [x] [Delete account](https://firebase.google.com/docs/reference/rest/auth#section-delete-account)
+//!
+//! ## NOTE
+//! Unsupported APIs have already been implemented but not tested.
+//!
+//! ## Examples
+//!
+//! ### Sign up with email / password
+//! An example of sign up with email and password is as follows;
+//!
+//! ```rust
+//! use fars::api;
+//!
+//! #[tokio::main]
+//! async fn main() -> anyhow::Result<()> {
+//!     // Create a request payload specifying the email and password.
+//!     let request_payload = api::SignUpWithEmailPasswordRequestBodyPayload::new(
+//!         "user@example.com".to_string(),
+//!         "password".to_string(),
+//!     );
+//!   
+//!     // Send a request and receive a response payload.
+//!     let response_payload = api::sign_up_with_email_password(
+//!         reqwest::Client::new(),
+//!         "your-firebase-project-api-key".to_string(),
+//!         request_payload,
+//!     ).await?;
+//!
+//!     // Do something with the response payload.
+//!     println!("Response payload: {:?}", response_payload);
+//!
+//!     Ok(())
+//! }
+//! ```
+//!
+//! ### Get user data
+//! An example of getting user data is as follows;
+//!
+//! ```rust
+//! use fars::api;
+//!
+//! #[tokio::main]
+//! async fn main() -> anyhow::Result<()> {
+//!     // Create a request payload specifying the ID token.
+//!     let request_payload = api::GetUserDataRequestBodyPayload::new(
+//!         "id-token".to_string(),
+//!     );
+//!
+//!     // Send a request and receive a response payload.
+//!     let response_payload = api::get_user_data(
+//!         reqwest::Client::new(),
+//!         "your-firebase-project-api-key".to_string(),
+//!         request_payload,
+//!     ).await?;
+//!
+//!     // Do something with the response payload.
+//!     println!("Response payload: {:?}", response_payload);
+//!
+//!     Ok(())
+//! }
+//! ```
+
+#![allow(unused_imports)]
 
 // Private modules
 mod change_email;

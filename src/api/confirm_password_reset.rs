@@ -4,6 +4,8 @@
 //!
 //! See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-confirm-password-reset).
 
+#![allow(dead_code)]
+
 use serde::{Deserialize, Serialize};
 
 use crate::client;

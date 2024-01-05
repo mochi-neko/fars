@@ -19,11 +19,14 @@ fars = "0.1"
 
 ## Features
 
+Default enabled features are as follows:
+
 - [x] default
-    - [Raw API interfaces](#1-raw-api-interfaces)
-    - [Session-based interfaces](#2-session-based-interfaces)
+    - [Session-based interfaces](#api-usages)
+- [ ] raw
+    - [Raw API interfaces](#optional-raw-api-interfaces)
 - [ ] verify
-    - [ID token verification](#id-token-verification)
+    - [ID token verification](#optional-id-token-verification)
 
 ## Supported APIs
 
@@ -73,51 +76,6 @@ Supported OAuth ID provides
 
 ## API Usages
 
-You can select usage from two options:
-
-1. Raw API interfaces
-2. Session-based interfaces
-
-### 1. Raw API interfaces
-
-Provides raw [supported APIs](#supported-apis) by `fars::api` module.
-
-Please refer each document, API reference and examples.
-
-A sample code to [sign in with email / password](https://firebase.google.com/docs/reference/rest/auth#section-sign-in-email-password) with [reqwest](https://github.com/seanmonstar/reqwest), [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
-
-```rust
-use fars::api;
-
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
-    // 1. Specify your API key.
-    let api_key = "your-firebase-project-api-key".to_string();
-
-    // 2. Create a reqwest client.
-    let client = reqwest::Client::new();
-
-    // 3. Create a request payload for the sign in API.
-    let request_payload = api::SignInWithEmailPasswordRequestBodyPayload::new(
-        "user@example.com".to_string(),
-        "password".to_string(),
-    );
-
-    // 4. Send a request and receive a response payload of the sign in API.
-    let response_payload = api::sign_in_with_email_password(
-        client,
-        api_key,
-        request_payload,
-    ).await?;
-
-    // 5. Do something with the response payload.
-
-    Ok(())
-}
-```
-
-### 2. Session-based interfaces
-
 Provides semantic interfaces based on a session (`fars::Session`) as following steps.
 
 > [!IMPORTANT]
@@ -127,7 +85,7 @@ Provides semantic interfaces based on a session (`fars::Session`) as following s
 > 
 > Therefore you have to **update** session every time you use APIs through a session by returned new session.
 
-#### 2-1. A usage for a logged in user
+### A usage for a logged in user
 
 1. Create a config (`fars::Config`) with your Firebase project API key.
 2. Sign in or sign up by supported options (Email & password / OAuth / Anonymous / Stored refresh token) through the config then get the session (`fars::Session`) for the logged in user.
@@ -160,7 +118,7 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
-#### 2-2. A usage for not logged in user
+### A usage for not logged in user
 
 1. Create a config (`fars::Config`) with your Firebase project API key.
 2. Use Auth APIs for a not logged in user through the config.
@@ -292,7 +250,61 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
-## ID token verification
+## (Optional) Raw API interfaces
+
+Provides raw [supported APIs](#supported-apis) by `fars::api` module.
+
+> [!NOTE]
+> Raw API interfaces is an optional feature.
+> 
+> Please activate this feature by CLI:
+> 
+> ```shell
+> $ cargo add fars --features raw
+> ```
+> 
+> or adding features to your `Cargo.toml`:
+> 
+> ```toml
+> [dependencies]
+> fars = { version = "0.1", features = ["raw"] }
+> ```
+
+Please refer each document for details, API reference and examples.
+
+A sample code to [sign in with email / password](https://firebase.google.com/docs/reference/rest/auth#section-sign-in-email-password) with [reqwest](https://github.com/seanmonstar/reqwest), [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
+
+```rust
+use fars::api;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    // 1. Specify your API key.
+    let api_key = "your-firebase-project-api-key".to_string();
+
+    // 2. Create a reqwest client.
+    let client = reqwest::Client::new();
+
+    // 3. Create a request payload for the sign in API.
+    let request_payload = api::SignInWithEmailPasswordRequestBodyPayload::new(
+        "user@example.com".to_string(),
+        "password".to_string(),
+    );
+
+    // 4. Send a request and receive a response payload of the sign in API.
+    let response_payload = api::sign_in_with_email_password(
+        client,
+        api_key,
+        request_payload,
+    ).await?;
+
+    // 5. Do something with the response payload.
+
+    Ok(())
+}
+```
+
+## (Optional) ID token verification
 
 Provides ID token verification of the Firebase Auth.
 
@@ -335,6 +347,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 ```
+
 
 ## Todo for pulishing
 

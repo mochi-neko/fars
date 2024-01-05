@@ -3,6 +3,9 @@
 //! You can verify a password reset code by issuing an HTTP POST request to the Auth resetPassword endpoint.
 //!
 //! See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-verify-password-reset-code)
+
+#![allow(dead_code)]
+
 use serde::{Deserialize, Serialize};
 
 use crate::client;

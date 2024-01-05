@@ -138,7 +138,7 @@ pub struct IdTokenPayloadClaims {
     /// Must be your Firebase project ID, the unique identifier for your Firebase project, which can be found in the URL of that project's console.
     pub aud: String,
     /// Issuer.
-    /// Must be `"https://securetoken.google.com/<projectId>"`, where <projectId> is the same project ID used for aud above.
+    /// Must be `"https://securetoken.google.com/<projectId>"`, where `<projectId>` is the same project ID used for aud above.
     pub iss: String,
     /// Subject.
     /// Must be a non-empty string and must be the uid of the user or device.

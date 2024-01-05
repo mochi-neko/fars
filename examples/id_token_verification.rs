@@ -5,6 +5,7 @@
 //! ```
 
 use clap::Parser;
+#[cfg(feature = "verify")]
 use fars::Config;
 
 #[derive(Parser)]
@@ -17,30 +18,28 @@ struct Arguments {
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    // Parse the command line arguments.
-    let credentials = Arguments::parse();
-
-    // Read API key from the environment variable.
-    let api_key = std::env::var("FIREBASE_API_KEY")?;
-
-    // Read project ID from the environment variable.
-    #[allow(unused_variables)]
-    let project_id = std::env::var("FIREBASE_PROJECT_ID")?;
-
-    // Create a config.
-    let config = Config::new(api_key);
-
-    // Get a session by signing in with email and password.
-    #[allow(unused_variables)]
-    let session = config
-        .sign_in_with_email_password(
-            credentials.email.clone(),
-            credentials.password.clone(),
-        )
-        .await?;
-
     #[cfg(feature = "verify")]
     {
+        // Parse the command line arguments.
+        let credentials = Arguments::parse();
+
+        // Read API key from the environment variable.
+        let api_key = std::env::var("FIREBASE_API_KEY")?;
+
+        // Read project ID from the environment variable.
+        let project_id = std::env::var("FIREBASE_PROJECT_ID")?;
+
+        // Create a config.
+        let config = Config::new(api_key);
+
+        // Get a session by signing in with email and password.
+        let session = config
+            .sign_in_with_email_password(
+                credentials.email.clone(),
+                credentials.password.clone(),
+            )
+            .await?;
+
         // Create a verification config.
         let config =
             fars::verification::VerificationConfig::new(project_id.clone());

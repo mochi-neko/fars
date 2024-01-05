@@ -1,17 +1,17 @@
 //! # fars
 //! An unofficial Rust client for the Firebase Auth REST API.
 //!
-//! ## Usages
-//! 1. Use APIs via raw interfaces by `fars::api::*`.
-//! 2. Use APIs via session-based interfaces by `fars::Config` and `fars::Session`.
-//! 3. (Optional) Verify an ID token by `fars::verification::verify_id_token` in feature "verify".
+//! ## Features
+//! 1. APIs via session-based interfaces. See [`crate::Config`] and [`crate::Session`].
+//! 2. (Optional) APIs via raw interfaces in the future "raw". See [`crate::api`].
+//! 3. (Optional) ID token verification in the feature "verify". See [`crate::verification`].
 
 // public modules
-pub mod api;
 pub mod data;
 pub mod error;
 
 // Internal modules
+pub(crate) mod api;
 pub(crate) mod client;
 
 // Private modules
@@ -25,8 +25,11 @@ pub use crate::error::Error;
 pub use crate::result::Result;
 pub use crate::session::Session;
 
-// API dependent re-exports
-pub use reqwest;
+// Feature "raw"
+#[cfg(feature = "raw")]
+pub mod api;
+#[cfg(feature = "raw")]
+pub use reqwest; // Re-export reqwest for the feature "raw" because raw APIs depend on reqwest.
 
 // Feature "verify"
 #[cfg(feature = "verify")]
