@@ -340,7 +340,7 @@ impl Session {
     /// ## Arguments
     /// - `display_name` - The display name for the account.
     /// - `photo_url` - The photo url of the account.
-    /// - `delete_attribute` - The attributes that should be deleted from the account.
+    /// - `delete_attribute` - (Optional) The attributes that should be deleted from the account.
     ///
     /// ## Returns
     /// New session to replace the consumed session.
@@ -368,14 +368,14 @@ impl Session {
     /// let new_session = session.update_profile(
     ///     "new-display-name".to_string(),
     ///     "new-photo-url".to_string(),
-    ///     Vec::new(),
+    ///     None,
     /// ).await?;
     /// ```
     pub async fn update_profile(
         self,
         display_name: String,
         photo_url: String,
-        delete_attribute: Vec<DeleteAttribute>,
+        delete_attribute: Option<HashSet<DeleteAttribute>>,
     ) -> Result<Session> {
         call_refreshing_tokens_without_value_return_session!(
             self,
@@ -785,8 +785,15 @@ impl Session {
         &self,
         display_name: String,
         photo_url: String,
-        delete_attribute: Vec<DeleteAttribute>,
+        delete_attribute: Option<HashSet<DeleteAttribute>>,
     ) -> Result<()> {
+        // Unwrap delete attribute.
+        let delete_attribute = delete_attribute
+            .unwrap_or_default()
+            .iter()
+            .copied()
+            .collect();
+
         // Create request payload.
         let request_payload = api::UpdateProfileRequestBodyPayload::new(
             self.id_token.clone(),
