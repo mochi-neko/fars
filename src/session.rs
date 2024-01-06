@@ -3,10 +3,14 @@
 //! ## Features
 //! Provides APIs that require an ID token.
 //!
-//! ## NOTE
-//! ID token (`fars::Session.id_token`) has expiration date.
+//! A session ([`crate::Session`]) is provided by a siging in method of config ([`crate::Config`]).
 //!
-//! API calling through a session (`fars::Session`) automatically refresh an ID token by the [refresh token API](https://firebase.google.com/docs/reference/rest/auth#section-refresh-token) when the ID token has been expired.
+//! See also [`crate::config`].  
+//!
+//! ## NOTE
+//! ID token in a session ([`crate::Session`]) has expiration date.
+//!
+//! API calling through a session ([`crate::Session`]) automatically refresh an ID token by the [refresh token API](https://firebase.google.com/docs/reference/rest/auth#section-refresh-token) when the ID token has been expired.
 //!
 //! All APIs through session cosume session and return new session that has same ID token or refreshed one except for the [delete account API](https://firebase.google.com/docs/reference/rest/auth#section-delete-account).
 //!

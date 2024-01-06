@@ -2,8 +2,8 @@
 //!
 //! See also [API reference](https://firebase.google.com/docs/reference/rest/auth).
 //!
-//! ## NOTE
-//! This feature is only available when the feature "raw" is enabled.
+//! ## NOTICE
+//! This feature is only available when the feature `raw` is enabled.
 //!
 //! ## Supported APIs
 //!

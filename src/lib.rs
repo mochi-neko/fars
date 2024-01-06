@@ -4,9 +4,9 @@
 //! ## Features
 //! - default
 //!     -  APIs via session-based interfaces. See [`crate::config`] and [`crate::session`].
-//! - (Optional) raw
+//! - (Optional) `raw`
 //!     - APIs via raw interfaces. See [`crate::api`].
-//! - (Optional) verify
+//! - (Optional) `verify`
 //!     - ID token verification. See [`crate::verification`].
 
 // public modules

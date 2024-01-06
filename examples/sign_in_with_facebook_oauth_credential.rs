@@ -1,9 +1,9 @@
-//! An example to sign in Twitter OAuth credential by session-based interface.
+//! An example to sign in with Facebook OAuth credential by session-based interface.
 //!
 //! NOTE: This example has not been tested.
 //!
 //! ```shell
-//! $ cargo run --example sign_in_twitter_oauth_credential -- --request-uri <request_uri> --access-token <access_token> --oauth-token-secret <oauth_token_secret>
+//! $ cargo run --example sign_in_with_facebook_oauth_credential -- --request-uri <request_uri> --access-token <access_token>
 //! ```
 
 use clap::Parser;
@@ -16,8 +16,6 @@ struct Arguments {
     request_uri: String,
     #[arg(short, long)]
     access_token: String,
-    #[arg(short, long)]
-    oauth_token_secret: String,
 }
 
 #[tokio::main]
@@ -31,21 +29,18 @@ async fn main() -> anyhow::Result<()> {
     // Create a config.
     let config = Config::new(api_key);
 
-    // Get a session by signing in Twitter OAuth credential.
+    // Get a session by signing in Facebook OAuth credential.
     let session = config
-        .sign_in_oauth_credential(
+        .sign_in_with_oauth_credential(
             arguments.request_uri.clone(),
-            IdpPostBody::Twitter {
+            IdpPostBody::Facebook {
                 access_token: arguments.access_token.clone(),
-                oauth_token_secret: arguments
-                    .oauth_token_secret
-                    .clone(),
             },
         )
         .await?;
 
     println!(
-        "Succeeded to sign in Twitter OAuth credential: {:?}",
+        "Succeeded to sign in with Facebook OAuth credential: {:?}",
         session
     );
 

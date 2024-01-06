@@ -1,17 +1,17 @@
 //! Configuration for the Firebase Auth.
 //!
 //! ## Features
-//! 1. Provides a session ([`crate::Session`]) via sigining in (or equivalent method).
-//! 2. Provides APIs that do not require an ID token.
+//! 1. Provides a session ([`crate::Session`]) via sigining in (or equivalent) methods.
+//! 2. Provides APIs that do not require any ID token.
 //!
-//! About APIs that require an ID token, see [`crate::Session`].
+//! About APIs that require an ID token, see [`crate::session`].
 //!
 //! ## 1. Siging in methods
 //! Supported sigining in methods are as follows:
 //!
 //! - [Sign up with email and password](`crate::Config::sign_up_with_email_password`)
 //! - [Sign in with email and password](`crate::Config::sign_in_with_email_password`)
-//! - [Sign in OAuth](`crate::Config::sign_in_oauth_credential`)
+//! - [Sign in with OAuth credential](`crate::Config::sign_in_with_oauth_credential`)
 //! - [Sign in anounymously](`crate::Config::sign_in_anonymously`)
 //! - [Exchange a refresh token to an ID token](`crate::Config::exchange_refresh_token`)
 //!
@@ -61,6 +61,41 @@
 //!     // Do something with the session.
 //!     println!(
 //!         "Succeeded to sign in with email and password: {:?}",
+//!         session
+//!     );
+//!
+//!     Ok(())
+//! }
+//! ```
+//!
+//! ### Sign in with Google OAuth credential
+//! An example of sign in with Google OAuth credential with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
+//!
+//! ```rust
+//! use fars::Config;
+//! use fars::data::IdpPostBody;
+//!
+//! #[tokio::main]
+//! async fn main() -> anyhow::Result<()> {
+//!     // Create a config.
+//!     let config = Config::new(
+//!         "your-firebase-project-api-key".to_string(),
+//!     );
+//!
+//!     // Get a credential for Google OAuth by any method.
+//!     let google_open_id_token = "user-google-oauth-open-id-token".to_string();
+//!
+//!     // Get a session by signing in with Google OAuth credential.
+//!     let session = config.sign_in_with_oauth_credential(
+//!         "https://your-app.com/redirect/path/auth/handler".to_string(),
+//!         IdpPostBody::Google {
+//!             id_token: google_open_id_token,
+//!         },
+//!     ).await?;
+//!
+//!     // Do something with the session.
+//!     println!(
+//!         "Succeeded to sign in with Google OAuth credential: {:?}",
 //!         session
 //!     );
 //!
@@ -344,14 +379,14 @@ impl Config {
     ///     "your-firebase-project-api-key".to_string(),
     /// );
     ///
-    /// let session = config.sign_in_oauth_credential(
+    /// let session = config.sign_in_with_oauth_credential(
     ///     "https://your-app.com/redirect/path/auth/handler".to_string(),
     ///     IdpPostBody::Google {
     ///         id_token: "user-google-oauth-open-id-token".to_string(),
     ///     },
     /// ).await?;
     /// ```
-    pub async fn sign_in_oauth_credential(
+    pub async fn sign_in_with_oauth_credential(
         &self,
         request_uri: String,
         post_body: IdpPostBody,

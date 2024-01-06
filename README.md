@@ -147,19 +147,21 @@ async fn main() -> anyhow::Result<()> {
 ## Sign in with OAuth credentials
 
 > [!IMPORTANT]
-> This crate does not provide methods to get OAuth credentials for each ID provider.
+> This crate does not provide methods to get OAuth credential for each ID provider.
 >
-> When you use signing in with OAuth credentials, please implement a method to get target OAuth credentials.
+> When you use signing in with OAuth credential, please implement a method to get target OAuth credential.
 
 See also [supported OAuth providers](#supported-oauth-id-providers).
 
 ### Google OAuth
 
-To sign in with Google OAuth credentials, 
+To sign in with Google OAuth credential, 
 
 1. Create a config (`fars::Config`) with your Firebase project API key.
 2. Get OpenID token from Google OAuth API. See [reference](https://developers.google.com/identity/protocols/oauth2/web-server#obtainingaccesstokens).
 3. Sign in with specifying `request_uri` and `IdpPostBody::Google`.
+
+A sample code to [sign in with Google OAuth credential](https://firebase.google.com/docs/reference/rest/auth#section-sign-in-with-oauth-credential) with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 
 ```rust
 use fars::data::IdpPostBody;
@@ -175,9 +177,9 @@ async fn main() -> anyhow::Result<()> {
     // 2. Get an OpenID token from Google OAuth by any method.
     let google_id_token = "google-open-id-token".to_string();
 
-    // 3. Get a session by signing in Google OAuth credential.
+    // 3. Get a session by signing in with Google OAuth credential.
     let session = config
-        .sign_in_oauth_credential(
+        .sign_in_with_oauth_credential(
             arguments.request_uri.clone(),
             IdpPostBody::Google {
                 id_token: google_id_token,

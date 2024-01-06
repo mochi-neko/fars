@@ -30,16 +30,16 @@ cargo run --example delete_account -- --email $DUMMY_EMAIL --password $DUMMY_PAS
 cargo run --example sign_in_with_email_password -- --email $EMAIL --password $PASSWORD
 cargo run --example sign_in_anonymously
 if [ ${REFRESH_TOKEN} -ne "" ]; then
-    cargo run --example sign_in_by_refresh_token -- --refresh-token $REFRESH_TOKEN
+    cargo run --example sign_in_with_refresh_token -- --refresh-token $REFRESH_TOKEN
 fi
 if [ ${GOOGLE_ID_TOKEN} -ne "" ]; then
-    cargo run --example sign_in_google_oauth_credential -- --request-uri $REQUEST_URI --id-token $GOOGLE_ID_TOKEN
+    cargo run --example sign_in_with_google_oauth_credential -- --request-uri $REQUEST_URI --id-token $GOOGLE_ID_TOKEN
 fi
 if [ ${FACEBOOK_ACCESS_TOKEN} -ne "" ]; then
     cargo run --example sign_in_with_facebook_oauth_credential -- --request-uri $REQUEST_URI --access-token $FACEBOOK_ACCESS_TOKEN
 fi
 if [ ${TWITTER_ACCESS_TOKEN} -ne "" ]; then
-    cargo run --example sign_in_twitter_oauth_credential -- --request-uri $REQUEST_URI --access-token $TWITTER_ACCESS_TOKEN --oauth-token-secret $TWITTER_OAUTH_TOKEN_SECRET
+    cargo run --example sign_in_with_twitter_oauth_credential -- --request-uri $REQUEST_URI --access-token $TWITTER_ACCESS_TOKEN --oauth-token-secret $TWITTER_OAUTH_TOKEN_SECRET
 fi
 
 # Run examples for a not signing in user.

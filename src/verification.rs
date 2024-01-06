@@ -2,12 +2,12 @@
 //!
 //! See also [document](https://firebase.google.com/docs/auth/admin/verify-id-tokens#verify_id_tokens_using_a_third-party_jwt_library).
 //!
-//! ## NOTE
-//! This feature is only available when the feature "verify" is enabled.
+//! ## NOTICE
+//! This feature is only available when the feature `verify` is enabled.
 //!
 //! ## Examples
 //!
-//! An example of ID token verification with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows;
+//! An example of ID token verification with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 //!
 //! ```rust
 //! use fars::verification::VerificationConfig;

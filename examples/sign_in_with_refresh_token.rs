@@ -1,7 +1,7 @@
-//! An example to sign in by refresh token by session-based interface.
+//! An example to sign in with refresh token by session-based interface.
 //!
 //! ```shell
-//! $ cargo run --example sign_in_by_refresh_token -- --refresh-token <refresh_token>
+//! $ cargo run --example sign_in_with_refresh_token -- --refresh-token <refresh_token>
 //! ```
 
 use clap::Parser;

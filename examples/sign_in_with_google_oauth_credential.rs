@@ -1,7 +1,7 @@
-//! An example to sign in Google OAuth credential by session-based interface.
+//! An example to sign in with Google OAuth credential by session-based interface.
 //!
 //! ```shell
-//! $ cargo run --example sign_in_google_oauth_credential -- --request-uri <request_uri> --id-token <id_token>
+//! $ cargo run --example sign_in_with_google_oauth_credential -- --request-uri <request_uri> --id-token <id_token>
 //! ```
 
 use clap::Parser;
@@ -29,7 +29,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Get a session by signing in Google OAuth credential.
     let session = config
-        .sign_in_oauth_credential(
+        .sign_in_with_oauth_credential(
             arguments.request_uri.clone(),
             IdpPostBody::Google {
                 id_token: arguments.id_token.clone(),
