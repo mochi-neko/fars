@@ -1,7 +1,7 @@
 //! An example to sign in Google OAuth credential by session-based interface.
 //!
 //! ```shell
-//! $ cargo run --example sign_in_google_oauth_credential -- --request_uri <request_uri> --id_token <id_token>
+//! $ cargo run --example sign_in_google_oauth_credential -- --request-uri <request_uri> --id-token <id_token>
 //! ```
 
 use clap::Parser;

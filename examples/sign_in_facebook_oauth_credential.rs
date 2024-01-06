@@ -3,7 +3,7 @@
 //! NOTE: This example has not been tested.
 //!
 //! ```shell
-//! $ cargo run --example sign_in_facebook_oauth_credential -- --request_uri <request_uri> --access_token <access_token>
+//! $ cargo run --example sign_in_facebook_oauth_credential -- --request-uri <request_uri> --access-token <access_token>
 //! ```
 
 use clap::Parser;

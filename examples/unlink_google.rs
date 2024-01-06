@@ -1,7 +1,7 @@
 //! An example to unlink Google OAuth credential by session-based interface.
 //!
 //! ```shell
-//! $ cargo run --example unlink_google -- --request_uri <request_uri> --id_token <id_token>
+//! $ cargo run --example unlink_google -- --request-uri <request_uri> --id-token <id_token>
 //! ```
 
 use clap::Parser;

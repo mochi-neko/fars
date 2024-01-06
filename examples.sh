@@ -30,16 +30,16 @@ cargo run --example delete_account -- --email $DUMMY_EMAIL --password $DUMMY_PAS
 cargo run --example sign_in_with_email_password -- --email $EMAIL --password $PASSWORD
 cargo run --example sign_in_anonymously
 if [ ${REFRESH_TOKEN} -ne "" ]; then
-    cargo run --example sign_in_by_refresh_token -- --refresh_token $REFRESH_TOKEN
+    cargo run --example sign_in_by_refresh_token -- --refresh-token $REFRESH_TOKEN
 fi
 if [ ${GOOGLE_ID_TOKEN} -ne "" ]; then
-    cargo run --example sign_in_google_oauth_credential -- --request_uri $REQUEST_URI --id_token $GOOGLE_ID_TOKEN
+    cargo run --example sign_in_google_oauth_credential -- --request-uri $REQUEST_URI --id-token $GOOGLE_ID_TOKEN
 fi
 if [ ${FACEBOOK_ACCESS_TOKEN} -ne "" ]; then
-    cargo run --example sign_in_with_facebook_oauth_credential -- --request_uri $REQUEST_URI --access_token $FACEBOOK_ACCESS_TOKEN
+    cargo run --example sign_in_with_facebook_oauth_credential -- --request-uri $REQUEST_URI --access-token $FACEBOOK_ACCESS_TOKEN
 fi
 if [ ${TWITTER_ACCESS_TOKEN} -ne "" ]; then
-    cargo run --example sign_in_twitter_oauth_credential -- --request_uri $REQUEST_URI --access_token $TWITTER_ACCESS_TOKEN --oauth_token_secret $TWITTER_OAUTH_TOKEN_SECRET
+    cargo run --example sign_in_twitter_oauth_credential -- --request-uri $REQUEST_URI --access-token $TWITTER_ACCESS_TOKEN --oauth-token-secret $TWITTER_OAUTH_TOKEN_SECRET
 fi
 
 # Run examples for a not signing in user.
@@ -50,7 +50,7 @@ cargo run --example fetch_providers_for_email -- --email $EMAIL
 # Run examples for a signing in user.
 
 cargo run --example get_user_data -- --email $EMAIL --password $PASSWORD
-cargo run --example update_profile -- --email $EMAIL --password $PASSWORD --display_name $DISPLAY_NAME --photo_url $PHOTO_URL
+cargo run --example update_profile -- --email $EMAIL --password $PASSWORD --display-name $DISPLAY_NAME --photo-url $PHOTO_URL
 cargo run --example delete_profile -- --email $EMAIL --password $PASSWORD
 cargo run --example send_email_verification -- --email $EMAIL --password $PASSWORD
 cargo run --example refresh_token -- --email $EMAIL --password $PASSWORD
@@ -67,8 +67,8 @@ cargo run --example link_with_email_password -- --email $DUMMY_EMAIL --password 
 cargo run --example unlink_password -- --email $DUMMY_EMAIL --password $DUMMY_PASSWORD
 
 if [ ${GOOGLE_ID_TOKEN} -ne "" ]; then
-    cargo run --example link_with_google -- --request_uri $REQUEST_URI --id_token $GOOGLE_ID_TOKEN
-    cargo run --example unlink_google -- --request_uri $REQUEST_URI --id_token $GOOGLE_ID_TOKEN
+    cargo run --example link_with_google -- --request-uri $REQUEST_URI --id-token $GOOGLE_ID_TOKEN
+    cargo run --example unlink_google -- --request-uri $REQUEST_URI --id-token $GOOGLE_ID_TOKEN
 fi
 
 # Run examples for error handling.

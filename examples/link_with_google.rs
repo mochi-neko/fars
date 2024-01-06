@@ -1,6 +1,6 @@
 //! An example to link with Google OAuth credential by session-based interface.
 //! ```shell
-//! $ cargo run --example link_with_google -- --request_uri <request_uri> --id_token <id_token>
+//! $ cargo run --example link_with_google -- --request-uri <request_uri> --id-token <id_token>
 //! ```
 
 use clap::Parser;
