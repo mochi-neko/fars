@@ -19,13 +19,13 @@ pub struct UpdateProfileRequestBodyPayload {
     id_token: String,
     /// The user's new display name.
     #[serde(rename = "displayName")]
-    display_name: String,
+    display_name: Option<String>,
     /// The user's new photo url.
     #[serde(rename = "photoUrl")]
-    photo_url: String,
+    photo_url: Option<String>,
     /// List of attributes to delete, "DISPLAY_NAME" or "PHOTO_URL". This will nullify these values.
     #[serde(rename = "deleteAttribute")]
-    delete_attribute: Vec<String>,
+    delete_attribute: Option<Vec<String>>,
     /// Whether or not to return an ID and refresh token.
     #[serde(rename = "returnSecureToken")]
     return_secure_token: bool,
@@ -44,24 +44,31 @@ impl UpdateProfileRequestBodyPayload {
     /// - `return_secure_token` - Whether or not to return an ID and refresh token.
     pub fn new(
         id_token: String,
-        display_name: String,
-        photo_url: String,
-        delete_attribute: Vec<DeleteAttribute>,
+        display_name: Option<String>,
+        photo_url: Option<String>,
+        delete_attribute: Option<Vec<DeleteAttribute>>,
         return_secure_token: bool,
     ) -> Self {
+        let delete_attribute = match delete_attribute {
+            | Some(delete_attribute) => Some(
+                delete_attribute
+                    .into_iter()
+                    .map(|attribute| match attribute {
+                        | DeleteAttribute::DisplayName => {
+                            "DISPLAY_NAME".to_string()
+                        },
+                        | DeleteAttribute::PhotoUrl => "PHOTO_URL".to_string(),
+                    })
+                    .collect(),
+            ),
+            | None => None,
+        };
+
         Self {
             id_token,
             display_name,
             photo_url,
-            delete_attribute: delete_attribute
-                .into_iter()
-                .map(|attribute| match attribute {
-                    | DeleteAttribute::DisplayName => {
-                        "DISPLAY_NAME".to_string()
-                    },
-                    | DeleteAttribute::PhotoUrl => "PHOTO_URL".to_string(),
-                })
-                .collect(),
+            delete_attribute,
             return_secure_token,
         }
     }
@@ -127,9 +134,9 @@ pub struct UpdateProfileResponsePayload {
 ///
 /// let request_payload = api::UpdateProfileRequestBodyPayload::new(
 ///     "id-token".to_string(),
-///     "new-display-name".to_string(),
-///     "new-photo-url".to_string(),
-///     vec![],
+///     Some("new-display-name".to_string()),
+///     Some("new-photo-url".to_string()),
+///     None,
 /// );
 ///
 /// let response_payload = api::update_profile(

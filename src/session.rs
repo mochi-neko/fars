@@ -18,6 +18,7 @@
 //! - [Change email](`crate::Session::change_email`)
 //! - [Change password](`crate::Session::change_password`)
 //! - [Update profile](`crate::Session::update_profile`)
+//! - [Delete profile](`crate::Session::delete_profile`)
 //! - [Get user data](`crate::Session::get_user_data`)
 //! - [Link with email and password](`crate::Session::link_with_email_password`)
 //! - [Link with OAuth credential](`crate::Session::link_with_oauth_credential`)
@@ -338,9 +339,8 @@ impl Session {
     /// Automatically refreshes tokens if needed.
     ///
     /// ## Arguments
-    /// - `display_name` - The display name for the account.
-    /// - `photo_url` - The photo url of the account.
-    /// - `delete_attribute` - (Optional) The attributes that should be deleted from the account.
+    /// - `display_name` - (Optional) The display name for the account.
+    /// - `photo_url` - (Optional) The photo url of the account.
     ///
     /// ## Returns
     /// New session to replace the consumed session.
@@ -368,21 +368,69 @@ impl Session {
     /// let new_session = session.update_profile(
     ///     "new-display-name".to_string(),
     ///     "new-photo-url".to_string(),
-    ///     None,
     /// ).await?;
     /// ```
     pub async fn update_profile(
         self,
-        display_name: String,
-        photo_url: String,
-        delete_attribute: Option<HashSet<DeleteAttribute>>,
+        display_name: Option<String>,
+        photo_url: Option<String>,
     ) -> Result<Session> {
         call_refreshing_tokens_without_value_return_session!(
             self,
             Session::update_profile_internal,
             1,
             display_name.clone(),
-            photo_url.clone(),
+            photo_url.clone()
+        )
+        .await
+    }
+
+    /// Deletes the user profile information.
+    ///
+    /// Automatically refreshes tokens if needed.
+    ///
+    /// ## Arguments
+    /// - `delete_attribute` - The attributes that should be deleted from the account.
+    ///
+    /// ## Returns
+    /// New session to replace the consumed session.
+    ///
+    /// ## Errors
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::InvalidIdToken` - Invalid ID token.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
+    ///
+    /// ## Example
+    /// ```
+    /// use fars::Config;
+    /// use fars::data::DeleteAttribute;
+    ///
+    /// let config = Config::new(
+    ///     "your-firebase-project-api-key".to_string(),
+    /// );
+    /// let session = config.sign_in_with_email_password(
+    ///     "user@example".to_string(),
+    ///     "password".to_string(),
+    /// ).await?;
+    ///
+    /// let new_session = session.delete_profile(
+    ///     [DeleteAttribute::DisplayName, DeleteAttribute::PhotoUrl]
+    ///         .iter()
+    ///         .cloned()
+    ///         .collect(),
+    /// ).await?;
+    /// ```
+    pub async fn delete_profile(
+        self,
+        delete_attribute: HashSet<DeleteAttribute>,
+    ) -> Result<Session> {
+        call_refreshing_tokens_without_value_return_session!(
+            self,
+            Session::delete_profile_internal,
+            1,
             delete_attribute.clone()
         )
         .await
@@ -783,13 +831,35 @@ impl Session {
 
     async fn update_profile_internal(
         &self,
-        display_name: String,
-        photo_url: String,
-        delete_attribute: Option<HashSet<DeleteAttribute>>,
+        display_name: Option<String>,
+        photo_url: Option<String>,
     ) -> Result<()> {
-        // Unwrap delete attribute.
+        // Create request payload.
+        let request_payload = api::UpdateProfileRequestBodyPayload::new(
+            self.id_token.clone(),
+            display_name,
+            photo_url,
+            None,
+            false,
+        );
+
+        // Send request.
+        api::update_profile(
+            &self.client,
+            &self.api_key,
+            request_payload,
+        )
+        .await?;
+
+        Ok(())
+    }
+
+    async fn delete_profile_internal(
+        &self,
+        delete_attribute: HashSet<DeleteAttribute>,
+    ) -> Result<()> {
+        // Format delete attributes.
         let delete_attribute = delete_attribute
-            .unwrap_or_default()
             .iter()
             .copied()
             .collect();
@@ -797,9 +867,9 @@ impl Session {
         // Create request payload.
         let request_payload = api::UpdateProfileRequestBodyPayload::new(
             self.id_token.clone(),
-            display_name,
-            photo_url,
-            delete_attribute,
+            None,
+            None,
+            Some(delete_attribute),
             false,
         );
 

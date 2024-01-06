@@ -1,7 +1,7 @@
 //! An example to update profile by session-based interface.
 //!
 //! ```shell
-//! $ cargo run --example update_profile -- --email <email> --password <password> --display_name <display_name> --photo_url <photo_url>
+//! $ cargo run --example update_profile -- --email <email> --password <password> --display-name <display_name> --photo-url <photo_url>
 //! ```
 
 use clap::Parser;
@@ -41,9 +41,8 @@ async fn main() -> anyhow::Result<()> {
     // Update profile.
     let session = session
         .update_profile(
-            arguments.display_name.clone(),
-            arguments.photo_url.clone(),
-            None,
+            Some(arguments.display_name.clone()),
+            Some(arguments.photo_url.clone()),
         )
         .await?;
 

@@ -36,18 +36,14 @@ async fn main() -> anyhow::Result<()> {
 
     // Delete profile.
     let session = session
-        .update_profile(
-            String::new(),
-            String::new(),
-            Some(
-                [
-                    DeleteAttribute::DisplayName,
-                    DeleteAttribute::PhotoUrl,
-                ]
-                .iter()
-                .cloned()
-                .collect(),
-            ),
+        .delete_profile(
+            [
+                DeleteAttribute::DisplayName,
+                DeleteAttribute::PhotoUrl,
+            ]
+            .iter()
+            .cloned()
+            .collect(),
         )
         .await?;
 
