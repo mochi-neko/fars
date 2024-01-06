@@ -55,7 +55,8 @@ cargo run --example refresh_token -- --email $EMAIL --password $PASSWORD
 # Run examples for a signing in user with a credential.
 
 cargo run --example sign_up_with_email_password -- --email $DUMMY_EMAIL --password $DUMMY_PASSWORD
-cargo run --example change_email -- --email $DUMMY_EMAIL --password $DUMMY_PASSWORD --new-email $DUMMY_EMAIL
+# Skip because changing email is not allowed for an unverified email.
+# cargo run --example change_email -- --email $DUMMY_EMAIL --password $DUMMY_PASSWORD --new-email $DUMMY_EMAIL
 cargo run --example change_password -- --email $DUMMY_EMAIL --password $DUMMY_PASSWORD --new-password $DUMMY_PASSWORD
 cargo run --example delete_account -- --email $DUMMY_EMAIL --password $DUMMY_PASSWORD
 
