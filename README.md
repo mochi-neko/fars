@@ -22,9 +22,9 @@ All features in this crate are as follows:
 
 - default
     - [Session-based interfaces](#api-usages)
-- (Optional) raw
+- (Optional) `raw`
     - [Raw API interfaces](#optional-raw-api-interfaces)
-- (Optional) verify
+- (Optional) `verify`
     - [ID token verification](#optional-id-token-verification)
 
 ## Supported APIs
