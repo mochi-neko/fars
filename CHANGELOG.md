@@ -7,7 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.0] - 2024-01-XX
+### Added
+- Support signing in with Facebook OAuth credential.
+- Support signing in with Twitter OAuth credential.
+- Support signing in with GitHub OAuth credential.
+- Support signing in with Apple OAuth credential.
+- Support signing in with Apple Game Center OAuth credential.
+- Support signing in with Google Play Games OAuth credential.
+- Support signing in with Microsoft OAuth credential.
+- Support signing in with LinkedIn OAuth credential.
+- Support signing in with Yahoo OAuth credential.
+- Support signing in with custom OAuth credential.
+- Support `verify password reset code` on session.
+- Support `confirm password reset` on session.
+- Support `confirm email verification` on session.
+
+## [0.1.0] - 2024-01-06
 
 ### Added
 

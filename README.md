@@ -399,7 +399,7 @@ async fn main() -> anyhow::Result<()> {
 
 ## Other examples
 
-Please refer [/examples](./examples/) directory and [a shell script](./examples.sh). 
+Please refer [/examples](./examples/) directory, [a shell script](./examples.sh) and [a study of authentication on Web frontend](https://github.com/mochi-neko/rust-frontend-playground) with [dioxus](https://github.com/DioxusLabs/dioxus).
 
 ## Changelog
 
