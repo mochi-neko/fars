@@ -1,5 +1,5 @@
 //! # fars
-//! An unofficial Rust client for the Firebase Auth REST API.
+//! An unofficial Rust client for [Firebase Auth REST API](https://firebase.google.com/docs/reference/rest/auth).
 //!
 //! ## Features
 //! - default
