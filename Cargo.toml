@@ -16,8 +16,9 @@ path = "src/lib.rs"
 
 [features]
 default = []
-raw = []
-verify = ["jsonwebtoken"]
+raw = ["raw_or_verify"]
+verify = ["jsonwebtoken", "raw_or_verify"]
+raw_or_verify = []
 
 [dependencies]
 reqwest = { version = "^0.11.*", features = ["json"] }

@@ -32,9 +32,12 @@ pub use crate::session::Session;
 pub mod api;
 #[cfg(not(feature = "raw"))]
 pub(crate) mod api;
-#[cfg(feature = "raw")]
-pub use reqwest; // Re-export reqwest for the feature "raw" because raw APIs depend on reqwest.
 
 // Feature "verify"
 #[cfg(feature = "verify")]
 pub mod verification;
+
+// Feature "raw" or "verify"
+// Re-export reqwest for the feature "raw" or "verify" because these APIs depend on reqwest in arguments.
+#[cfg(feature = "raw_or_verify")]
+pub use reqwest;

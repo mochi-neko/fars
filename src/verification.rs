@@ -205,10 +205,10 @@ pub struct IdTokenPayloadClaims {
 /// match fars::verification::verify_id_token(&client, &id_token, &project_id).await {
 ///     Ok(claims) => {
 ///         // Verify succeeded.
-///     }
+///     },
 ///     Err(error) => {
 ///         // Verify failed.
-///     }
+///     },
 /// }
 /// ```
 #[allow(clippy::ptr_arg)]
