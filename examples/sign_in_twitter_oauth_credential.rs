@@ -1,5 +1,7 @@
 //! An example to sign in Twitter OAuth credential by session-based interface.
 //!
+//! NOTE: This example has not been tested.
+//!
 //! ```shell
 //! $ cargo run --example sign_in_twitter_oauth_credential -- --request_uri <request_uri> --access_token <access_token> --oauth_token_secret <oauth_token_secret>
 //! ```

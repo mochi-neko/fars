@@ -1,7 +1,7 @@
 //! An example to delete account by session-based interface.
 //!
 //! ```shell
-//! $ cargo run --example delete account -- --email <email> --password <password>
+//! $ cargo run --example delete_account -- --email <email> --password <password>
 //! ```
 
 use clap::Parser;
@@ -18,7 +18,7 @@ struct Arguments {
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Parse the command line arguments.
-    let credentials = Arguments::parse();
+    let arguments = Arguments::parse();
 
     // Read API key from the environment variable.
     let api_key = std::env::var("FIREBASE_API_KEY")?;
@@ -29,8 +29,8 @@ async fn main() -> anyhow::Result<()> {
     // Get a session by signing in with email and password.
     let session = config
         .sign_in_with_email_password(
-            credentials.email.clone(),
-            credentials.password.clone(),
+            arguments.email.clone(),
+            arguments.password.clone(),
         )
         .await?;
 

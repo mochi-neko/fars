@@ -26,9 +26,14 @@ async fn main() -> anyhow::Result<()> {
     // Create a config.
     let config = Config::new(api_key);
 
-    // Get a session by signing in with email and password.
+    // Get a session by signing in anonymously.
     let session = config
-        .sign_in_with_email_password(
+        .sign_in_anonymously()
+        .await?;
+
+    // Link email and password.
+    let session = session
+        .link_with_email_password(
             arguments.email.clone(),
             arguments.password.clone(),
         )
@@ -48,6 +53,11 @@ async fn main() -> anyhow::Result<()> {
         "Succeeded to unlink email and password: {:?}",
         session
     );
+
+    // Delete the anonymous account.
+    session
+        .delete_account()
+        .await?;
 
     Ok(())
 }

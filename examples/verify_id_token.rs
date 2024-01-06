@@ -1,7 +1,7 @@
 //! An example code to verify an ID token of the Firebase Auth for signing in user.
 //!
 //! ```shell
-//! $ cargo run --example id_token_verification --features verify -- --email <email> --password <password>
+//! $ cargo run --example verify_id_token --features verify -- --email <email> --password <password>
 //! ```
 
 use clap::Parser;

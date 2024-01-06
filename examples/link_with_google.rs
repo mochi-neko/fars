@@ -1,14 +1,10 @@
-//! An example to unlink Google OAuth credential by session-based interface.
-//!
+//! An example to link with Google OAuth credential by session-based interface.
 //! ```shell
-//! $ cargo run --example unlink_google -- --request_uri <request_uri> --id_token <id_token>
+//! $ cargo run --example link_with_google -- --request_uri <request_uri> --id_token <id_token>
 //! ```
 
 use clap::Parser;
-use fars::{
-    data::{IdpPostBody, ProviderId},
-    Config,
-};
+use fars::{data::IdpPostBody, Config};
 
 #[derive(Parser)]
 struct Arguments {
@@ -34,6 +30,7 @@ async fn main() -> anyhow::Result<()> {
         .sign_in_anonymously()
         .await?;
 
+    // Link with Google OAuth credential.
     let session = session
         .link_with_oauth_credential(
             arguments.request_uri.clone(),
@@ -43,18 +40,8 @@ async fn main() -> anyhow::Result<()> {
         )
         .await?;
 
-    // Unlink Google OAuth credential.
-    let session = session
-        .unlink_provider(
-            [ProviderId::Google]
-                .iter()
-                .cloned()
-                .collect(),
-        )
-        .await?;
-
     println!(
-        "Succeeded to unlink Google OAuth credential: {:?}",
+        "Succeeded to link Google OAuth credential: {:?}",
         session
     );
 

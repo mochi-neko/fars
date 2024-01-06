@@ -1,21 +1,18 @@
-//! An example to unlink Google OAuth credential by session-based interface.
+//! An example to link with email and password by session-based interface.
 //!
 //! ```shell
-//! $ cargo run --example unlink_google -- --request_uri <request_uri> --id_token <id_token>
+//! $ cargo run --example link_with_email_password -- --email <email> --password <password>
 //! ```
 
 use clap::Parser;
-use fars::{
-    data::{IdpPostBody, ProviderId},
-    Config,
-};
+use fars::Config;
 
 #[derive(Parser)]
 struct Arguments {
     #[arg(short, long)]
-    request_uri: String,
+    email: String,
     #[arg(short, long)]
-    id_token: String,
+    password: String,
 }
 
 #[tokio::main]
@@ -34,27 +31,16 @@ async fn main() -> anyhow::Result<()> {
         .sign_in_anonymously()
         .await?;
 
+    // Link email and password.
     let session = session
-        .link_with_oauth_credential(
-            arguments.request_uri.clone(),
-            IdpPostBody::Google {
-                id_token: arguments.id_token.clone(),
-            },
-        )
-        .await?;
-
-    // Unlink Google OAuth credential.
-    let session = session
-        .unlink_provider(
-            [ProviderId::Google]
-                .iter()
-                .cloned()
-                .collect(),
+        .link_with_email_password(
+            arguments.email.clone(),
+            arguments.password.clone(),
         )
         .await?;
 
     println!(
-        "Succeeded to unlink Google OAuth credential: {:?}",
+        "Succeeded to link with email/password: {:?}",
         session
     );
 

@@ -107,7 +107,7 @@ pub struct ErrorElement {
 #[derive(Debug)]
 pub enum CommonErrorCode {
     /// OPERATION_NOT_ALLOWED: The operation is disabled for this project.
-    OperationNotAllowed,
+    OperationNotAllowed(String),
     /// TOO_MANY_ATTEMPTS_TRY_LATER: We have blocked all requests from this device due to unusual activity. Try again later.
     TooManyAttemptsTryLater,
     /// INVALID_API_KEY: API key not valid. Please pass a valid API key. (invalid API key provided)
@@ -169,8 +169,14 @@ impl From<String> for CommonErrorCode {
             return CommonErrorCode::InvalidJsonPayloadReceived(val);
         }
 
+        if val
+            .as_str()
+            .starts_with("OPERATION_NOT_ALLOWED")
+        {
+            return CommonErrorCode::OperationNotAllowed(val);
+        }
+
         match val.as_str() {
-            | "OPERATION_NOT_ALLOWED" => CommonErrorCode::OperationNotAllowed,
             | "TOO_MANY_ATTEMPTS_TRY_LATER" => {
                 CommonErrorCode::TooManyAttemptsTryLater
             },

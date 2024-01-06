@@ -7,6 +7,7 @@ use serde::Serialize;
 pub enum IdpPostBody {
     /// Google OAuth.
     Google {
+        /// OpenID Connect ID token.
         id_token: String,
     },
     /// Facebook OAuth.

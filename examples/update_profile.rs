@@ -11,11 +11,11 @@ use fars::Config;
 struct Arguments {
     #[arg(short, long)]
     email: String,
-    #[arg(short, long)]
+    #[arg(long)]
     password: String,
     #[arg(short, long)]
     display_name: String,
-    #[arg(short, long)]
+    #[arg(long)]
     photo_url: String,
 }
 
