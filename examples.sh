@@ -3,6 +3,9 @@
 
 # Set credentials for each sign in method.
 
+# export FIREBASE_API_KEY=""
+# export FIREEBASE_PROJECT_ID=""
+
 EMAIL="t.o.e.4315@gmail.com"
 PASSWORD="password"
 
@@ -67,6 +70,10 @@ if [ ${GOOGLE_ID_TOKEN} -ne "" ]; then
     cargo run --example link_with_google -- --request_uri $REQUEST_URI --id_token $GOOGLE_ID_TOKEN
     cargo run --example unlink_google -- --request_uri $REQUEST_URI --id_token $GOOGLE_ID_TOKEN
 fi
+
+# Run examples for error handling.
+
+cargo run --example handle_error -- --email $EMAIL --password $PASSWORD
 
 # Run examples for raw APIs.
 

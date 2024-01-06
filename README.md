@@ -144,9 +144,52 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
-## Login by OAuth
+## Sign in with OAuth credentials
 
-TODO:
+> [!IMPORTANT]
+> This crate does not provide methods to get OAuth credentials for each ID provider.
+>
+> When you use signing in with OAuth credentials, please implement a method to get target OAuth credentials.
+
+See also [supported OAuth providers](#supported-oauth-id-providers).
+
+### Google OAuth
+
+To sign in with Google OAuth credentials, 
+
+1. Create a config (`fars::Config`) with your Firebase project API key.
+2. Get OpenID token from Google OAuth API. See [reference](https://developers.google.com/identity/protocols/oauth2/web-server#obtainingaccesstokens).
+3. Sign in with specifying `request_uri` and `IdpPostBody::Google`.
+
+```rust
+use fars::data::IdpPostBody;
+use fars::Config;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    // 1. Create a config.
+    let config = Config::new(
+        "your-firebase-project-api-key".to_string(),
+    );
+
+    // 2. Get an OpenID token from Google OAuth by any method.
+    let google_id_token = "google-open-id-token".to_string();
+
+    // 3. Get a session by signing in Google OAuth credential.
+    let session = config
+        .sign_in_oauth_credential(
+            arguments.request_uri.clone(),
+            IdpPostBody::Google {
+                id_token: google_id_token,
+            },
+        )
+        .await?;
+
+    // 4. Do something with the session.
+
+    Ok(())
+}
+```
 
 ## Error handling
 
@@ -337,10 +380,10 @@ async fn main() -> anyhow::Result<()> {
     match verification::verify_id_token(&client, &id_token, &project_id).await {
         Ok(claims) => {
             // Verification succeeded.
-        }
+        },
         Err(error) => {
             // Verification failed.
-        }
+        },
     }
 
     Ok(())
@@ -349,7 +392,7 @@ async fn main() -> anyhow::Result<()> {
 
 ## Other examples
 
-Please refer [/examples](./examples/) directory.
+Please refer [/examples](./examples/) directory and [a shell script](./examples.sh). 
 
 ## Changelog
 
