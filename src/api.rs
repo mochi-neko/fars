@@ -62,7 +62,7 @@
 //! ```
 //!
 //! ### Get user data
-//! An example of getting user data with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows;
+//! An example of getting user data with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 //!
 //! ```rust
 //! use fars::api;

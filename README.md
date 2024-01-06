@@ -371,15 +371,20 @@ Provides ID token verification of the Firebase Auth.
 A sample code to [verify ID token](https://firebase.google.com/docs/auth/admin/verify-id-tokens#verify_id_tokens_using_a_third-party_jwt_library) with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 
 ```rust
-use fars::verification;
+use fars::VerificationConfig;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let client = reqwest::Client::new();
-    let id_token = "id-token".to_string();
-    let project_id = "firebase-project-id".to_string();
+    // Create a cofig for verification.
+    let cofing = let config = VerificationConfig::new(
+        "firebase-project-id".to_string(),
+    );
 
-    match verification::verify_id_token(&client, &id_token, &project_id).await {
+    // Get an ID token of the Firebase Auth.
+    let id_token = "id-token".to_string();
+
+    // Verrify the ID token.
+    match config.verify_id_token(&id_token).await {
         Ok(claims) => {
             // Verification succeeded.
         },

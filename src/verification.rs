@@ -21,7 +21,7 @@
 //!
 //!     // Verify the ID token.
 //!     match config.verify_id_token(
-//!          "id-token".to_string(),
+//!         "id-token".to_string(),
 //!     ).await {
 //!         Ok(claims) => {
 //!             // Verification succeeded.
