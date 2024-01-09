@@ -53,12 +53,7 @@ impl UpdateProfileRequestBodyPayload {
             | Some(delete_attribute) => Some(
                 delete_attribute
                     .into_iter()
-                    .map(|attribute| match attribute {
-                        | DeleteAttribute::DisplayName => {
-                            "DISPLAY_NAME".to_string()
-                        },
-                        | DeleteAttribute::PhotoUrl => "PHOTO_URL".to_string(),
-                    })
+                    .map(|attribute| attribute.format())
                     .collect(),
             ),
             | None => None,

@@ -8,3 +8,12 @@ pub enum DeleteAttribute {
     /// Delete the photo url.
     PhotoUrl,
 }
+
+impl DeleteAttribute {
+    pub fn format(self) -> String {
+        match self {
+            | DeleteAttribute::DisplayName => "DISPLAY_NAME".to_string(),
+            | DeleteAttribute::PhotoUrl => "PHOTO_URL".to_string(),
+        }
+    }
+}
