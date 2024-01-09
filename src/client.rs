@@ -5,7 +5,7 @@
 use serde::{de::DeserializeOwned, Serialize};
 
 use crate::error::{ApiErrorResponse, CommonErrorCode, Error};
-use crate::Result;
+use crate::{ApiKey, Result};
 
 /// Sends a POST request to the Firebase Auth API.
 ///
@@ -31,7 +31,7 @@ use crate::Result;
 pub(crate) async fn send_post<T, U>(
     client: &reqwest::Client,
     endpoint: &str,
-    api_key: &String,
+    api_key: &ApiKey,
     request_payload: T,
     optional_headers: Option<reqwest::header::HeaderMap>,
 ) -> Result<U>
@@ -42,7 +42,7 @@ where
     // Build a request URL.
     let url = format!(
         "https://identitytoolkit.googleapis.com/v1/{}?key={}",
-        endpoint, api_key
+        endpoint, api_key.inner
     );
 
     // Create request builder and set method and payload.
@@ -111,6 +111,8 @@ where
         }
     }
 }
+
+pub(crate) enum Endpoint {}
 
 /// Creates optional headers for the locale.
 ///

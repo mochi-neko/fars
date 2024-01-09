@@ -130,9 +130,10 @@
 //! ```
 
 use crate::api;
-use crate::data::IdpPostBody;
-use crate::data::ProviderId;
+use crate::ApiKey;
 use crate::Error;
+use crate::IdpPostBody;
+use crate::ProviderId;
 use crate::Result;
 use crate::Session;
 
@@ -149,7 +150,7 @@ use crate::Session;
 #[derive(Clone, Debug)]
 pub struct Config {
     /// Firebase project API key.
-    api_key: String,
+    api_key: ApiKey,
 }
 
 impl Config {
@@ -159,12 +160,13 @@ impl Config {
     /// ## Example
     /// ```
     /// use fars::Config;
+    /// use fars::ApiKey;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     /// ```
-    pub fn new(api_key: String) -> Self {
+    pub fn new(api_key: ApiKey) -> Self {
         Self {
             api_key,
         }

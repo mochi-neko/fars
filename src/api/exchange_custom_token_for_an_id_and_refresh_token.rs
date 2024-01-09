@@ -9,6 +9,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
+use crate::ApiKey;
 use crate::Result;
 
 /// Request body payload for the exchange custom token for an ID and refresh token API.
@@ -91,7 +92,7 @@ pub struct ExchangeCustomTokenForAnIdAndRefreshTokenResponsePayload {
 /// ```
 pub async fn exchange_custom_token_for_an_id_and_refresh_token(
     client: &reqwest::Client,
-    api_key: &String,
+    api_key: &ApiKey,
     request_payload: ExchangeCustomTokenForAnIdAndRefreshTokenRequestBodyPayload,
 ) -> Result<ExchangeCustomTokenForAnIdAndRefreshTokenResponsePayload> {
     client::send_post::<

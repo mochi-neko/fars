@@ -7,6 +7,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
+use crate::ApiKey;
 use crate::Result;
 
 /// Request body payload for the sign in with email password API.
@@ -108,7 +109,7 @@ pub struct SignInWithEmailPasswordResponsePayload {
 /// ```
 pub async fn sign_in_with_email_password(
     client: &reqwest::Client,
-    api_key: &String,
+    api_key: &ApiKey,
     request_payload: SignInWithEmailPasswordRequestBodyPayload,
 ) -> Result<SignInWithEmailPasswordResponsePayload> {
     client::send_post::<

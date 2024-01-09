@@ -6,6 +6,8 @@
 
 use clap::Parser;
 #[cfg(feature = "verify")]
+use fars::ApiKey;
+#[cfg(feature = "verify")]
 use fars::Config;
 
 #[derive(Parser)]
@@ -24,7 +26,7 @@ async fn main() -> anyhow::Result<()> {
         let arguments = Arguments::parse();
 
         // Read API key from the environment variable.
-        let api_key = std::env::var("FIREBASE_API_KEY")?;
+        let api_key = ApiKey::new(std::env::var("FIREBASE_API_KEY")?);
 
         // Read project ID from the environment variable.
         let project_id = std::env::var("FIREBASE_PROJECT_ID")?;

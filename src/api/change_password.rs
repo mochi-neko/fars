@@ -7,7 +7,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::data::ProviderUserInfo;
+use crate::ApiKey;
+use crate::ProviderUserInfo;
 use crate::Result;
 
 /// Request body payload for the change password API.
@@ -115,7 +116,7 @@ pub struct ChangePasswordResponsePayload {
 /// ```
 pub async fn change_password(
     client: &reqwest::Client,
-    api_key: &String,
+    api_key: &ApiKey,
     request_payload: ChangePasswordRequestBodyPayload,
 ) -> Result<ChangePasswordResponsePayload> {
     client::send_post::<

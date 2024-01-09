@@ -7,7 +7,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::data::ProviderUserInfo;
+use crate::ApiKey;
+use crate::ProviderUserInfo;
 use crate::Result;
 
 /// Request body payload for the link with email password API.
@@ -130,7 +131,7 @@ pub struct LinkWithEmailPasswordResponsePayload {
 /// ```
 pub async fn link_with_email_password(
     client: &reqwest::Client,
-    api_key: &String,
+    api_key: &ApiKey,
     request_payload: LinkWithEmailPasswordRequestBodyPayload,
 ) -> Result<LinkWithEmailPasswordResponsePayload> {
     client::send_post::<

@@ -4,7 +4,9 @@
 //! ```
 
 use clap::Parser;
-use fars::{data::IdpPostBody, Config};
+use fars::ApiKey;
+use fars::Config;
+use fars::IdpPostBody;
 
 #[derive(Parser)]
 struct Arguments {
@@ -20,7 +22,7 @@ async fn main() -> anyhow::Result<()> {
     let arguments = Arguments::parse();
 
     // Read API key from the environment variable.
-    let api_key = std::env::var("FIREBASE_API_KEY")?;
+    let api_key = ApiKey::new(std::env::var("FIREBASE_API_KEY")?);
 
     // Create a config.
     let config = Config::new(api_key);

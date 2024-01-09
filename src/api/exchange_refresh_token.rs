@@ -7,6 +7,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
+use crate::ApiKey;
 use crate::Result;
 
 /// Request body payload for the exchange refresh token API.
@@ -104,7 +105,7 @@ pub struct ExchangeRefreshTokenResponsePayload {
 /// ```
 pub async fn exchange_refresh_token(
     client: &reqwest::Client,
-    api_key: &String,
+    api_key: &ApiKey,
     request_payload: ExchangeRefreshTokenRequestBodyPayload,
 ) -> Result<ExchangeRefreshTokenResponsePayload> {
     client::send_post::<

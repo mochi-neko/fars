@@ -6,8 +6,9 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::data::{DeleteAttribute, ProviderUserInfo};
+use crate::ApiKey;
 use crate::Result;
+use crate::{DeleteAttribute, ProviderUserInfo};
 
 /// Request body payload for the update profile API.
 ///
@@ -142,7 +143,7 @@ pub struct UpdateProfileResponsePayload {
 /// ```
 pub async fn update_profile(
     client: &reqwest::Client,
-    api_key: &String,
+    api_key: &ApiKey,
     request_payload: UpdateProfileRequestBodyPayload,
 ) -> Result<UpdateProfileResponsePayload> {
     client::send_post::<

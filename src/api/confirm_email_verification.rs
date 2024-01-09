@@ -9,7 +9,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::data::ProviderUserInfo;
+use crate::ApiKey;
+use crate::ProviderUserInfo;
 use crate::Result;
 
 /// Request body payload for the confirm email verification API.
@@ -99,7 +100,7 @@ pub struct ConfirmEmailVerificationResponsePayload {
 /// ```
 pub async fn confirm_email_verification(
     client: &reqwest::Client,
-    api_key: &String,
+    api_key: &ApiKey,
     request_payload: ConfirmEmailVerificationRequestBodyPayload,
 ) -> Result<ConfirmEmailVerificationResponsePayload> {
     client::send_post::<

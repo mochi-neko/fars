@@ -7,6 +7,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
+use crate::ApiKey;
 use crate::Result;
 
 /// Request body payload for the send password reset email API.
@@ -85,7 +86,7 @@ pub struct SendPasswordResetEmailResponsePayload {
 /// ```
 pub async fn send_password_reset_email(
     client: &reqwest::Client,
-    api_key: &String,
+    api_key: &ApiKey,
     request_payload: SendPasswordResetEmailRequestBodyPayload,
     locale: Option<String>,
 ) -> Result<SendPasswordResetEmailResponsePayload> {

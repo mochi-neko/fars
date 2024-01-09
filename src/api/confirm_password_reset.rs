@@ -9,6 +9,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
+use crate::ApiKey;
 use crate::Result;
 
 /// Request body payload for the confirm password reset API.
@@ -95,7 +96,7 @@ pub struct ConfirmPasswordResetResponsePayload {
 /// ```
 pub async fn confirm_password_reset(
     client: &reqwest::Client,
-    api_key: &String,
+    api_key: &ApiKey,
     request_payload: ConfirmPasswordResetRequestBodyPayload,
 ) -> Result<ConfirmPasswordResetResponsePayload> {
     client::send_post::<

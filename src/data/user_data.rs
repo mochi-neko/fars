@@ -2,7 +2,7 @@
 
 use serde::Deserialize;
 
-use crate::data::ProviderUserInfo;
+use crate::ProviderUserInfo;
 
 /// User data of the Firebase Auth.
 #[derive(Deserialize, PartialEq, Clone, Debug)]

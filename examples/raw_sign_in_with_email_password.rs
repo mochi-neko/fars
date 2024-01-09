@@ -7,6 +7,8 @@
 use clap::Parser;
 #[cfg(feature = "raw")]
 use fars::api;
+#[cfg(feature = "raw")]
+use fars::ApiKey;
 
 #[derive(Parser)]
 struct Arguments {
@@ -24,7 +26,7 @@ async fn main() -> anyhow::Result<()> {
         let arguments = Arguments::parse();
 
         // Read API key from the environment variable.
-        let api_key = std::env::var("FIREBASE_API_KEY")?;
+        let api_key = ApiKey::new(std::env::var("FIREBASE_API_KEY")?);
 
         // Create a reqwest client.
         // NOTE: fars crate re-exports reqwest, so you can use it directly without importing reqwest.

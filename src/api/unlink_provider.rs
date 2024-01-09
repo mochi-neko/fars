@@ -9,8 +9,9 @@ use std::collections::HashSet;
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::data::{ProviderId, ProviderUserInfo};
+use crate::ApiKey;
 use crate::Result;
+use crate::{ProviderId, ProviderUserInfo};
 
 /// Request body payload for the unlink provider API.
 ///
@@ -113,7 +114,7 @@ pub struct UnlinkProviderResponsePayload {
 /// ```
 pub async fn unlink_provider(
     client: &reqwest::Client,
-    api_key: &String,
+    api_key: &ApiKey,
     request_payload: UnlinkProviderRequestBodyPayload,
 ) -> Result<UnlinkProviderResponsePayload> {
     client::send_post::<

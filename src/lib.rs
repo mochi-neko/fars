@@ -11,7 +11,7 @@
 
 // public modules
 pub mod config;
-pub mod data;
+mod data;
 pub mod error;
 pub mod session;
 
@@ -26,6 +26,14 @@ pub use crate::config::Config;
 pub use crate::error::Error;
 pub use crate::result::Result;
 pub use crate::session::Session;
+
+// Re-exports for data module
+pub use crate::data::api_key::ApiKey;
+pub use crate::data::delete_attribute::DeleteAttribute;
+pub use crate::data::idp_post_body::IdpPostBody;
+pub use crate::data::provider_id::ProviderId;
+pub use crate::data::provider_user_info::ProviderUserInfo;
+pub use crate::data::user_data::UserData;
 
 // Feature "raw"
 #[cfg(feature = "raw")]

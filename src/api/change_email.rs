@@ -7,7 +7,9 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::data::ProviderUserInfo;
+use crate::data::api_key;
+use crate::ApiKey;
+use crate::ProviderUserInfo;
 use crate::Result;
 
 /// Request body payload for the change email API.
@@ -118,7 +120,7 @@ pub struct ChangeEmailResponsePayload {
 /// ```
 pub async fn change_email(
     client: &reqwest::Client,
-    api_key: &String,
+    api_key: &ApiKey,
     request_payload: ChangeEmailRequestBodyPayload,
     locale: Option<String>,
 ) -> Result<ChangeEmailResponsePayload> {

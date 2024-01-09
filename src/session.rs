@@ -63,9 +63,10 @@
 use std::collections::HashSet;
 
 use crate::api;
-use crate::data::{DeleteAttribute, IdpPostBody, ProviderId, UserData};
+use crate::ApiKey;
 use crate::Error;
 use crate::Result;
+use crate::{DeleteAttribute, IdpPostBody, ProviderId, UserData};
 
 /// Authentication session for a user of the Firebase Auth.
 ///
@@ -87,7 +88,7 @@ pub struct Session {
     /// HTTP client.
     pub(crate) client: reqwest::Client,
     /// Firebase project API key.
-    pub(crate) api_key: String,
+    pub(crate) api_key: ApiKey,
     /// Firebase Auth ID token.
     pub id_token: String,
     /// The number of seconds in which the ID token expires.
@@ -580,7 +581,7 @@ impl Session {
     pub async fn link_with_oauth_credential(
         self,
         request_uri: String,
-        post_body: crate::data::IdpPostBody,
+        post_body: IdpPostBody,
     ) -> Result<Session> {
         call_refreshing_tokens_without_value_return_session!(
             self,

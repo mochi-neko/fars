@@ -7,7 +7,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::data::IdpPostBody;
+use crate::ApiKey;
+use crate::IdpPostBody;
 use crate::Result;
 
 /// Request body payload for the link with OAuth credential API.
@@ -160,7 +161,7 @@ pub struct LinkWithOAuthCredentialResponsePayload {
 /// ```
 pub async fn link_with_oauth_credential(
     client: &reqwest::Client,
-    api_key: &String,
+    api_key: &ApiKey,
     request_payload: LinkWithOAuthCredentialRequestBodyPayload,
 ) -> Result<LinkWithOAuthCredentialResponsePayload> {
     client::send_post::<

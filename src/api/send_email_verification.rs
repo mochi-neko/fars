@@ -7,6 +7,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
+use crate::ApiKey;
 use crate::Result;
 
 /// Request body payload for the send email verification API.
@@ -87,7 +88,7 @@ pub struct SendEmailVerificationResponsePayload {
 /// ```
 pub async fn send_email_verification(
     client: &reqwest::Client,
-    api_key: &String,
+    api_key: &ApiKey,
     request_payload: SendEmailVerificationRequestBodyPayload,
     locale: Option<String>,
 ) -> Result<SendEmailVerificationResponsePayload> {
