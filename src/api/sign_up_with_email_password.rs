@@ -6,8 +6,9 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client;
+use crate::client::Endpoint;
 use crate::ApiKey;
+use crate::Client;
 use crate::Result;
 
 /// Request body payload for the sign up with email password API.
@@ -105,16 +106,15 @@ pub struct SignUpWithEmailPasswordResponsePayload {
 /// ).await?;
 /// ```
 pub async fn sign_up_with_email_password(
-    client: &reqwest::Client,
+    client: &Client,
     api_key: &ApiKey,
     request_payload: SignUpWithEmailPasswordRequestBodyPayload,
 ) -> Result<SignUpWithEmailPasswordResponsePayload> {
-    client::send_post::<
+    client.send_post::<
         SignUpWithEmailPasswordRequestBodyPayload,
         SignUpWithEmailPasswordResponsePayload,
     >(
-        client,
-        client::Endpoint::SignUp,
+        Endpoint::SignUp,
         api_key,
         request_payload,
         None,

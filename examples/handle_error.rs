@@ -5,7 +5,11 @@
 //! ```
 
 use clap::Parser;
-use fars::{error::CommonErrorCode, ApiKey, Config};
+use fars::error::CommonErrorCode;
+use fars::ApiKey;
+use fars::Config;
+use fars::Email;
+use fars::Password;
 
 #[derive(Parser)]
 struct Arguments {
@@ -29,8 +33,8 @@ async fn main() -> anyhow::Result<()> {
     // Create a session by signing in with email and password.
     match config
         .sign_in_with_email_password(
-            arguments.email.clone(),
-            arguments.password.clone(),
+            Email::new(arguments.email.clone()),
+            Password::new(arguments.password.clone()),
         )
         .await
     {

@@ -10,108 +10,138 @@ use crate::Error;
 use crate::LanguageCode;
 use crate::Result;
 
-/// Sends a POST request to the Firebase Auth API.
-///
-/// See also [API reference](https://firebase.google.com/docs/reference/rest/auth).
-///
-/// ## Arguments
-/// - `client` - HTTP client.
-/// - `endpoint` - The endpoint to send the request to.
-/// - `api_key` - The Firebase project's API key.
-/// - `request_payload` - The request body payload.
-/// - `optional_headers` - Optional headers to send with the request.
-///
-/// ## Returns
-/// The result with the response payload of the API.
-///
-/// ## Errors
-/// - `Error::HttpRequestError` - Failed to send a request.
-/// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
-/// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
-/// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
-/// - `Error::InvalidIdToken` - Invalid ID token.
-/// - `Error::ApiError` - API error on the Firebase Auth.
-pub(crate) async fn send_post<T, U>(
-    client: &reqwest::Client,
-    endpoint: Endpoint,
-    api_key: &ApiKey,
-    request_payload: T,
-    optional_headers: Option<reqwest::header::HeaderMap>,
-) -> Result<U>
-where
-    T: Serialize,
-    U: DeserializeOwned,
-{
-    // Build a request URL.
-    let url = format!(
-        "https://identitytoolkit.googleapis.com/v1/{}?key={}",
-        endpoint.format(),
-        api_key.inner
-    );
+/// HTTP client.
+#[derive(Clone, Debug)]
+pub struct Client {
+    pub(crate) inner: reqwest::Client,
+}
 
-    // Create request builder and set method and payload.
-    let mut builder = client
-        .post(url)
-        .json(&request_payload);
+impl Default for Client {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
-    // Set optional headers if some are provided.
-    if let Some(optional_headers) = optional_headers {
-        builder = builder.headers(optional_headers);
+impl Client {
+    /// Creates a new HTTP client.
+    pub fn new() -> Self {
+        Self {
+            inner: reqwest::Client::new(),
+        }
     }
 
-    // Send a request.
-    let response = builder
-        .send()
-        .await
-        .map_err(Error::HttpRequestError)?;
+    /// Creates a new HTTP client with a custom instance.
+    #[cfg(feature = "custom_client")]
+    pub fn new_custom(client: crate::reqwest::Client) -> Self {
+        Self {
+            inner: client,
+        }
+    }
 
-    // Check the response status code.
-    let status_code = response.status();
+    /// Sends a POST request to the Firebase Auth API.
+    ///
+    /// See also [API reference](https://firebase.google.com/docs/reference/rest/auth).
+    ///
+    /// ## Arguments
+    /// - `endpoint` - The endpoint to send the request to.
+    /// - `api_key` - The Firebase project's API key.
+    /// - `request_payload` - The request body payload.
+    /// - `locale` - The BCP 47 language code, eg: en-US.
+    ///
+    /// ## Returns
+    /// The result with the response payload of the API.
+    ///
+    /// ## Errors
+    /// - `Error::HttpRequestError` - Failed to send a request.
+    /// - `Error::ReadResponseTextFailed` - Failed to read the response body as text.
+    /// - `Error::DeserializeResponseJsonFailed` - Failed to deserialize the response body as JSON.
+    /// - `Error::DeserializeErrorResponseJsonFailed` - Failed to deserialize the error response body as JSON.
+    /// - `Error::InvalidIdToken` - Invalid ID token.
+    /// - `Error::ApiError` - API error on the Firebase Auth.
+    pub(crate) async fn send_post<T, U>(
+        &self,
+        endpoint: Endpoint,
+        api_key: &ApiKey,
+        request_payload: T,
+        locale: Option<LanguageCode>,
+    ) -> Result<U>
+    where
+        T: Serialize,
+        U: DeserializeOwned,
+    {
+        // Build a request URL.
+        let url = format!(
+            "https://identitytoolkit.googleapis.com/v1/{}?key={}",
+            endpoint.format(),
+            api_key.inner
+        );
 
-    // Read the response body as text.
-    let response_text = response
-        .text()
-        .await
-        .map_err(|error| Error::ReadResponseTextFailed {
-            error,
-        })?;
+        // Create request builder and set method and payload.
+        let mut builder = self
+            .inner
+            .post(url)
+            .json(&request_payload);
 
-    // Successful response.
-    if status_code.is_success() {
-        // Deserialize the response text to a payload.
-        serde_json::from_str::<U>(&response_text).map_err(|error| {
-            Error::DeserializeResponseJsonFailed {
+        // Set optional headers if some are provided.
+        if let Some(locale) = locale {
+            builder = builder.headers(optional_locale_header(locale)?);
+        }
+
+        // Send a request.
+        let response = builder
+            .send()
+            .await
+            .map_err(Error::HttpRequestError)?;
+
+        // Check the response status code.
+        let status_code = response.status();
+
+        // Read the response body as text.
+        let response_text = response
+            .text()
+            .await
+            .map_err(|error| Error::ReadResponseTextFailed {
                 error,
-                json: response_text,
-            }
-        })
-    }
-    // Error response.
-    else {
-        // Deserialize the response text to the error payload.
-        let error_response =
-            serde_json::from_str::<ApiErrorResponse>(&response_text).map_err(
-                |error| Error::DeserializeErrorResponseJsonFailed {
+            })?;
+
+        // Successful response.
+        if status_code.is_success() {
+            // Deserialize the response text to a payload.
+            serde_json::from_str::<U>(&response_text).map_err(|error| {
+                Error::DeserializeResponseJsonFailed {
                     error,
                     json: response_text,
-                },
-            )?;
+                }
+            })
+        }
+        // Error response.
+        else {
+            // Deserialize the response text to the error payload.
+            let error_response =
+                serde_json::from_str::<ApiErrorResponse>(&response_text)
+                    .map_err(|error| {
+                        Error::DeserializeErrorResponseJsonFailed {
+                            error,
+                            json: response_text,
+                        }
+                    })?;
 
-        // Check error message and create error code.
-        let error_code: CommonErrorCode = error_response
-            .error
-            .message
-            .clone()
-            .into();
+            // Check error message and create error code.
+            let error_code: CommonErrorCode = error_response
+                .error
+                .message
+                .clone()
+                .into();
 
-        match error_code {
-            // Take invalid ID token error as special case.
-            | CommonErrorCode::InvalidIdToken => Err(Error::InvalidIdToken),
-            | _ => Err(Error::ApiError {
-                status_code,
-                error_code,
-                response: error_response,
-            }),
+            match error_code {
+                // Take invalid ID token error as special case.
+                | CommonErrorCode::InvalidIdToken => Err(Error::InvalidIdToken),
+                | _ => Err(Error::ApiError {
+                    status_code,
+                    error_code,
+                    response: error_response,
+                }),
+            }
         }
     }
 }
@@ -173,22 +203,20 @@ impl Endpoint {
 ///
 /// ## Errors
 /// - `Error::InvalidHeaderValue` - Invalid header value.
-pub(crate) fn optional_locale_header(
-    locale: Option<LanguageCode>
-) -> Result<Option<reqwest::header::HeaderMap>> {
-    match locale {
-        | Some(locale) => {
-            let mut headers = reqwest::header::HeaderMap::new();
-            headers.insert(
-                "X-Firebase-Locale",
-                reqwest::header::HeaderValue::from_str(locale.format())
-                    .map_err(|error| Error::InvalidHeaderValue {
-                        key: "X-Firebase-Locale",
-                        error,
-                    })?,
-            );
-            Ok(Some(headers))
-        },
-        | None => Ok(None),
-    }
+fn optional_locale_header(
+    locale: LanguageCode
+) -> Result<reqwest::header::HeaderMap> {
+    let mut headers = reqwest::header::HeaderMap::new();
+
+    headers.insert(
+        "X-Firebase-Locale",
+        reqwest::header::HeaderValue::from_str(locale.format()).map_err(
+            |error| Error::InvalidHeaderValue {
+                key: "X-Firebase-Locale",
+                error,
+            },
+        )?,
+    );
+
+    Ok(headers)
 }

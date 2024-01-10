@@ -6,8 +6,9 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client;
+use crate::client::Endpoint;
 use crate::ApiKey;
+use crate::Client;
 use crate::Result;
 
 /// Request body payload for the fetch providers for email API.
@@ -90,16 +91,15 @@ pub struct FetchProvidersForEmailResponsePayload {
 /// ).await?;
 /// ```
 pub async fn fetch_providers_for_email(
-    client: &reqwest::Client,
+    client: &Client,
     api_key: &ApiKey,
     request_payload: FetchProvidersForEmailRequestBodyPayload,
 ) -> Result<FetchProvidersForEmailResponsePayload> {
-    client::send_post::<
+    client.send_post::<
         FetchProvidersForEmailRequestBodyPayload,
         FetchProvidersForEmailResponsePayload,
     >(
-        client,
-        client::Endpoint::CreateAuthUri,
+        Endpoint::CreateAuthUri,
         api_key,
         request_payload,
         None,

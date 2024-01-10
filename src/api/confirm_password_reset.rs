@@ -4,12 +4,11 @@
 //!
 //! See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-confirm-password-reset).
 
-#![allow(dead_code)]
-
 use serde::{Deserialize, Serialize};
 
-use crate::client;
+use crate::client::Endpoint;
 use crate::ApiKey;
+use crate::Client;
 use crate::Result;
 
 /// Request body payload for the confirm password reset API.
@@ -95,16 +94,15 @@ pub struct ConfirmPasswordResetResponsePayload {
 /// ).await?;
 /// ```
 pub async fn confirm_password_reset(
-    client: &reqwest::Client,
+    client: &Client,
     api_key: &ApiKey,
     request_payload: ConfirmPasswordResetRequestBodyPayload,
 ) -> Result<ConfirmPasswordResetResponsePayload> {
-    client::send_post::<
+    client.send_post::<
         ConfirmPasswordResetRequestBodyPayload,
         ConfirmPasswordResetResponsePayload,
     >(
-        client,
-        client::Endpoint::ResetPassword,
+        Endpoint::ResetPassword,
         api_key,
         request_payload,
         None,

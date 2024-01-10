@@ -6,8 +6,9 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client;
+use crate::client::Endpoint;
 use crate::ApiKey;
+use crate::Client;
 use crate::Result;
 
 /// Request body payload for the delete account API.
@@ -76,16 +77,15 @@ pub struct DeleteAccountResponsePayload {}
 /// ).await?;
 /// ```
 pub async fn delete_account(
-    client: &reqwest::Client,
+    client: &Client,
     api_key: &ApiKey,
     request_payload: DeleteAccountRequestBodyPayload,
 ) -> Result<DeleteAccountResponsePayload> {
-    client::send_post::<
+    client.send_post::<
         DeleteAccountRequestBodyPayload,
         DeleteAccountResponsePayload,
     >(
-        client,
-        client::Endpoint::Delete,
+        Endpoint::Delete,
         api_key,
         request_payload,
         None,

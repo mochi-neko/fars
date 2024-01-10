@@ -7,7 +7,9 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
+use crate::client::Endpoint;
 use crate::ApiKey;
+use crate::Client;
 use crate::Result;
 
 /// Request body payload for the sign in anonymously API.
@@ -88,16 +90,15 @@ pub struct SignInAnonymouslyResponsePayload {
 /// ).await?;
 /// ```
 pub async fn sign_in_anonymously(
-    client: &reqwest::Client,
+    client: &Client,
     api_key: &ApiKey,
     request_payload: SignInAnonymouslyRequestBodyPayload,
 ) -> Result<SignInAnonymouslyResponsePayload> {
-    client::send_post::<
+    client.send_post::<
         SignInAnonymouslyRequestBodyPayload,
         SignInAnonymouslyResponsePayload,
     >(
-        client,
-        client::Endpoint::SignUp,
+        Endpoint::SignUp,
         api_key,
         request_payload,
         None,

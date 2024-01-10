@@ -10,10 +10,11 @@ pub enum DeleteAttribute {
 }
 
 impl DeleteAttribute {
-    pub fn format(self) -> String {
+    /// Formats the delete attribute to a string representation of the Firebase Auth.
+    pub fn format(self) -> &'static str {
         match self {
-            | DeleteAttribute::DisplayName => "DISPLAY_NAME".to_string(),
-            | DeleteAttribute::PhotoUrl => "PHOTO_URL".to_string(),
+            | DeleteAttribute::DisplayName => "DISPLAY_NAME",
+            | DeleteAttribute::PhotoUrl => "PHOTO_URL",
         }
     }
 }

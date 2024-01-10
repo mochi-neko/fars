@@ -6,8 +6,9 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client;
+use crate::client::Endpoint;
 use crate::ApiKey;
+use crate::Client;
 use crate::LanguageCode;
 use crate::Result;
 
@@ -88,22 +89,19 @@ pub struct SendEmailVerificationResponsePayload {
 /// ).await?;
 /// ```
 pub async fn send_email_verification(
-    client: &reqwest::Client,
+    client: &Client,
     api_key: &ApiKey,
     request_payload: SendEmailVerificationRequestBodyPayload,
     locale: Option<LanguageCode>,
 ) -> Result<SendEmailVerificationResponsePayload> {
-    let optional_headers = client::optional_locale_header(locale)?;
-
-    client::send_post::<
+    client.send_post::<
         SendEmailVerificationRequestBodyPayload,
         SendEmailVerificationResponsePayload,
     >(
-        client,
-        client::Endpoint::SendOobCode,
+        Endpoint::SendOobCode,
         api_key,
         request_payload,
-        optional_headers,
+        locale,
     )
     .await
 }

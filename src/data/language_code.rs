@@ -1,5 +1,7 @@
+//! Defines the language codes used by the API as locale.
+
 /// The BCP 47 language code.
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Hash, Eq, PartialEq)]
 pub enum LanguageCode {
     /// Arabic (Saudi Arabia)
     ArSA,
@@ -110,6 +112,7 @@ pub enum LanguageCode {
 }
 
 impl LanguageCode {
+    /// Formats the language code as a string.
     pub(crate) fn format(self) -> &'static str {
         match self {
             | LanguageCode::ArSA => "ar-SA",

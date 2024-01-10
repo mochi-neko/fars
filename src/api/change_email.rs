@@ -6,8 +6,10 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client;
+use crate::client::Endpoint;
 use crate::ApiKey;
+use crate::Client;
+use crate::IdToken;
 use crate::LanguageCode;
 use crate::ProviderUserInfo;
 use crate::Result;
@@ -119,22 +121,17 @@ pub struct ChangeEmailResponsePayload {
 /// ).await?;
 /// ```
 pub async fn change_email(
-    client: &reqwest::Client,
+    client: &Client,
     api_key: &ApiKey,
     request_payload: ChangeEmailRequestBodyPayload,
     locale: Option<LanguageCode>,
 ) -> Result<ChangeEmailResponsePayload> {
-    let optional_headers = client::optional_locale_header(locale)?;
-
-    client::send_post::<
-        ChangeEmailRequestBodyPayload,
-        ChangeEmailResponsePayload,
-    >(
-        client,
-        client::Endpoint::Update,
-        api_key,
-        request_payload,
-        optional_headers,
-    )
-    .await
+    client
+        .send_post::<ChangeEmailRequestBodyPayload, ChangeEmailResponsePayload>(
+            Endpoint::Update,
+            api_key,
+            request_payload,
+            locale,
+        )
+        .await
 }

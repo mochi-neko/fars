@@ -4,12 +4,11 @@
 //!
 //! See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-confirm-email-verification).
 
-#![allow(dead_code)]
-
 use serde::{Deserialize, Serialize};
 
-use crate::client;
+use crate::client::Endpoint;
 use crate::ApiKey;
+use crate::Client;
 use crate::ProviderUserInfo;
 use crate::Result;
 
@@ -99,16 +98,15 @@ pub struct ConfirmEmailVerificationResponsePayload {
 /// ).await?;
 /// ```
 pub async fn confirm_email_verification(
-    client: &reqwest::Client,
+    client: &Client,
     api_key: &ApiKey,
     request_payload: ConfirmEmailVerificationRequestBodyPayload,
 ) -> Result<ConfirmEmailVerificationResponsePayload> {
-    client::send_post::<
+    client.send_post::<
         ConfirmEmailVerificationRequestBodyPayload,
         ConfirmEmailVerificationResponsePayload,
     >(
-        client,
-        client::Endpoint::Update,
+        Endpoint::Update,
         api_key,
         request_payload,
         None,

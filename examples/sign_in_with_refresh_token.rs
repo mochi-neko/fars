@@ -7,6 +7,7 @@
 use clap::Parser;
 use fars::ApiKey;
 use fars::Config;
+use fars::RefreshToken;
 
 #[derive(Parser)]
 struct Arguments {
@@ -27,11 +28,11 @@ async fn main() -> anyhow::Result<()> {
 
     // Get a session by exchanging refresh token.
     let session = config
-        .exchange_refresh_token(
+        .exchange_refresh_token(RefreshToken::new(
             arguments
                 .refresh_token
                 .clone(),
-        )
+        ))
         .await?;
 
     println!(

@@ -7,6 +7,8 @@
 use clap::Parser;
 use fars::ApiKey;
 use fars::Config;
+use fars::Email;
+use fars::Password;
 
 #[derive(Parser)]
 struct Arguments {
@@ -30,8 +32,8 @@ async fn main() -> anyhow::Result<()> {
     // Get a session by signing up with email and password.
     let session = config
         .sign_up_with_email_password(
-            arguments.email.clone(),
-            arguments.password.clone(),
+            Email::new(arguments.email.clone()),
+            Password::new(arguments.password.clone()),
         )
         .await?;
 

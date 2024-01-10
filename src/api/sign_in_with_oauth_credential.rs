@@ -6,8 +6,9 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client;
+use crate::client::Endpoint;
 use crate::ApiKey;
+use crate::Client;
 use crate::IdpPostBody;
 use crate::Result;
 
@@ -156,16 +157,15 @@ pub struct SignInWithOAuthCredentialResponsePayload {
 /// ).await?;
 /// ```
 pub async fn sign_in_with_oauth_credential(
-    client: &reqwest::Client,
+    client: &Client,
     api_key: &ApiKey,
     request_payload: SignInWithOAuthCredentialRequestBodyPayload,
 ) -> Result<SignInWithOAuthCredentialResponsePayload> {
-    client::send_post::<
+    client.send_post::<
         SignInWithOAuthCredentialRequestBodyPayload,
         SignInWithOAuthCredentialResponsePayload,
     >(
-        client,
-        client::Endpoint::SignInWithIdp,
+        Endpoint::SignInWithIdp,
         api_key,
         request_payload,
         None,

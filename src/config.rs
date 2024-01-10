@@ -131,10 +131,15 @@
 
 use crate::api;
 use crate::ApiKey;
+use crate::Client;
+use crate::Email;
 use crate::Error;
+use crate::IdToken;
 use crate::IdpPostBody;
 use crate::LanguageCode;
+use crate::Password;
 use crate::ProviderId;
+use crate::RefreshToken;
 use crate::Result;
 use crate::Session;
 
@@ -152,9 +157,13 @@ use crate::Session;
 pub struct Config {
     /// Firebase project API key.
     api_key: ApiKey,
+    /// A HTTP client.
+    client: Client,
 }
 
 impl Config {
+    /// Creates a new config.
+    ///
     /// ## Arguments
     /// - `api_key` - Your Firebase project API key.
     ///
@@ -170,6 +179,27 @@ impl Config {
     pub fn new(api_key: ApiKey) -> Self {
         Self {
             api_key,
+            client: Client::new(),
+        }
+    }
+
+    /// Creates a new config with a custom HTTP client.
+    ///
+    /// ## Arguments
+    /// - `api_key` - Your Firebase project API key.
+    /// - `client` - A custom HTTP client.
+    ///
+    /// ## Example
+    /// ```
+    /// // TODO:
+    /// ```
+    pub fn new_custom(
+        api_key: ApiKey,
+        client: Client,
+    ) -> Self {
+        Self {
+            api_key,
+            client,
         }
     }
 
@@ -205,21 +235,19 @@ impl Config {
     /// ```
     pub async fn sign_up_with_email_password(
         &self,
-        email: String,
-        password: String,
+        email: Email,
+        password: Password,
     ) -> Result<Session> {
-        // Create a HTTP client.
-        let client = reqwest::Client::new();
-
         // Create request payload.
         let request_payload =
             api::SignUpWithEmailPasswordRequestBodyPayload::new(
-                email, password,
+                email.inner,
+                password.inner,
             );
 
         // Send request.
         let response_payload = api::sign_up_with_email_password(
-            &client,
+            &self.client,
             &self.api_key,
             request_payload,
         )
@@ -227,16 +255,16 @@ impl Config {
 
         // Create session.
         Ok(Session {
-            client,
+            client: self.client.clone(),
             api_key: self.api_key.clone(),
-            id_token: response_payload.id_token,
+            id_token: IdToken::new(response_payload.id_token),
             expires_in: response_payload
                 .expires_in
                 .parse()
                 .map_err(|error| Error::ParseExpriesInFailed {
                     error,
                 })?,
-            refresh_token: response_payload.refresh_token,
+            refresh_token: RefreshToken::new(response_payload.refresh_token),
         })
     }
 
@@ -272,21 +300,19 @@ impl Config {
     /// ```
     pub async fn sign_in_with_email_password(
         &self,
-        email: String,
-        password: String,
+        email: Email,
+        password: Password,
     ) -> Result<Session> {
-        // Create a HTTP client.
-        let client = reqwest::Client::new();
-
         // Create request payload.
         let request_payload =
             api::SignInWithEmailPasswordRequestBodyPayload::new(
-                email, password,
+                email.inner,
+                password.inner,
             );
 
         // Send request.
         let response_payload = api::sign_in_with_email_password(
-            &client,
+            &self.client,
             &self.api_key,
             request_payload,
         )
@@ -294,16 +320,16 @@ impl Config {
 
         // Create session.
         Ok(Session {
-            client,
+            client: self.client.clone(),
             api_key: self.api_key.clone(),
-            id_token: response_payload.id_token,
+            id_token: IdToken::new(response_payload.id_token),
             expires_in: response_payload
                 .expires_in
                 .parse()
                 .map_err(|error| Error::ParseExpriesInFailed {
                     error,
                 })?,
-            refresh_token: response_payload.refresh_token,
+            refresh_token: RefreshToken::new(response_payload.refresh_token),
         })
     }
 
@@ -331,29 +357,29 @@ impl Config {
     /// let session = config.sign_in_anonymously().await?;
     /// ```
     pub async fn sign_in_anonymously(&self) -> Result<Session> {
-        // Create a HTTP client.
-        let client = reqwest::Client::new();
-
         // Create request payload.
         let request_payload = api::SignInAnonymouslyRequestBodyPayload::new();
 
         // Send request.
-        let response_payload =
-            api::sign_in_anonymously(&client, &self.api_key, request_payload)
-                .await?;
+        let response_payload = api::sign_in_anonymously(
+            &self.client,
+            &self.api_key,
+            request_payload,
+        )
+        .await?;
 
         // Create session.
         Ok(Session {
-            client,
+            client: self.client.clone(),
             api_key: self.api_key.clone(),
-            id_token: response_payload.id_token,
+            id_token: IdToken::new(response_payload.id_token),
             expires_in: response_payload
                 .expires_in
                 .parse()
                 .map_err(|error| Error::ParseExpriesInFailed {
                     error,
                 })?,
-            refresh_token: response_payload.refresh_token,
+            refresh_token: RefreshToken::new(response_payload.refresh_token),
         })
     }
 
@@ -395,9 +421,6 @@ impl Config {
         request_uri: String,
         post_body: IdpPostBody,
     ) -> Result<Session> {
-        // Create a HTTP client.
-        let client = reqwest::Client::new();
-
         // Create request payload.
         let request_payload =
             api::SignInWithOAuthCredentialRequestBodyPayload::new(
@@ -408,7 +431,7 @@ impl Config {
 
         // Send request.
         let response_payload = api::sign_in_with_oauth_credential(
-            &client,
+            &self.client,
             &self.api_key,
             request_payload,
         )
@@ -416,16 +439,16 @@ impl Config {
 
         // Create session.
         Ok(Session {
-            client,
+            client: self.client.clone(),
             api_key: self.api_key.clone(),
-            id_token: response_payload.id_token,
+            id_token: IdToken::new(response_payload.id_token),
             expires_in: response_payload
                 .expires_in
                 .parse()
                 .map_err(|error| Error::ParseExpriesInFailed {
                     error,
                 })?,
-            refresh_token: response_payload.refresh_token,
+            refresh_token: RefreshToken::new(response_payload.refresh_token),
         })
     }
 
@@ -459,18 +482,16 @@ impl Config {
     /// ```
     pub async fn exchange_refresh_token(
         &self,
-        refresh_token: String,
+        refresh_token: RefreshToken,
     ) -> Result<Session> {
-        // Create a HTTP client.
-        let client = reqwest::Client::new();
-
         // Create request payload.
-        let request_payload =
-            api::ExchangeRefreshTokenRequestBodyPayload::new(refresh_token);
+        let request_payload = api::ExchangeRefreshTokenRequestBodyPayload::new(
+            refresh_token.inner,
+        );
 
         // Send request.
         let response_payload = api::exchange_refresh_token(
-            &client,
+            &self.client,
             &self.api_key,
             request_payload,
         )
@@ -478,16 +499,16 @@ impl Config {
 
         // Create session.
         Ok(Session {
-            client,
+            client: self.client.clone(),
             api_key: self.api_key.clone(),
-            id_token: response_payload.id_token,
+            id_token: IdToken::new(response_payload.id_token),
             expires_in: response_payload
                 .expires_in
                 .parse()
                 .map_err(|error| Error::ParseExpriesInFailed {
                     error,
                 })?,
-            refresh_token: response_payload.refresh_token,
+            refresh_token: RefreshToken::new(response_payload.refresh_token),
         })
     }
 
@@ -523,22 +544,19 @@ impl Config {
     /// ```
     pub async fn fetch_providers_for_email(
         &self,
-        email: String,
+        email: Email,
         continue_uri: String,
     ) -> Result<Option<Vec<ProviderId>>> {
-        // Create a HTTP client.
-        let client = reqwest::Client::new();
-
         // Create request payload.
         let request_payload =
             api::FetchProvidersForEmailRequestBodyPayload::new(
-                email,
+                email.inner,
                 continue_uri,
             );
 
         // Send request.
         let response_payload = api::fetch_providers_for_email(
-            &client,
+            &self.client,
             &self.api_key,
             request_payload,
         )
@@ -587,19 +605,16 @@ impl Config {
     /// ```
     pub async fn send_reset_password_email(
         &self,
-        email: String,
+        email: Email,
         locale: Option<LanguageCode>,
     ) -> Result<()> {
-        // Create a HTTP client.
-        let client = reqwest::Client::new();
-
         // Create request payload.
         let request_payload =
-            api::SendPasswordResetEmailRequestBodyPayload::new(email);
+            api::SendPasswordResetEmailRequestBodyPayload::new(email.inner);
 
         // Send request.
         api::send_password_reset_email(
-            &client,
+            &self.client,
             &self.api_key,
             request_payload,
             locale,

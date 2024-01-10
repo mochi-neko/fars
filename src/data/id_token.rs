@@ -1,13 +1,13 @@
-//! Defines the API key used by the Firebase Auth.
+//! Defines the ID token of the Firebase Auth.
 
-/// The Firebase project API key.
+/// ID token of the Firebase Auth.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
-pub struct ApiKey {
+pub struct IdToken {
     pub(crate) inner: String,
 }
 
-impl ApiKey {
-    /// Creates a new API key.
+impl IdToken {
+    /// Creates a new ID token.
     pub fn new<S>(into: S) -> Self
     where
         S: Into<String>,

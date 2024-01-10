@@ -6,8 +6,9 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client;
+use crate::client::Endpoint;
 use crate::ApiKey;
+use crate::Client;
 use crate::LanguageCode;
 use crate::Result;
 
@@ -86,22 +87,19 @@ pub struct SendPasswordResetEmailResponsePayload {
 /// ).await?;
 /// ```
 pub async fn send_password_reset_email(
-    client: &reqwest::Client,
+    client: &Client,
     api_key: &ApiKey,
     request_payload: SendPasswordResetEmailRequestBodyPayload,
     locale: Option<LanguageCode>,
 ) -> Result<SendPasswordResetEmailResponsePayload> {
-    let optional_headers = client::optional_locale_header(locale)?;
-
-    client::send_post::<
+    client.send_post::<
         SendPasswordResetEmailRequestBodyPayload,
         SendPasswordResetEmailResponsePayload,
     >(
-        client,
-        client::Endpoint::SendOobCode,
+        Endpoint::SendOobCode,
         api_key,
         request_payload,
-        optional_headers,
+        locale,
     )
     .await
 }

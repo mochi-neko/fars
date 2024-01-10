@@ -5,7 +5,9 @@
 //! ```
 
 use clap::Parser;
-use fars::{ApiKey, Config};
+use fars::ApiKey;
+use fars::Config;
+use fars::Email;
 
 #[derive(Parser)]
 struct Arguments {
@@ -27,7 +29,7 @@ async fn main() -> anyhow::Result<()> {
     // Fetch ID providers for specified email.
     let providers = config
         .fetch_providers_for_email(
-            arguments.email.clone(),
+            Email::new(arguments.email.clone()),
             "http://localhost".to_string(),
         )
         .await?;

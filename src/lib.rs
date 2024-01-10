@@ -10,8 +10,8 @@
 //!     - ID token verification. See [`crate::verification`].
 
 // public modules
+pub mod api;
 pub mod config;
-mod data;
 pub mod error;
 pub mod session;
 
@@ -19,9 +19,11 @@ pub mod session;
 pub(crate) mod client;
 
 // Private modules
+mod data;
 mod result;
 
 // Re-exports
+pub use crate::client::Client;
 pub use crate::config::Config;
 pub use crate::error::Error;
 pub use crate::result::Result;
@@ -30,23 +32,22 @@ pub use crate::session::Session;
 // Re-exports for data module
 pub use crate::data::api_key::ApiKey;
 pub use crate::data::delete_attribute::DeleteAttribute;
+pub use crate::data::email::Email;
+pub use crate::data::id_token::IdToken;
 pub use crate::data::idp_post_body::IdpPostBody;
 pub use crate::data::language_code::LanguageCode;
+pub use crate::data::password::Password;
+pub use crate::data::project_id::ProjectId;
 pub use crate::data::provider_id::ProviderId;
 pub use crate::data::provider_user_info::ProviderUserInfo;
+pub use crate::data::refresh_token::RefreshToken;
 pub use crate::data::user_data::UserData;
-
-// Feature "raw"
-#[cfg(feature = "raw")]
-pub mod api;
-#[cfg(not(feature = "raw"))]
-pub(crate) mod api;
 
 // Feature "verify"
 #[cfg(feature = "verify")]
 pub mod verification;
 
-// Feature "raw" or "verify"
-// Re-export reqwest for the feature "raw" or "verify" because these APIs depend on reqwest in arguments.
-#[cfg(feature = "raw_or_verify")]
+// Feature "custom_client"
+// Re-export reqwest for the feature "custom_client" to customize the HTTP client instance.
+#[cfg(feature = "custom_client")]
 pub use reqwest;

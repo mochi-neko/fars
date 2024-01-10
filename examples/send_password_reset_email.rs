@@ -5,7 +5,9 @@
 //! ```
 
 use clap::Parser;
-use fars::{ApiKey, Config};
+use fars::ApiKey;
+use fars::Config;
+use fars::Email;
 
 #[derive(Parser)]
 struct Arguments {
@@ -26,7 +28,10 @@ async fn main() -> anyhow::Result<()> {
 
     // Send a password reset email.
     config
-        .send_reset_password_email(arguments.email.clone(), None)
+        .send_reset_password_email(
+            Email::new(arguments.email.clone()),
+            None,
+        )
         .await?;
 
     println!(

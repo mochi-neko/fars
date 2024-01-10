@@ -40,6 +40,10 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+use crate::Client;
+use crate::IdToken;
+use crate::ProjectId;
+
 /// The result type for ID token verification.
 ///
 /// Please handle error case by [`VerificationError`].
@@ -97,9 +101,9 @@ pub enum VerificationError {
 /// This feature is only available when the feature "verify" is enabled.
 pub struct VerificationConfig {
     /// A HTTP client.
-    client: reqwest::Client,
+    client: Client,
     /// Your project ID of the Firebase project.
-    project_id: String,
+    project_id: ProjectId,
 }
 
 impl VerificationConfig {
@@ -110,9 +114,19 @@ impl VerificationConfig {
     ///
     /// ## Arguments
     /// - `project_id` - Your project ID of the Firebase project.
-    pub fn new(project_id: String) -> Self {
+    pub fn new(project_id: ProjectId) -> Self {
         Self {
-            client: reqwest::Client::new(),
+            client: Client::new(),
+            project_id,
+        }
+    }
+
+    pub fn new_custom(
+        client: Client,
+        project_id: ProjectId,
+    ) -> Self {
+        Self {
+            client,
             project_id,
         }
     }
@@ -147,9 +161,14 @@ impl VerificationConfig {
     /// ```
     pub async fn verify_id_token(
         &self,
-        id_token: &String,
+        id_token: &IdToken,
     ) -> VerificationResult {
-        verify_id_token(&self.client, id_token, &self.project_id).await
+        verify_id_token(
+            &self.client,
+            &id_token,
+            &self.project_id,
+        )
+        .await
     }
 }
 
@@ -213,12 +232,12 @@ pub struct IdTokenPayloadClaims {
 /// ```
 #[allow(clippy::ptr_arg)]
 pub async fn verify_id_token(
-    client: &reqwest::Client,
-    id_token: &String,
-    project_id: &String,
+    client: &Client,
+    id_token: &IdToken,
+    project_id: &ProjectId,
 ) -> VerificationResult {
     // Decode header of the ID token.
-    let header = jsonwebtoken::decode_header(id_token)
+    let header = jsonwebtoken::decode_header(&id_token.inner)
         .map_err(VerificationError::DecodeTokenHeaderFailed)?;
 
     // Verify type of the token in the header.
@@ -241,10 +260,12 @@ pub async fn verify_id_token(
         .ok_or(VerificationError::KidNotFound)?;
 
     // Get public key list from the Google API.
-    let response = client.get("https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com")
-      .send()
-      .await
-      .map_err(VerificationError::HttpRequestError)?;
+    let response = client
+        .inner
+        .get("https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com")
+        .send()
+        .await
+        .map_err(VerificationError::HttpRequestError)?;
 
     // Verify status code of the response.
     if response.status() != reqwest::StatusCode::OK {
@@ -275,10 +296,10 @@ pub async fn verify_id_token(
     // Create validation for the ID token.
     let mut validation =
         jsonwebtoken::Validation::new(jsonwebtoken::Algorithm::RS256);
-    validation.set_audience(&[project_id.clone()]);
+    validation.set_audience(&[project_id.inner.clone()]);
     validation.set_issuer(&[format!(
         "https://securetoken.google.com/{}",
-        project_id.clone()
+        project_id.inner.clone()
     )]);
     validation.set_required_spec_claims(&[
         "exp",
@@ -291,7 +312,7 @@ pub async fn verify_id_token(
 
     // Decode and verify the ID token.
     let decoded = jsonwebtoken::decode::<IdTokenPayloadClaims>(
-        id_token,
+        &id_token.inner,
         &decoding_key,
         &validation,
     )

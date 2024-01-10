@@ -4,12 +4,11 @@
 //!
 //! See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-verify-custom-token).
 
-#![allow(dead_code)]
-
 use serde::{Deserialize, Serialize};
 
-use crate::client;
+use crate::client::Endpoint;
 use crate::ApiKey;
+use crate::Client;
 use crate::Result;
 
 /// Request body payload for the exchange custom token for an ID and refresh token API.
@@ -91,16 +90,15 @@ pub struct ExchangeCustomTokenForAnIdAndRefreshTokenResponsePayload {
 /// ).await?;
 /// ```
 pub async fn exchange_custom_token_for_an_id_and_refresh_token(
-    client: &reqwest::Client,
+    client: &Client,
     api_key: &ApiKey,
     request_payload: ExchangeCustomTokenForAnIdAndRefreshTokenRequestBodyPayload,
 ) -> Result<ExchangeCustomTokenForAnIdAndRefreshTokenResponsePayload> {
-    client::send_post::<
+    client.send_post::<
         ExchangeCustomTokenForAnIdAndRefreshTokenRequestBodyPayload,
         ExchangeCustomTokenForAnIdAndRefreshTokenResponsePayload,
     >(
-        client,
-        client::Endpoint::SignInWithCustomToken,
+        Endpoint::SignInWithCustomToken,
         api_key,
         request_payload,
         None,

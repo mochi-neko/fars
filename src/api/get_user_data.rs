@@ -6,8 +6,9 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client;
+use crate::client::Endpoint;
 use crate::ApiKey;
+use crate::Client;
 use crate::Result;
 use crate::UserData;
 
@@ -81,13 +82,16 @@ pub struct GetUserDataResponsePayload {
 /// ).await?;
 /// ```
 pub async fn get_user_data(
-    client: &reqwest::Client,
+    client: &Client,
     api_key: &ApiKey,
     request_payload: GetUserDataRequestBodyPayload,
 ) -> Result<GetUserDataResponsePayload> {
-    client::send_post::<
-        GetUserDataRequestBodyPayload,
-        GetUserDataResponsePayload,
-    >(client, client::Endpoint::Lookup, api_key, request_payload, None,)
-    .await
+    client
+        .send_post::<GetUserDataRequestBodyPayload, GetUserDataResponsePayload>(
+            Endpoint::Lookup,
+            api_key,
+            request_payload,
+            None,
+        )
+        .await
 }

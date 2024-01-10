@@ -4,12 +4,11 @@
 //!
 //! See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-verify-password-reset-code)
 
-#![allow(dead_code)]
-
 use serde::{Deserialize, Serialize};
 
-use crate::client;
+use crate::client::Endpoint;
 use crate::ApiKey;
+use crate::Client;
 use crate::Result;
 
 /// Request body payload for the verify password reset code API.
@@ -85,16 +84,15 @@ pub struct VerifyPasswordResetCodeResponsePayload {
 /// ).await?;
 /// ```
 pub async fn verify_password_reset_code(
-    client: &reqwest::Client,
+    client: &Client,
     api_key: &ApiKey,
     request_payload: VerifyPasswordResetCodeRequestBodyPayload,
 ) -> Result<VerifyPasswordResetCodeResponsePayload> {
-    client::send_post::<
+    client.send_post::<
         VerifyPasswordResetCodeRequestBodyPayload,
         VerifyPasswordResetCodeResponsePayload,
     >(
-        client,
-        client::Endpoint::ResetPassword,
+        Endpoint::ResetPassword,
         api_key,
         request_payload,
         None,

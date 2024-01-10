@@ -3,12 +3,15 @@
 //! You can update a user's profile (display name / photo URL) by issuing an HTTP POST request to the Auth setAccountInfo endpoint.
 //!
 //! See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-update-profile).
+
 use serde::{Deserialize, Serialize};
 
-use crate::client;
+use crate::client::Endpoint;
 use crate::ApiKey;
+use crate::Client;
+use crate::DeleteAttribute;
+use crate::ProviderUserInfo;
 use crate::Result;
-use crate::{DeleteAttribute, ProviderUserInfo};
 
 /// Request body payload for the update profile API.
 ///
@@ -54,7 +57,7 @@ impl UpdateProfileRequestBodyPayload {
             | Some(delete_attribute) => Some(
                 delete_attribute
                     .into_iter()
-                    .map(|attribute| attribute.format())
+                    .map(|attribute| attribute.format().to_string())
                     .collect(),
             ),
             | None => None,
@@ -142,16 +145,15 @@ pub struct UpdateProfileResponsePayload {
 /// ).await?;
 /// ```
 pub async fn update_profile(
-    client: &reqwest::Client,
+    client: &Client,
     api_key: &ApiKey,
     request_payload: UpdateProfileRequestBodyPayload,
 ) -> Result<UpdateProfileResponsePayload> {
-    client::send_post::<
+    client.send_post::<
         UpdateProfileRequestBodyPayload,
         UpdateProfileResponsePayload,
     >(
-        client,
-        client::Endpoint::Update,
+        Endpoint::Update,
         api_key,
         request_payload,
         None,
