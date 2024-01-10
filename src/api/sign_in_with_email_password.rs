@@ -96,6 +96,8 @@ pub struct SignInWithEmailPasswordResponsePayload {
 /// ## Example
 /// ```
 /// use fars::api;
+/// use fars::Client;
+/// use fars::ApiKey;
 ///
 /// let request_payload = api::SignInWithEmailPasswordRequestBodyPayload::new(
 ///     "email".to_string(),
@@ -103,8 +105,8 @@ pub struct SignInWithEmailPasswordResponsePayload {
 /// );
 ///
 /// let response_payload = api::sign_in_with_email_password(
-///     reqwest::Client::new(),
-///     "your-firebase-project-api-key".to_string(),
+///     Client::new(),
+///     ApiKey::new("your-firebase-project-api-key"),
 ///     request_payload,
 /// ).await?;
 /// ```

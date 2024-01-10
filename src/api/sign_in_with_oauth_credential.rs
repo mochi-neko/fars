@@ -142,7 +142,9 @@ pub struct SignInWithOAuthCredentialResponsePayload {
 /// ## Example
 /// ```
 /// use fars::api;
-/// use fars::data::IdpPostBody;
+/// use fars::IdpPostBody;
+/// use fars::Client;
+/// use fars::ApiKey;
 ///
 /// let request_payload = api::SignInWithOAuthCredentialRequestBodyPayload::new(
 ///     "request-uri".to_string(),
@@ -151,8 +153,8 @@ pub struct SignInWithOAuthCredentialResponsePayload {
 /// );
 ///
 /// let response_payload = api::sign_in_with_oauth_credential(
-///     reqwest::Client::new(),
-///     "your-firebase-project-api-key".to_string(),
+///     Client::new(),
+///     ApiKey::new("your-firebase-project-api-key"),
 ///     request_payload,
 /// ).await?;
 /// ```

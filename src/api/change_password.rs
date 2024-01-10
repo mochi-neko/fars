@@ -102,6 +102,8 @@ pub struct ChangePasswordResponsePayload {
 /// # Example
 /// ```
 /// use fars::api;
+/// use fars::Client;
+/// use fars::ApiKey;
 ///
 /// let request_payload = api::ChangePasswordRequestBodyPayload::new(
 ///     "id-token".to_string(),
@@ -110,8 +112,8 @@ pub struct ChangePasswordResponsePayload {
 /// );
 ///
 /// let resopnse_payload = api::change_password(
-///     reqwest::Client::new(),
-///     "your-firebase-project-api-key".to_string(),
+///     Client::new(),
+///     ApiKey::new("your-firebase-project-api-key"),
 ///     request_payload,
 /// ).await?;
 /// ```

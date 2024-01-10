@@ -78,6 +78,8 @@ pub struct FetchProvidersForEmailResponsePayload {
 /// ## Example
 /// ```
 /// use fars::api;
+/// use fars::Client;
+/// use fars::ApiKey;
 ///
 /// let request_payload = api::FetchProvidersForEmailRequestBodyPayload::new(
 ///     "email".to_string(),
@@ -85,8 +87,8 @@ pub struct FetchProvidersForEmailResponsePayload {
 /// );
 ///
 /// let response_payload = api::fetch_providers_for_email(
-///     reqwest::Client::new(),
-///     "your-firebase-project-api-key".to_string(),
+///     Client::new(),
+///     ApiKey::new("your-firebase-project-api-key"),
 ///     request_payload,
 /// ).await?;
 /// ```

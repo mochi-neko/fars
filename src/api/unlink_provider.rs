@@ -101,7 +101,9 @@ pub struct UnlinkProviderResponsePayload {
 /// ## Example
 /// ```
 /// use fars::api;
-/// use fars::data::ProviderId;
+/// use fars::ProviderId;
+/// use fars::Client;
+/// use fars::ApiKey;
 ///
 /// let request_payload = api::UnlinkProviderRequestBodyPayload::new(
 ///     "id-token".to_string(),
@@ -109,8 +111,8 @@ pub struct UnlinkProviderResponsePayload {
 /// );
 ///
 /// let response_payload = api::unlink_provider(
-///     reqwest::Client::new(),
-///     "your-firebase-project-api-key".to_string(),
+///     Client::new(),
+///     ApiKey::new("your-firebase-project-api-key"),
 ///     request_payload,
 /// ).await?;
 /// ```

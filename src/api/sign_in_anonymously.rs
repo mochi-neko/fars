@@ -80,12 +80,14 @@ pub struct SignInAnonymouslyResponsePayload {
 /// ## Example
 /// ```
 /// use fars::api;
+/// use fars::Client;
+/// use fars::ApiKey;
 ///
 /// let request_payload = api::SignInAnonymouslyRequestBodyPayload::new();
 ///
 /// let response_payload = api::sign_in_anonymously(
-///     reqwest::Client::new(),
-///     "your-firebase-project-api-key".to_string(),
+///     Client::new(),
+///     ApiKey::new("your-firebase-project-api-key"),
 ///     request_payload,
 /// ).await?;
 /// ```

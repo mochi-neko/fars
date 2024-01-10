@@ -78,14 +78,16 @@ pub struct ExchangeCustomTokenForAnIdAndRefreshTokenResponsePayload {
 /// ## Example
 /// ```
 /// use fars::api;
+/// use fars::Client;
+/// use fars::ApiKey;
 ///
 /// let request_payload = api::ExchangeCustomTokenForAnIdAndRefreshTokenRequestBodyPayload::new(
 ///    "your-custom-token".to_string(),
 /// );
 ///
 /// let response_payload = api::exchange_custom_token_for_an_id_and_refresh_token(
-///     reqwest::Client::new(),
-///     "your-firebase-project-api-key".to_string(),
+///     Client::new(),
+///     ApiKey::new("your-firebase-project-api-key"),
 ///     request_payload,
 /// ).await?;
 /// ```

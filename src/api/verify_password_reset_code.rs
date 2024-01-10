@@ -72,14 +72,16 @@ pub struct VerifyPasswordResetCodeResponsePayload {
 /// ## Example
 /// ```
 /// use fars::api;
+/// use fars::Client;
+/// use fars::ApiKey;
 ///
 /// let request_payload = api::VerifyPasswordResetCodeRequestBodyPayload::new(
 ///     "oob-code".to_string(),
 /// );
 ///
 /// let response_payload = api::verify_password_reset_code(
-///     reqwest::Client::new(),
-///     "your-firebase-project-api-key".to_string(),
+///     Client::new(),
+///     ApiKey::new("your-firebase-project-api-key"),
 ///     request_payload,
 /// ).await?;
 /// ```

@@ -2,9 +2,6 @@
 //!
 //! See also [API reference](https://firebase.google.com/docs/reference/rest/auth).
 //!
-//! ## NOTICE
-//! This feature is only available when the feature `raw` is enabled.
-//!
 //! ## Supported APIs
 //!
 //! - [x] [Exchange custom token for an ID and refresh token](https://firebase.google.com/docs/reference/rest/auth#section-verify-custom-token)
@@ -38,6 +35,8 @@
 //!
 //! ```rust
 //! use fars::api;
+//! use fars::Client;
+//! use fars::ApiKey;
 //!
 //! #[tokio::main]
 //! async fn main() -> anyhow::Result<()> {
@@ -49,8 +48,8 @@
 //!   
 //!     // Send a request and receive a response payload.
 //!     let response_payload = api::sign_up_with_email_password(
-//!         reqwest::Client::new(),
-//!         "your-firebase-project-api-key".to_string(),
+//!         Client::new(),
+//!         ApiKey::new("your-firebase-project-api-key"),
 //!         request_payload,
 //!     ).await?;
 //!
@@ -66,6 +65,8 @@
 //!
 //! ```rust
 //! use fars::api;
+//! use fars::Client;
+//! use fars::ApiKey;
 //!
 //! #[tokio::main]
 //! async fn main() -> anyhow::Result<()> {
@@ -76,8 +77,8 @@
 //!
 //!     // Send a request and receive a response payload.
 //!     let response_payload = api::get_user_data(
-//!         reqwest::Client::new(),
-//!         "your-firebase-project-api-key".to_string(),
+//!         Client::new(),
+//!         ApiKey::new("your-firebase-project-api-key"),
 //!         request_payload,
 //!     ).await?;
 //!
@@ -87,8 +88,6 @@
 //!     Ok(())
 //! }
 //! ```
-
-#![allow(unused_imports)]
 
 // Private modules
 mod change_email;

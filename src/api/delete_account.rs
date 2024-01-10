@@ -65,14 +65,16 @@ pub struct DeleteAccountResponsePayload {}
 /// ## Example
 /// ```
 /// use fars::api;
+/// use fars::Client;
+/// use fars::ApiKey;
 ///
 /// let request_payload = api::DeleteAccountRequestBodyPayload::new(
 ///     "id-token".to_string(),
 /// );
 ///
 /// let response_payload = api::delete_account(
-///     reqwest::Client::new(),
-///     "your-firebase-project-api-key".to_string(),
+///     Client::new(),
+///     ApiKey::new("your-firebase-project-api-key"),
 ///     request_payload,
 /// ).await?;
 /// ```

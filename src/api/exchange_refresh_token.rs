@@ -93,14 +93,16 @@ pub struct ExchangeRefreshTokenResponsePayload {
 /// ## Example
 /// ```
 /// use fars::api;
+/// use fars::Client;
+/// use fars::ApiKey;
 ///
 /// let request_payload = api::ExchangeRefreshTokenRequestBodyPayload::new(
 ///     "refresh-token".to_string(),
 /// );
 ///
 /// let response_payload = api::exchange_refresh_token(
-///     reqwest::Client::new(),
-///     "your-firebase-project-api-key".to_string(),
+///     Client::new(),
+///     ApiKey::new("your-firebase-project-api-key"),
 ///     request_payload,
 /// ).await?;
 /// ```

@@ -86,14 +86,16 @@ pub struct ConfirmEmailVerificationResponsePayload {
 /// ## Example
 /// ```
 /// use fars::api;
+/// use fars::Client;
+/// use fars::ApiKey;
 ///
 /// let request_payload = api::ConfirmEmailVerificationRequestBodyPayload::new(
 ///     "oob-code".to_string(),
 /// );
 ///
 /// let response_payload = api::confirm_email_verification(
-///     reqwest::Client::new(),
-///     "your-firebase-project-api-key".to_string(),
+///     Client::new(),
+///     ApiKey::new("your-firebase-project-api-key"),
 ///     request_payload,
 /// ).await?;
 /// ```

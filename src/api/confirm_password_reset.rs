@@ -81,6 +81,8 @@ pub struct ConfirmPasswordResetResponsePayload {
 /// ## Example
 /// ```
 /// use fars::api;
+/// use fars::Client;
+/// use fars::ApiKey;
 ///
 /// let response_payload = api::ConfirmPasswordResetRequestBodyPayload::new(
 ///     "oob-code".to_string(),
@@ -88,8 +90,8 @@ pub struct ConfirmPasswordResetResponsePayload {
 /// );
 ///
 /// let response_payload = api::confirm_password_reset(
-///     reqwest::Client::new(),
-///     "your-firebase-project-api-key".to_string(),
+///     Client::new(),
+///     ApiKey::new("your-firebase-project-api-key"),
 ///     response_payload,
 /// ).await?;
 /// ```

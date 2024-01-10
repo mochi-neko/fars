@@ -58,7 +58,7 @@ pub struct SendEmailVerificationResponsePayload {
 /// - `client` - HTTP client.
 /// - `api_key` - Your Firebase project's API key.
 /// - `request_payload` - Request body payload.
-/// - `locale` - (Optional) The BCP 47 language code, eg: en-US.
+/// - `locale` - The BCP 47 language code, eg: en-US.
 ///
 /// ## Errors
 /// - `Error::InvalidHeaderValue` - Invalid header value.
@@ -76,16 +76,18 @@ pub struct SendEmailVerificationResponsePayload {
 /// ## Example
 /// ```
 /// use fars::api;
+/// use fars::Client;
+/// use fars::ApiKey;
 ///
 /// let request_payload = api::SendEmailVerificationRequestBodyPayload::new(
 ///     "id-token".to_string(),
 /// );
 ///
 /// let response_payload = api::send_email_verification(
-///     reqwest::Client::new(),
-///     "your-firebase-project-api-key".to_string(),
+///     Client::new(),
+///     ApiKey::new("your-firebase-project-api-key"),
 ///     request_payload,
-///     None,
+///     None, // locale
 /// ).await?;
 /// ```
 pub async fn send_email_verification(

@@ -130,6 +130,8 @@ pub struct UpdateProfileResponsePayload {
 /// ## Example
 /// ```
 /// use fars::api;
+/// use fars::Client;
+/// use fars::ApiKey;
 ///
 /// let request_payload = api::UpdateProfileRequestBodyPayload::new(
 ///     "id-token".to_string(),
@@ -139,8 +141,8 @@ pub struct UpdateProfileResponsePayload {
 /// );
 ///
 /// let response_payload = api::update_profile(
-///     reqwest::Client::new(),
-///     "your-firebase-project-api-key".to_string(),
+///     Client::new(),
+///     ApiKey::new("your-firebase-project-api-key"),
 ///     request_payload,
 /// ).await?;
 /// ```
