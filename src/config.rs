@@ -133,7 +133,6 @@ use crate::api;
 use crate::ApiKey;
 use crate::Client;
 use crate::Email;
-use crate::Error;
 use crate::ExpiresIn;
 use crate::IdToken;
 use crate::IdpPostBody;
