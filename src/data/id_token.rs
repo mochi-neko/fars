@@ -1,7 +1,8 @@
 /// ID token of the Firebase Auth.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct IdToken {
-    pub(crate) inner: String,
+    /// Inner representation.
+    pub inner: String,
 }
 
 impl IdToken {

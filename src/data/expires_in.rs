@@ -4,7 +4,8 @@ use crate::Result;
 /// Expiration time in seconds of the Firebase Auth ID token.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
 pub struct ExpiresIn {
-    pub(crate) inner: u64,
+    // Inner representation.
+    pub inner: u64,
 }
 
 impl ExpiresIn {

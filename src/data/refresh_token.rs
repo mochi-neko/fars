@@ -1,7 +1,8 @@
 /// Refresh token of the Firebase Auth to exchange for a new ID token and refresh token.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct RefreshToken {
-    pub(crate) inner: String,
+    /// Inner representation.
+    pub inner: String,
 }
 
 impl RefreshToken {
