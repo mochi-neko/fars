@@ -7,6 +7,8 @@
 use clap::Parser;
 use fars::ApiKey;
 use fars::Config;
+use fars::Email;
+use fars::Password;
 use fars::ProviderId;
 
 #[derive(Parser)]
@@ -36,8 +38,8 @@ async fn main() -> anyhow::Result<()> {
     // Link email and password.
     let session = session
         .link_with_email_password(
-            arguments.email.clone(),
-            arguments.password.clone(),
+            Email::new(arguments.email.clone()),
+            Password::new(arguments.password.clone()),
         )
         .await?;
 

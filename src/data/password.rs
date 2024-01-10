@@ -1,5 +1,3 @@
-//! Defines the password of an user.
-
 /// Password of an user.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct Password {

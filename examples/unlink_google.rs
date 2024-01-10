@@ -8,6 +8,7 @@ use clap::Parser;
 use fars::ApiKey;
 use fars::Config;
 use fars::IdpPostBody;
+use fars::OAuthRequestUri;
 use fars::ProviderId;
 
 #[derive(Parser)]
@@ -36,7 +37,7 @@ async fn main() -> anyhow::Result<()> {
 
     let session = session
         .link_with_oauth_credential(
-            arguments.request_uri.clone(),
+            OAuthRequestUri::new(arguments.request_uri.clone()),
             IdpPostBody::Google {
                 id_token: arguments.id_token.clone(),
             },

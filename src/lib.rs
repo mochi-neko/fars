@@ -32,11 +32,16 @@ pub use crate::session::Session;
 // Re-exports for data module
 pub use crate::data::api_key::ApiKey;
 pub use crate::data::delete_attribute::DeleteAttribute;
+pub use crate::data::display_name::DisplayName;
 pub use crate::data::email::Email;
+pub use crate::data::expires_in::ExpiresIn;
 pub use crate::data::id_token::IdToken;
 pub use crate::data::idp_post_body::IdpPostBody;
 pub use crate::data::language_code::LanguageCode;
+pub use crate::data::oauth_continue_uri::OAuthContinueUri;
+pub use crate::data::oauth_request_uri::OAuthRequestUri;
 pub use crate::data::password::Password;
+pub use crate::data::photo_url::PhotoUrl;
 pub use crate::data::project_id::ProjectId;
 pub use crate::data::provider_id::ProviderId;
 pub use crate::data::provider_user_info::ProviderUserInfo;

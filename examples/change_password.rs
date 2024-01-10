@@ -41,7 +41,9 @@ async fn main() -> anyhow::Result<()> {
 
     // Change password.
     let session = session
-        .change_password(arguments.new_password.clone())
+        .change_password(Password::new(
+            arguments.new_password.clone(),
+        ))
         .await?;
 
     println!(

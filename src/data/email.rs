@@ -1,5 +1,3 @@
-//! Defines the email of an user.
-
 /// Email of an user.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct Email {

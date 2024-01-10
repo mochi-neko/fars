@@ -8,6 +8,7 @@ use clap::Parser;
 use fars::ApiKey;
 use fars::Config;
 use fars::Email;
+use fars::OAuthContinueUri;
 
 #[derive(Parser)]
 struct Arguments {
@@ -30,7 +31,7 @@ async fn main() -> anyhow::Result<()> {
     let providers = config
         .fetch_providers_for_email(
             Email::new(arguments.email.clone()),
-            "http://localhost".to_string(),
+            OAuthContinueUri::new("http://localhost"),
         )
         .await?;
 

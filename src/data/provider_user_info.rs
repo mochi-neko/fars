@@ -1,5 +1,3 @@
-//! Defines the provider user information of the Firebase Auth.
-
 use serde::Deserialize;
 
 /// Provider user information.

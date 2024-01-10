@@ -1,5 +1,3 @@
-//! Defines the project ID of the Firebase.
-
 /// The Firebase project ID.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct ProjectId {

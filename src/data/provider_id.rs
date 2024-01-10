@@ -1,5 +1,3 @@
-//! Defines the provider ID of the Firebase Auth.
-
 use std::fmt::Display;
 
 /// ID provider identifiers defined at [document](https://firebase.google.com/docs/projects/provisioning/configure-oauth#add-idp).

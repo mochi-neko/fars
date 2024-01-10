@@ -1,5 +1,3 @@
-//! Defines the API key used by the Firebase Auth.
-
 /// The Firebase project API key.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct ApiKey {

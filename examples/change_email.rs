@@ -41,7 +41,10 @@ async fn main() -> anyhow::Result<()> {
 
     // Change email.
     let session = session
-        .change_email(arguments.new_email.clone(), None)
+        .change_email(
+            Email::new(arguments.new_email.clone()),
+            None,
+        )
         .await?;
 
     println!(

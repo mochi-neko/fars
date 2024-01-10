@@ -7,8 +7,10 @@
 use clap::Parser;
 use fars::ApiKey;
 use fars::Config;
+use fars::DisplayName;
 use fars::Email;
 use fars::Password;
+use fars::PhotoUrl;
 
 #[derive(Parser)]
 struct Arguments {
@@ -44,8 +46,12 @@ async fn main() -> anyhow::Result<()> {
     // Update profile.
     let session = session
         .update_profile(
-            Some(arguments.display_name.clone()),
-            Some(arguments.photo_url.clone()),
+            Some(DisplayName::new(
+                arguments.display_name.clone(),
+            )),
+            Some(PhotoUrl::new(
+                arguments.photo_url.clone(),
+            )),
         )
         .await?;
 

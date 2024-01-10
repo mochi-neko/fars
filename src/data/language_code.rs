@@ -1,5 +1,3 @@
-//! Defines the language codes used by the API as locale.
-
 /// The BCP 47 language code.
 #[derive(Copy, Clone, Debug, Hash, Eq, PartialEq)]
 pub enum LanguageCode {

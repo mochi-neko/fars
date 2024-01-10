@@ -1,5 +1,3 @@
-//! Defines the post body for ID providers.
-
 use serde::Serialize;
 
 use crate::ProviderId;

@@ -77,7 +77,7 @@ cargo run --example handle_error -- --email $EMAIL --password $PASSWORD
 
 # Run examples for raw APIs.
 
-cargo run --example raw_sign_in_with_email_password --features raw -- --email $EMAIL --password $PASSWORD
+cargo run --example raw_sign_in_with_email_password -- --email $EMAIL --password $PASSWORD
 
 # Run examples for ID token verification.
 

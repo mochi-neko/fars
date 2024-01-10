@@ -134,9 +134,12 @@ use crate::ApiKey;
 use crate::Client;
 use crate::Email;
 use crate::Error;
+use crate::ExpiresIn;
 use crate::IdToken;
 use crate::IdpPostBody;
 use crate::LanguageCode;
+use crate::OAuthContinueUri;
+use crate::OAuthRequestUri;
 use crate::Password;
 use crate::ProviderId;
 use crate::RefreshToken;
@@ -258,12 +261,7 @@ impl Config {
             client: self.client.clone(),
             api_key: self.api_key.clone(),
             id_token: IdToken::new(response_payload.id_token),
-            expires_in: response_payload
-                .expires_in
-                .parse()
-                .map_err(|error| Error::ParseExpriesInFailed {
-                    error,
-                })?,
+            expires_in: ExpiresIn::parse(response_payload.expires_in)?,
             refresh_token: RefreshToken::new(response_payload.refresh_token),
         })
     }
@@ -323,12 +321,7 @@ impl Config {
             client: self.client.clone(),
             api_key: self.api_key.clone(),
             id_token: IdToken::new(response_payload.id_token),
-            expires_in: response_payload
-                .expires_in
-                .parse()
-                .map_err(|error| Error::ParseExpriesInFailed {
-                    error,
-                })?,
+            expires_in: ExpiresIn::parse(response_payload.expires_in)?,
             refresh_token: RefreshToken::new(response_payload.refresh_token),
         })
     }
@@ -373,12 +366,7 @@ impl Config {
             client: self.client.clone(),
             api_key: self.api_key.clone(),
             id_token: IdToken::new(response_payload.id_token),
-            expires_in: response_payload
-                .expires_in
-                .parse()
-                .map_err(|error| Error::ParseExpriesInFailed {
-                    error,
-                })?,
+            expires_in: ExpiresIn::parse(response_payload.expires_in)?,
             refresh_token: RefreshToken::new(response_payload.refresh_token),
         })
     }
@@ -418,13 +406,13 @@ impl Config {
     /// ```
     pub async fn sign_in_with_oauth_credential(
         &self,
-        request_uri: String,
+        request_uri: OAuthRequestUri,
         post_body: IdpPostBody,
     ) -> Result<Session> {
         // Create request payload.
         let request_payload =
             api::SignInWithOAuthCredentialRequestBodyPayload::new(
-                request_uri,
+                request_uri.inner,
                 post_body,
                 false,
             );
@@ -442,12 +430,7 @@ impl Config {
             client: self.client.clone(),
             api_key: self.api_key.clone(),
             id_token: IdToken::new(response_payload.id_token),
-            expires_in: response_payload
-                .expires_in
-                .parse()
-                .map_err(|error| Error::ParseExpriesInFailed {
-                    error,
-                })?,
+            expires_in: ExpiresIn::parse(response_payload.expires_in)?,
             refresh_token: RefreshToken::new(response_payload.refresh_token),
         })
     }
@@ -502,12 +485,7 @@ impl Config {
             client: self.client.clone(),
             api_key: self.api_key.clone(),
             id_token: IdToken::new(response_payload.id_token),
-            expires_in: response_payload
-                .expires_in
-                .parse()
-                .map_err(|error| Error::ParseExpriesInFailed {
-                    error,
-                })?,
+            expires_in: ExpiresIn::parse(response_payload.expires_in)?,
             refresh_token: RefreshToken::new(response_payload.refresh_token),
         })
     }
@@ -545,13 +523,13 @@ impl Config {
     pub async fn fetch_providers_for_email(
         &self,
         email: Email,
-        continue_uri: String,
+        continue_uri: OAuthContinueUri,
     ) -> Result<Option<Vec<ProviderId>>> {
         // Create request payload.
         let request_payload =
             api::FetchProvidersForEmailRequestBodyPayload::new(
                 email.inner,
-                continue_uri,
+                continue_uri.inner,
             );
 
         // Send request.

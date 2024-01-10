@@ -1,5 +1,3 @@
-//! Defines the user data of the Firebase Auth.
-
 use serde::Deserialize;
 
 use crate::ProviderUserInfo;

@@ -66,10 +66,16 @@ use crate::api;
 use crate::ApiKey;
 use crate::Client;
 use crate::DeleteAttribute;
+use crate::DisplayName;
+use crate::Email;
 use crate::Error;
+use crate::ExpiresIn;
 use crate::IdToken;
 use crate::IdpPostBody;
 use crate::LanguageCode;
+use crate::OAuthRequestUri;
+use crate::Password;
+use crate::PhotoUrl;
 use crate::ProviderId;
 use crate::RefreshToken;
 use crate::Result;
@@ -99,10 +105,9 @@ pub struct Session {
     /// Firebase Auth ID token.
     pub id_token: IdToken,
     /// The number of seconds in which the ID token expires.
-    #[allow(dead_code)] // NOTE: This field may be used in the future.
-    pub(crate) expires_in: u64,
+    pub expires_in: ExpiresIn,
     /// Firebase Auth refresh token.
-    pub(crate) refresh_token: RefreshToken,
+    pub refresh_token: RefreshToken,
 }
 
 // Defines macros for calling APIs with refreshing tokens.
@@ -285,7 +290,7 @@ impl Session {
     /// ```
     pub async fn change_email(
         self,
-        new_email: String,
+        new_email: Email,
         locale: Option<LanguageCode>,
     ) -> Result<Session> {
         call_refreshing_tokens_without_value_return_session!(
@@ -335,7 +340,7 @@ impl Session {
     /// ```
     pub async fn change_password(
         self,
-        new_password: String,
+        new_password: Password,
     ) -> Result<Session> {
         call_refreshing_tokens_without_value_return_session!(
             self,
@@ -384,8 +389,8 @@ impl Session {
     /// ```
     pub async fn update_profile(
         self,
-        display_name: Option<String>,
-        photo_url: Option<String>,
+        display_name: Option<DisplayName>,
+        photo_url: Option<PhotoUrl>,
     ) -> Result<Session> {
         call_refreshing_tokens_without_value_return_session!(
             self,
@@ -531,8 +536,8 @@ impl Session {
     /// ```
     pub async fn link_with_email_password(
         self,
-        email: String,
-        password: String,
+        email: Email,
+        password: Password,
     ) -> Result<Session> {
         call_refreshing_tokens_without_value_return_session!(
             self,
@@ -587,7 +592,7 @@ impl Session {
     /// ```
     pub async fn link_with_oauth_credential(
         self,
-        request_uri: String,
+        request_uri: OAuthRequestUri,
         post_body: IdpPostBody,
     ) -> Result<Session> {
         call_refreshing_tokens_without_value_return_session!(
@@ -770,7 +775,7 @@ impl Session {
         );
 
         // Send request.
-        let response = api::exchange_refresh_token(
+        let response_payload = api::exchange_refresh_token(
             &self.client,
             &self.api_key,
             request_payload,
@@ -781,14 +786,9 @@ impl Session {
         Ok(Self {
             client: self.client.clone(),
             api_key: self.api_key.clone(),
-            id_token: IdToken::new(response.id_token),
-            expires_in: response
-                .expires_in
-                .parse()
-                .map_err(|error| Error::ParseExpriesInFailed {
-                    error,
-                })?,
-            refresh_token: RefreshToken::new(response.refresh_token),
+            id_token: IdToken::new(response_payload.id_token),
+            expires_in: ExpiresIn::parse(response_payload.expires_in)?,
+            refresh_token: RefreshToken::new(response_payload.refresh_token),
         })
     }
 }
@@ -797,13 +797,13 @@ impl Session {
 impl Session {
     async fn change_email_internal(
         &self,
-        new_email: String,
+        new_email: Email,
         locale: Option<LanguageCode>,
     ) -> Result<()> {
         // Create request payload.
         let request_payload = api::ChangeEmailRequestBodyPayload::new(
             self.id_token.inner.clone(),
-            new_email,
+            new_email.inner,
             false,
         );
 
@@ -821,12 +821,12 @@ impl Session {
 
     async fn change_password_internal(
         &self,
-        new_password: String,
+        new_password: Password,
     ) -> Result<()> {
         // Create request payload.
         let request_payload = api::ChangePasswordRequestBodyPayload::new(
             self.id_token.inner.clone(),
-            new_password,
+            new_password.inner,
             false,
         );
 
@@ -843,14 +843,14 @@ impl Session {
 
     async fn update_profile_internal(
         &self,
-        display_name: Option<String>,
-        photo_url: Option<String>,
+        display_name: Option<DisplayName>,
+        photo_url: Option<PhotoUrl>,
     ) -> Result<()> {
         // Create request payload.
         let request_payload = api::UpdateProfileRequestBodyPayload::new(
             self.id_token.inner.clone(),
-            display_name,
-            photo_url,
+            display_name.map(|display_name| display_name.inner.clone()),
+            photo_url.map(|photo_url| photo_url.inner.clone()),
             None,
             false,
         );
@@ -903,7 +903,7 @@ impl Session {
         );
 
         // Send request.
-        let response = api::get_user_data(
+        let response_payload = api::get_user_data(
             &self.client,
             &self.api_key,
             request_payload,
@@ -911,7 +911,7 @@ impl Session {
         .await?;
 
         // Take the first user from vector.
-        let user = response
+        let user = response_payload
             .users
             .first()
             .ok_or(Error::NotFoundAnyUserData)?;
@@ -938,14 +938,14 @@ impl Session {
 
     async fn link_with_email_password_internal(
         &self,
-        email: String,
-        password: String,
+        email: Email,
+        password: Password,
     ) -> Result<Self> {
         // Create request payload.
         let request_payload = api::LinkWithEmailPasswordRequestBodyPayload::new(
             self.id_token.inner.clone(),
-            email,
-            password,
+            email.inner,
+            password.inner,
         );
 
         // Send request.
@@ -961,26 +961,21 @@ impl Session {
             client: self.client.clone(),
             api_key: self.api_key.clone(),
             id_token: IdToken::new(response_payload.id_token),
-            expires_in: response_payload
-                .expires_in
-                .parse()
-                .map_err(|error| Error::ParseExpriesInFailed {
-                    error,
-                })?,
+            expires_in: ExpiresIn::parse(response_payload.expires_in)?,
             refresh_token: RefreshToken::new(response_payload.refresh_token),
         })
     }
 
     async fn link_with_oauth_credential_internal(
         &self,
-        request_uri: String,
+        request_uri: OAuthRequestUri,
         post_body: IdpPostBody,
     ) -> Result<Self> {
         // Create request payload.
         let request_payload =
             api::LinkWithOAuthCredentialRequestBodyPayload::new(
                 self.id_token.inner.clone(),
-                request_uri,
+                request_uri.inner,
                 post_body,
                 false,
             );
@@ -998,12 +993,7 @@ impl Session {
             client: self.client.clone(),
             api_key: self.api_key.clone(),
             id_token: IdToken::new(response_payload.id_token),
-            expires_in: response_payload
-                .expires_in
-                .parse()
-                .map_err(|error| Error::ParseExpriesInFailed {
-                    error,
-                })?,
+            expires_in: ExpiresIn::parse(response_payload.expires_in)?,
             refresh_token: RefreshToken::new(response_payload.refresh_token),
         })
     }

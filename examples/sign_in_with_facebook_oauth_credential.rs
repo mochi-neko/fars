@@ -10,6 +10,7 @@ use clap::Parser;
 use fars::ApiKey;
 use fars::Config;
 use fars::IdpPostBody;
+use fars::OAuthRequestUri;
 
 #[derive(Parser)]
 struct Arguments {
@@ -33,7 +34,7 @@ async fn main() -> anyhow::Result<()> {
     // Get a session by signing in Facebook OAuth credential.
     let session = config
         .sign_in_with_oauth_credential(
-            arguments.request_uri.clone(),
+            OAuthRequestUri::new(arguments.request_uri.clone()),
             IdpPostBody::Facebook {
                 access_token: arguments.access_token.clone(),
             },

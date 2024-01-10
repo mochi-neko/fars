@@ -1,5 +1,3 @@
-//! Defines the ID token of the Firebase Auth.
-
 /// ID token of the Firebase Auth.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct IdToken {

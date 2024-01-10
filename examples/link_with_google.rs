@@ -7,6 +7,7 @@ use clap::Parser;
 use fars::ApiKey;
 use fars::Config;
 use fars::IdpPostBody;
+use fars::OAuthRequestUri;
 
 #[derive(Parser)]
 struct Arguments {
@@ -35,7 +36,7 @@ async fn main() -> anyhow::Result<()> {
     // Link with Google OAuth credential.
     let session = session
         .link_with_oauth_credential(
-            arguments.request_uri.clone(),
+            OAuthRequestUri::new(arguments.request_uri.clone()),
             IdpPostBody::Google {
                 id_token: arguments.id_token.clone(),
             },
