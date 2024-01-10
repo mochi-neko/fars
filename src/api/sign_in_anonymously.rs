@@ -97,7 +97,7 @@ pub async fn sign_in_anonymously(
         SignInAnonymouslyResponsePayload,
     >(
         client,
-        "accounts:signUp",
+        client::Endpoint::SignUp,
         api_key,
         request_payload,
         None,

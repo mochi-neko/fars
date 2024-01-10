@@ -165,7 +165,7 @@ pub async fn sign_in_with_oauth_credential(
         SignInWithOAuthCredentialResponsePayload,
     >(
         client,
-        "accounts:signInWithIdp",
+        client::Endpoint::SignInWithIdp,
         api_key,
         request_payload,
         None,

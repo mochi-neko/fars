@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client;
 use crate::ApiKey;
+use crate::LanguageCode;
 use crate::Result;
 
 /// Request body payload for the send email verification API.
@@ -90,7 +91,7 @@ pub async fn send_email_verification(
     client: &reqwest::Client,
     api_key: &ApiKey,
     request_payload: SendEmailVerificationRequestBodyPayload,
-    locale: Option<String>,
+    locale: Option<LanguageCode>,
 ) -> Result<SendEmailVerificationResponsePayload> {
     let optional_headers = client::optional_locale_header(locale)?;
 
@@ -99,7 +100,7 @@ pub async fn send_email_verification(
         SendEmailVerificationResponsePayload,
     >(
         client,
-        "accounts:sendOobCode",
+        client::Endpoint::SendOobCode,
         api_key,
         request_payload,
         optional_headers,

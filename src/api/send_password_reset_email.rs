@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client;
 use crate::ApiKey;
+use crate::LanguageCode;
 use crate::Result;
 
 /// Request body payload for the send password reset email API.
@@ -88,7 +89,7 @@ pub async fn send_password_reset_email(
     client: &reqwest::Client,
     api_key: &ApiKey,
     request_payload: SendPasswordResetEmailRequestBodyPayload,
-    locale: Option<String>,
+    locale: Option<LanguageCode>,
 ) -> Result<SendPasswordResetEmailResponsePayload> {
     let optional_headers = client::optional_locale_header(locale)?;
 
@@ -97,7 +98,7 @@ pub async fn send_password_reset_email(
         SendPasswordResetEmailResponsePayload,
     >(
         client,
-        "accounts:sendOobCode",
+        client::Endpoint::SendOobCode,
         api_key,
         request_payload,
         optional_headers,

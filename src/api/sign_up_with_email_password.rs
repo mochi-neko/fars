@@ -114,7 +114,7 @@ pub async fn sign_up_with_email_password(
         SignUpWithEmailPasswordResponsePayload,
     >(
         client,
-        "accounts:signUp",
+        client::Endpoint::SignUp,
         api_key,
         request_payload,
         None,

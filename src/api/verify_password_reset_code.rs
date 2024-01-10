@@ -94,7 +94,7 @@ pub async fn verify_password_reset_code(
         VerifyPasswordResetCodeResponsePayload,
     >(
         client,
-        "accounts:resetPassword",
+        client::Endpoint::ResetPassword,
         api_key,
         request_payload,
         None,

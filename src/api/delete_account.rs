@@ -85,7 +85,7 @@ pub async fn delete_account(
         DeleteAccountResponsePayload,
     >(
         client,
-        "accounts:delete",
+        client::Endpoint::Delete,
         api_key,
         request_payload,
         None,

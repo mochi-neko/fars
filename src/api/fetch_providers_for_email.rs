@@ -99,7 +99,7 @@ pub async fn fetch_providers_for_email(
         FetchProvidersForEmailResponsePayload,
     >(
         client,
-        "accounts:createAuthUri",
+        client::Endpoint::CreateAuthUri,
         api_key,
         request_payload,
         None,

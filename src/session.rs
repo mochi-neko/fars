@@ -65,6 +65,7 @@ use std::collections::HashSet;
 use crate::api;
 use crate::ApiKey;
 use crate::Error;
+use crate::LanguageCode;
 use crate::Result;
 use crate::{DeleteAttribute, IdpPostBody, ProviderId, UserData};
 
@@ -279,14 +280,14 @@ impl Session {
     pub async fn change_email(
         self,
         new_email: String,
-        locale: Option<String>,
+        locale: Option<LanguageCode>,
     ) -> Result<Session> {
         call_refreshing_tokens_without_value_return_session!(
             self,
             Session::change_email_internal,
             1,
             new_email.clone(),
-            locale.clone()
+            locale
         )
         .await
     }
@@ -678,13 +679,13 @@ impl Session {
     /// ```
     pub async fn send_email_verification(
         self,
-        locale: Option<String>,
+        locale: Option<LanguageCode>,
     ) -> Result<Session> {
         call_refreshing_tokens_without_value_return_session!(
             self,
             Session::send_email_verification_internal,
             1,
-            locale.clone()
+            locale
         )
         .await
     }
@@ -791,7 +792,7 @@ impl Session {
     async fn change_email_internal(
         &self,
         new_email: String,
-        locale: Option<String>,
+        locale: Option<LanguageCode>,
     ) -> Result<()> {
         // Create request payload.
         let request_payload = api::ChangeEmailRequestBodyPayload::new(
@@ -1023,7 +1024,7 @@ impl Session {
 
     async fn send_email_verification_internal(
         &self,
-        locale: Option<String>,
+        locale: Option<LanguageCode>,
     ) -> Result<()> {
         // Create request payload.
         let request_payload = api::SendEmailVerificationRequestBodyPayload::new(

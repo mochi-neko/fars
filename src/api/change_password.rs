@@ -124,7 +124,7 @@ pub async fn change_password(
         ChangePasswordResponsePayload,
     >(
         client,
-        "accounts:update",
+        client::Endpoint::Update,
         api_key,
         request_payload,
         None,

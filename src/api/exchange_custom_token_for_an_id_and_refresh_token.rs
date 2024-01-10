@@ -100,7 +100,7 @@ pub async fn exchange_custom_token_for_an_id_and_refresh_token(
         ExchangeCustomTokenForAnIdAndRefreshTokenResponsePayload,
     >(
         client,
-        "accounts:signInWithCustomToken",
+        client::Endpoint::SignInWithCustomToken,
         api_key,
         request_payload,
         None,

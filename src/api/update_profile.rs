@@ -151,7 +151,7 @@ pub async fn update_profile(
         UpdateProfileResponsePayload,
     >(
         client,
-        "accounts:update",
+        client::Endpoint::Update,
         api_key,
         request_payload,
         None,

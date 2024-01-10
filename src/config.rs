@@ -133,6 +133,7 @@ use crate::api;
 use crate::ApiKey;
 use crate::Error;
 use crate::IdpPostBody;
+use crate::LanguageCode;
 use crate::ProviderId;
 use crate::Result;
 use crate::Session;
@@ -587,7 +588,7 @@ impl Config {
     pub async fn send_reset_password_email(
         &self,
         email: String,
-        locale: Option<String>,
+        locale: Option<LanguageCode>,
     ) -> Result<()> {
         // Create a HTTP client.
         let client = reqwest::Client::new();

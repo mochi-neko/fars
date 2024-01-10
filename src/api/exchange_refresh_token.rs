@@ -113,7 +113,7 @@ pub async fn exchange_refresh_token(
         ExchangeRefreshTokenResponsePayload,
     >(
         client,
-        "token",
+        client::Endpoint::Token,
         api_key,
         request_payload,
         None,

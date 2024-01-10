@@ -169,7 +169,7 @@ pub async fn link_with_oauth_credential(
         LinkWithOAuthCredentialResponsePayload,
     >(
         client,
-        "accounts:signInWithIdp",
+        client::Endpoint::SignInWithIdp,
         api_key,
         request_payload,
         None,

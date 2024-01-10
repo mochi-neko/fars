@@ -117,7 +117,7 @@ pub async fn sign_in_with_email_password(
         SignInWithEmailPasswordResponsePayload,
     >(
         client,
-        "accounts:signInWithPassword",
+        client::Endpoint::SignInWithPassword,
         api_key,
         request_payload,
         None,

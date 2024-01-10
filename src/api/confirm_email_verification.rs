@@ -108,7 +108,7 @@ pub async fn confirm_email_verification(
         ConfirmEmailVerificationResponsePayload,
     >(
         client,
-        "accounts:update",
+        client::Endpoint::Update,
         api_key,
         request_payload,
         None,

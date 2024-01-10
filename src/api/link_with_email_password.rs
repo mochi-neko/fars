@@ -139,7 +139,7 @@ pub async fn link_with_email_password(
         LinkWithEmailPasswordResponsePayload,
     >(
         client,
-        "accounts:update",
+        client::Endpoint::Update,
         api_key,
         request_payload,
         None,

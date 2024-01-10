@@ -4,8 +4,11 @@
 
 use serde::{de::DeserializeOwned, Serialize};
 
-use crate::error::{ApiErrorResponse, CommonErrorCode, Error};
-use crate::{ApiKey, Result};
+use crate::error::{ApiErrorResponse, CommonErrorCode};
+use crate::ApiKey;
+use crate::Error;
+use crate::LanguageCode;
+use crate::Result;
 
 /// Sends a POST request to the Firebase Auth API.
 ///
@@ -30,7 +33,7 @@ use crate::{ApiKey, Result};
 /// - `Error::ApiError` - API error on the Firebase Auth.
 pub(crate) async fn send_post<T, U>(
     client: &reqwest::Client,
-    endpoint: &str,
+    endpoint: Endpoint,
     api_key: &ApiKey,
     request_payload: T,
     optional_headers: Option<reqwest::header::HeaderMap>,
@@ -42,7 +45,8 @@ where
     // Build a request URL.
     let url = format!(
         "https://identitytoolkit.googleapis.com/v1/{}?key={}",
-        endpoint, api_key.inner
+        endpoint.format(),
+        api_key.inner
     );
 
     // Create request builder and set method and payload.
@@ -112,7 +116,52 @@ where
     }
 }
 
-pub(crate) enum Endpoint {}
+/// The endpoint to send the request to.
+pub(crate) enum Endpoint {
+    /// accounts:signInWithCustomToken
+    SignInWithCustomToken,
+    /// token
+    Token,
+    /// accounts:signUp
+    SignUp,
+    /// accounts:signInWithPassword
+    SignInWithPassword,
+    /// accounts:signInWithIdp
+    SignInWithIdp,
+    /// accounts:createAuthUri
+    CreateAuthUri,
+    /// accounts:sendOobCode
+    SendOobCode,
+    /// accounts:resetPassword
+    ResetPassword,
+    /// accounts:update
+    Update,
+    /// accounts:lookup
+    Lookup,
+    /// accounts:delete
+    Delete,
+}
+
+impl Endpoint {
+    /// Formats the endpoint to a string.
+    pub(crate) fn format(self) -> &'static str {
+        match self {
+            | Endpoint::SignInWithCustomToken => {
+                "accounts:signInWithCustomToken"
+            },
+            | Endpoint::Token => "token",
+            | Endpoint::SignUp => "accounts:signUp",
+            | Endpoint::SignInWithPassword => "accounts:signInWithPassword",
+            | Endpoint::SignInWithIdp => "accounts:signInWithIdp",
+            | Endpoint::CreateAuthUri => "accounts:createAuthUri",
+            | Endpoint::SendOobCode => "accounts:sendOobCode",
+            | Endpoint::ResetPassword => "accounts:resetPassword",
+            | Endpoint::Update => "accounts:update",
+            | Endpoint::Lookup => "accounts:lookup",
+            | Endpoint::Delete => "accounts:delete",
+        }
+    }
+}
 
 /// Creates optional headers for the locale.
 ///
@@ -125,19 +174,18 @@ pub(crate) enum Endpoint {}
 /// ## Errors
 /// - `Error::InvalidHeaderValue` - Invalid header value.
 pub(crate) fn optional_locale_header(
-    locale: Option<String>
+    locale: Option<LanguageCode>
 ) -> Result<Option<reqwest::header::HeaderMap>> {
     match locale {
         | Some(locale) => {
             let mut headers = reqwest::header::HeaderMap::new();
             headers.insert(
                 "X-Firebase-Locale",
-                reqwest::header::HeaderValue::from_str(&locale).map_err(
-                    |error| Error::InvalidHeaderValue {
+                reqwest::header::HeaderValue::from_str(locale.format())
+                    .map_err(|error| Error::InvalidHeaderValue {
                         key: "X-Firebase-Locale",
                         error,
-                    },
-                )?,
+                    })?,
             );
             Ok(Some(headers))
         },

@@ -104,7 +104,7 @@ pub async fn confirm_password_reset(
         ConfirmPasswordResetResponsePayload,
     >(
         client,
-        "accounts:resetPassword",
+        client::Endpoint::ResetPassword,
         api_key,
         request_payload,
         None,

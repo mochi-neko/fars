@@ -31,6 +31,7 @@ pub use crate::session::Session;
 pub use crate::data::api_key::ApiKey;
 pub use crate::data::delete_attribute::DeleteAttribute;
 pub use crate::data::idp_post_body::IdpPostBody;
+pub use crate::data::language_code::LanguageCode;
 pub use crate::data::provider_id::ProviderId;
 pub use crate::data::provider_user_info::ProviderUserInfo;
 pub use crate::data::user_data::UserData;

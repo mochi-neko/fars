@@ -7,8 +7,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client;
-use crate::data::api_key;
 use crate::ApiKey;
+use crate::LanguageCode;
 use crate::ProviderUserInfo;
 use crate::Result;
 
@@ -122,7 +122,7 @@ pub async fn change_email(
     client: &reqwest::Client,
     api_key: &ApiKey,
     request_payload: ChangeEmailRequestBodyPayload,
-    locale: Option<String>,
+    locale: Option<LanguageCode>,
 ) -> Result<ChangeEmailResponsePayload> {
     let optional_headers = client::optional_locale_header(locale)?;
 
@@ -131,7 +131,7 @@ pub async fn change_email(
         ChangeEmailResponsePayload,
     >(
         client,
-        "accounts:update",
+        client::Endpoint::Update,
         api_key,
         request_payload,
         optional_headers,
