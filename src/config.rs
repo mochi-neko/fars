@@ -195,7 +195,8 @@ impl Config {
     /// ```
     /// // TODO:
     /// ```
-    pub fn new_custom(
+    #[cfg(feature = "custom_client")]
+    pub fn custom(
         api_key: ApiKey,
         client: Client,
     ) -> Self {

@@ -32,7 +32,7 @@ impl Client {
 
     /// Creates a new HTTP client with a custom instance.
     #[cfg(feature = "custom_client")]
-    pub fn new_custom(client: crate::reqwest::Client) -> Self {
+    pub fn custom(client: crate::reqwest::Client) -> Self {
         Self {
             inner: client,
         }

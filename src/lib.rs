@@ -53,6 +53,6 @@ pub use crate::data::user_data::UserData;
 pub mod verification;
 
 // Feature "custom_client"
-// Re-export reqwest for the feature "custom_client" to customize the HTTP client instance.
+// Re-export reqwest for the feature "custom_client" to customize the HTTP client.
 #[cfg(feature = "custom_client")]
 pub use reqwest;

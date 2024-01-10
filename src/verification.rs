@@ -121,7 +121,8 @@ impl VerificationConfig {
         }
     }
 
-    pub fn new_custom(
+    #[cfg(feature = "custom_client")]
+    pub fn custom(
         client: Client,
         project_id: ProjectId,
     ) -> Self {
@@ -230,8 +231,7 @@ pub struct IdTokenPayloadClaims {
 ///     },
 /// }
 /// ```
-#[allow(clippy::ptr_arg)]
-pub async fn verify_id_token(
+async fn verify_id_token(
     client: &Client,
     id_token: &IdToken,
     project_id: &ProjectId,

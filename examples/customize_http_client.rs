@@ -1,7 +1,7 @@
-//! An example code to verify an ID token of the Firebase Auth for signing in user.
+//! An example to customize HTTP client for APIs.
 //!
 //! ```shell
-//! $ cargo run --example verify_id_token --features verify -- --email <email> --password <password>
+//! $ cargo run --example customize_http_client --features custom_client -- --email <email> --password <password>
 //! ```
 
 use clap::Parser;
@@ -16,20 +16,22 @@ struct Arguments {
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    #[cfg(not(feature = "verify"))]
+    #[cfg(not(feature = "custom_client"))]
     {
         return Err(anyhow::anyhow!(
-            "Feature \"verify\" is not enabled.",
+            "Feature \"custom_client\" is not enabled.",
         ));
     }
 
-    #[cfg(feature = "verify")]
+    #[cfg(feature = "custom_client")]
     {
+        use std::time::Duration;
+
         use fars::ApiKey;
+        use fars::Client;
         use fars::Config;
         use fars::Email;
         use fars::Password;
-        use fars::ProjectId;
 
         // Parse the command line arguments.
         let arguments = Arguments::parse();
@@ -37,11 +39,17 @@ async fn main() -> anyhow::Result<()> {
         // Read API key from the environment variable.
         let api_key = ApiKey::new(std::env::var("FIREBASE_API_KEY")?);
 
-        // Read project ID from the environment variable.
-        let project_id = ProjectId::new(std::env::var("FIREBASE_PROJECT_ID")?);
+        // Create a custom reqwest client with timeout.
+        let client = reqwest::ClientBuilder::new()
+            .timeout(Duration::from_secs(60))
+            .connect_timeout(Duration::from_secs(10))
+            .build()?;
+
+        // Customize HTTP client.
+        let client = Client::custom(client);
 
         // Create a config.
-        let config = Config::new(api_key);
+        let config = Config::custom(api_key, client);
 
         // Get a session by signing in with email and password.
         let session = config
@@ -51,19 +59,11 @@ async fn main() -> anyhow::Result<()> {
             )
             .await?;
 
-        // Create a verification config.
-        let config = fars::verification::VerificationConfig::new(project_id);
-
-        // Verify the ID token.
-        let claims = config
-            .verify_id_token(&session.id_token)
-            .await?;
-
         println!(
-            "Token ID verification succeeded: {:?}",
-            claims
+            "Succeeded to sign in with email/password: {:?}",
+            session
         );
 
-        return Ok(());
+        Ok(())
     }
 }
