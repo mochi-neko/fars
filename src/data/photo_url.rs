@@ -6,12 +6,12 @@ pub struct PhotoUrl {
 
 impl PhotoUrl {
     /// Creates a new photo URL.
-    pub fn new<S>(into: S) -> Self
+    pub fn new<S>(inner: S) -> Self
     where
         S: Into<String>,
     {
         Self {
-            inner: into.into(),
+            inner: inner.into(),
         }
     }
 

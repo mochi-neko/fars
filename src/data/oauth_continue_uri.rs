@@ -6,12 +6,12 @@ pub struct OAuthContinueUri {
 
 impl OAuthContinueUri {
     /// Creates a new OAuth continue URI.
-    pub fn new<S>(into: S) -> Self
+    pub fn new<S>(inner: S) -> Self
     where
         S: Into<String>,
     {
         Self {
-            inner: into.into(),
+            inner: inner.into(),
         }
     }
 

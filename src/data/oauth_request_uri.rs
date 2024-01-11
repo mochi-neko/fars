@@ -6,12 +6,12 @@ pub struct OAuthRequestUri {
 
 impl OAuthRequestUri {
     /// Creates a new OAuth request URI.
-    pub fn new<S>(into: S) -> Self
+    pub fn new<S>(inner: S) -> Self
     where
         S: Into<String>,
     {
         Self {
-            inner: into.into(),
+            inner: inner.into(),
         }
     }
 

@@ -6,12 +6,12 @@ pub struct ProjectId {
 
 impl ProjectId {
     /// Creates a new project ID.
-    pub fn new<S>(into: S) -> Self
+    pub fn new<S>(inner: S) -> Self
     where
         S: Into<String>,
     {
         Self {
-            inner: into.into(),
+            inner: inner.into(),
         }
     }
 
