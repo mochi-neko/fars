@@ -83,3 +83,9 @@ cargo run --example raw_sign_in_with_email_password -- --email $EMAIL --password
 
 cargo run --example verify_id_token --features verify -- --email $EMAIL --password $PASSWORD
 
+# Run examples for custom HTTP client.
+
+cargo run --example customize_http_client --features custom_client -- --email $EMAIL --password $PASSWORD
+
+
+

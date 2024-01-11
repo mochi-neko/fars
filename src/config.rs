@@ -36,7 +36,7 @@
 //! - [ ] (Not implemented) Yahoo (`yahoo.com`)
 //! - [ ] (Not implemented) custom
 //!
-//! Unsupported providers have either not been tested or the format of [`crate::data::IdpPostBody`] is not documented at the [official API reference](https://firebase.google.com/docs/reference/rest/auth).
+//! Unsupported providers have either not been tested or the format of [`crate::IdpPostBody`] is not documented at the [official API reference](https://firebase.google.com/docs/reference/rest/auth).
 //!
 //! ## Examples
 //!

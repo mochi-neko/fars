@@ -14,7 +14,7 @@ or adding dependency to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-fars = "0.1"
+fars = "0.2.0"
 ```
 
 ## Features
@@ -22,10 +22,11 @@ All features in this crate are as follows:
 
 - default
     - [Session-based interfaces](#api-usages)
-- (Optional) `raw`
     - [Raw API interfaces](#optional-raw-api-interfaces)
 - (Optional) `verify`
     - [ID token verification](#optional-id-token-verification)
+- (Optional) `custom_client`
+    - [HTTP client customization](#http-client-customization) 
 
 ## Supported APIs
 
@@ -94,18 +95,21 @@ A sample code to [sign up with email / password](https://firebase.google.com/doc
 
 ```rust
 use fars::Config;
+use fars::ApiKey;
+use fars::Email;
+use fars::Password;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    // 1. Create a config.
+    // 1. Create a config with your Firebase project API key.
     let config = Config::new(
-        "your-firebase-project-api-key".to_string(),
+        ApiKey::new("your-firebase-project-api-key"),
     );
     
     // 2. Sign up with email and password then get a session.
     let session = config.sign_up_with_email_password(
-        "user@example.com".to_string(),
-        "password".to_string(),
+        Email::new("user@example.com"),
+        Password::new("password"),
     ).await?;
 
     // 3. Get user data through the session and get a new session.
@@ -126,17 +130,19 @@ A sample code to [send password reset email](https://firebase.google.com/docs/re
 
 ```rust
 use fars::Config;
+use fars::ApiKey;
+use fars::Email;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    // 1. Create a config.
+    // 1. Create a config with your Firebase project API key.
     let config = Config::new(
-        "your-firebase-project-api-key".to_string(),
+        ApiKey::new("your-firebase-project-api-key"),
     );
     
     // 2. Send reset password email to specified email through the config if it has been registered.
     config.send_reset_password_email(
-        "user@example".to_string(),
+        Email::new("user@example"),
         None, // Option: Locale
     ).await?;
 
@@ -164,14 +170,16 @@ To sign in with Google OAuth credential,
 A sample code to [sign in with Google OAuth credential](https://firebase.google.com/docs/reference/rest/auth#section-sign-in-with-oauth-credential) with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 
 ```rust
-use fars::data::IdpPostBody;
 use fars::Config;
+use fars::ApiKey;
+use fars::OAuthRequestUri;
+use fars::IdpPostBody;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    // 1. Create a config.
+    // 1. Create a config with your Firebase project API key.
     let config = Config::new(
-        "your-firebase-project-api-key".to_string(),
+        ApiKey::new("your-firebase-project-api-key"),
     );
 
     // 2. Get an OpenID token from Google OAuth by any method.
@@ -180,7 +188,7 @@ async fn main() -> anyhow::Result<()> {
     // 3. Get a session by signing in with Google OAuth credential.
     let session = config
         .sign_in_with_oauth_credential(
-            arguments.request_uri.clone(),
+            OAuthRequestUri::new("https://your-app.com/redirect/path/auth/handler"),
             IdpPostBody::Google {
                 id_token: google_id_token,
             },
@@ -205,27 +213,30 @@ A sample code to handle error for [signing in with email / password](https://fir
 
 ```rust
 use fars::Config;
+use fars::ApiKey;
+use fars::Email;
+use fars::Password;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Create a config.
     let config = Config::new(
-        "your-firebase-project-api-key".to_string()
+        ApiKey::new("your-firebase-project-api-key"),
     );
 
     // Create a session by signing in with email and password.
     match config
         .sign_in_with_email_password(
-            "user@example".to_string(),
-            "password".to_string,
+            Email::new("user@example"),
+            Password::new("password"),
         )
         .await
     {
         // Success
-        | Ok(_session) => {
+        | Ok(session) => {
             println!(
-                "Succeeded to sign in with email/password: {}",
-                credentials.email
+                "Succeeded to sign in with email/password: {:?}",
+                session
             );
             // Do something with the session.
             Ok(())
@@ -283,7 +294,7 @@ async fn main() -> anyhow::Result<()> {
                         },
                     }
                 },
-                // Internal errors
+                // Handle internal errors
                 | _ => {
                     // Do something with internal errors.
                     Err(error.into())
@@ -294,40 +305,24 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
-## (Optional) Raw API interfaces
+## Raw API interfaces
 
 Provides raw [supported APIs](#supported-apis) by `fars::api` module.
-
-> [!NOTE]
-> Raw API interfaces is an optional feature.
-> 
-> Please activate this feature by CLI:
-> 
-> ```shell
-> $ cargo add fars --features raw
-> ```
-> 
-> or adding features to your `Cargo.toml`:
-> 
-> ```toml
-> [dependencies]
-> fars = { version = "0.1", features = ["raw"] }
-> ```
-
-Please refer each document for details, API reference and examples.
 
 A sample code to [sign in with email / password](https://firebase.google.com/docs/reference/rest/auth#section-sign-in-email-password) with [reqwest](https://github.com/seanmonstar/reqwest), [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 
 ```rust
+use fars::ApiKey;
+use fars::Client;
 use fars::api;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // 1. Specify your API key.
-    let api_key = "your-firebase-project-api-key".to_string();
+    let api_key = ApiKey::new("your-firebase-project-api-key");
 
-    // 2. Create a reqwest client.
-    let client = reqwest::Client::new();
+    // 2. Create a HTTP client.
+    let client = Client::new();
 
     // 3. Create a request payload for the sign in API.
     let request_payload = api::SignInWithEmailPasswordRequestBodyPayload::new(
@@ -337,8 +332,8 @@ async fn main() -> anyhow::Result<()> {
 
     // 4. Send a request and receive a response payload of the sign in API.
     let response_payload = api::sign_in_with_email_password(
-        client,
-        api_key,
+        &client,
+        &api_key,
         request_payload,
     ).await?;
 
@@ -350,7 +345,7 @@ async fn main() -> anyhow::Result<()> {
 
 ## (Optional) ID token verification
 
-Provides ID token verification of the Firebase Auth.
+Provides ID token verification of the Firebase Auth via `fars::verification` module.
 
 > [!NOTE]
 > ID token verification is an optional feature.
@@ -365,23 +360,25 @@ Provides ID token verification of the Firebase Auth.
 > 
 > ```toml
 > [dependencies]
-> fars = { version = "0.1", features = ["verify"] }
+> fars = { version = "0.2.0", features = ["verify"] }
 > ```
 
 A sample code to [verify ID token](https://firebase.google.com/docs/auth/admin/verify-id-tokens#verify_id_tokens_using_a_third-party_jwt_library) with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 
 ```rust
 use fars::VerificationConfig;
+use fars::ProjectId;
+use fars::IdToken;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    // Create a cofig for verification.
+    // Create a cofig for verification with your Firebase project ID.
     let cofing = let config = VerificationConfig::new(
-        "firebase-project-id".to_string(),
+        ProjectId::new("firebase-project-id"),
     );
 
-    // Get an ID token of the Firebase Auth.
-    let id_token = "id-token".to_string();
+    // Get an ID token of the Firebase Auth by any method.
+    let id_token = IdToken::new("id-token");
 
     // Verrify the ID token.
     match config.verify_id_token(&id_token).await {
@@ -392,6 +389,57 @@ async fn main() -> anyhow::Result<()> {
             // Verification failed.
         },
     }
+
+    Ok(())
+}
+```
+
+## HTTP client customization
+
+Provides HTTP client customization interface for Firebase Auth APIs.
+
+> [!NOTE]
+> HTTP client customization is an optional feature.
+> 
+> Please activate this feature by CLI:
+> 
+> ```shell
+> $ cargo add fars --features custom_client
+> ```
+> 
+> or adding features to your `Cargo.toml`:
+> 
+> ```toml
+> [dependencies]
+> fars = { version = "0.2.0", features = ["custom_client"] }
+> ```
+
+An example to customize timeout options of HTTP client with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
+
+```rust
+use std::time::Duration;
+use fars::Client;
+use fars::ApiKey;
+use fars::Config;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    // 1. Create a custom client with re-exported `reqwest` client.
+    let client = fars::reqwest::ClientBuilder::new()
+        .timeout(Duration::from_secs(60))
+        .connect_timeout(Duration::from_secs(10))
+        .build()?;
+
+    // 2. Customize HTTP client.
+    let client = Client::custom(client);
+
+    // 3. Create a cofig with customized client.
+    let config = Config::custom(
+        ApiKey::new("your-firebase-project-api-key"),
+        client,
+    );
+
+    // 4. Do something with a customized config.
 
     Ok(())
 }
