@@ -36,18 +36,21 @@
 //!
 //! ```rust
 //! use fars::Config;
+//! use fars::ApiKey;
+//! use fars::Email;
+//! use fars::Password;
 //!
 //! #[tokio::main]
 //! async fn main() -> anyhow::Result<()> {
 //!     // Create config.
 //!     let config = Config::new(
-//!         "your-firebase-project-api-key".to_string(),
+//!         ApiKey::new("your-firebase-project-api-key"),
 //!     );
 //!
 //!     // Sign in with email and password.
 //!     let session = config.sign_in_with_email_password(
-//!         "user@example".to_string(),
-//!         "password".to_string(),
+//!         Email::new("user@example"),
+//!         Password::new("password"),
 //!     ).await?;
 //!
 //!     // Get user data.
@@ -83,17 +86,24 @@ use crate::UserData;
 
 /// Authentication session for a user of the Firebase Auth.
 ///
+/// Get a session by signing in with [`crate::Config`].
+///
+/// See also [`crate::config`].
+///
 /// ## Example
 /// ```
 /// use fars::Config;
+/// use fars::ApiKey;
+/// use fars::Email;
+/// use fars::Password;
 ///
 /// let config = Config::new(
-///     "your-firebase-project-api-key".to_string(),
+///     ApiKey::new("your-firebase-project-api-key"),
 /// );
 ///
 /// let session = config.sign_in_with_email_password(
-///     "user@example".to_string(),
-///     "password".to_string(),
+///     Email::new("user@example"),
+///     Password::new("password"),
 /// ).await?;
 /// ```
 #[derive(Clone, Debug)]
@@ -274,18 +284,21 @@ impl Session {
     /// ## Example
     /// ```
     /// use fars::Config;
+    /// use fars::ApiKey;
+    /// use fars::Email;
+    /// use fars::Password;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     /// let session = config.sign_in_with_email_password(
-    ///     "user@example".to_string(),
-    ///     "password".to_string(),
+    ///     Email::new("user@example"),
+    ///     Password::new("password"),
     /// ).await?;
     ///
     /// let new_session = session.change_email(
-    ///     "new-user@example".to_string(),
-    ///     None,
+    ///     Email::new("new-user@example"),
+    ///     None, // locale
     /// ).await?;
     /// ```
     pub async fn change_email(
@@ -325,17 +338,20 @@ impl Session {
     /// ## Example
     /// ```
     /// use fars::Config;
+    /// use fars::ApiKey;
+    /// use fars::Email;
+    /// use fars::Password;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     /// let session = config.sign_in_with_email_password(
-    ///     "user@example".to_string(),
-    ///     "password".to_string(),
+    ///     Email::new("user@example"),
+    ///     Password::new("password"),
     /// ).await?;
     ///
     /// let new_session = session.change_password(
-    ///     "new-password".to_string(),
+    ///     Password::new("new-password"),
     /// ).await?;
     /// ```
     pub async fn change_password(
@@ -373,18 +389,23 @@ impl Session {
     /// ## Example
     /// ```
     /// use fars::Config;
+    /// use fars::ApiKey;
+    /// use fars::Email;    
+    /// use fars::Password;
+    /// use fars::DisplayName;
+    /// use fars::PhotoUrl;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     /// let session = config.sign_in_with_email_password(
-    ///     "user@example".to_string(),
-    ///     "password".to_string(),
+    ///     Email::new("user@example"),
+    ///     Password::new("password"),
     /// ).await?;
     ///
     /// let new_session = session.update_profile(
-    ///     "new-display-name".to_string(),
-    ///     "new-photo-url".to_string(),
+    ///     DisplayName::new("new-display-name"),
+    ///     PhotoUrl::new("new-photo-url"),
     /// ).await?;
     /// ```
     pub async fn update_profile(
@@ -423,14 +444,17 @@ impl Session {
     /// ## Example
     /// ```
     /// use fars::Config;
-    /// use fars::data::DeleteAttribute;
+    /// use fars::ApiKey;
+    /// use fars::Email;
+    /// use fars::Password;
+    /// use fars::DeleteAttribute;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     /// let session = config.sign_in_with_email_password(
-    ///     "user@example".to_string(),
-    ///     "password".to_string(),
+    ///     Email::new("user@example"),
+    ///     Password::new("password"),
     /// ).await?;
     ///
     /// let new_session = session.delete_profile(
@@ -474,13 +498,16 @@ impl Session {
     /// ## Example
     /// ```
     /// use fars::Config;
+    /// use fars::ApiKey;
+    /// use fars::Email;
+    /// use fars::Password;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     /// let session = config.sign_in_with_email_password(
-    ///     "user@example".to_string(),
-    ///     "password".to_string(),
+    ///     Email::new("user@example"),
+    ///     Password::new("password"),
     /// ).await?;
     ///
     /// let (new_session, user_data) = session.get_user_data().await?;
@@ -517,21 +544,25 @@ impl Session {
     /// ## Example
     /// ```
     /// use fars::Config;
-    /// use fars::data::IdpPostBody;
+    /// use fars::ApiKey;
+    /// use fars::OAuthRequestUri;
+    /// use fars::IdpPostBody;
+    /// use fars::Email;
+    /// use fars::Password;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     /// let session = config.sign_in_oauth_credencial(
-    ///     "https://your-app.com/redirect/path/auth/handler".to_string(),
+    ///     OAuthRequestUri::new("https://your-app.com/redirect/path/auth/handler"),
     ///     IdpPostBody::Google {
     ///         id_token: "user-google-oauth-open-id-token".to_string(),
     ///     },
     /// ).await?;
     ///
     /// let new_session = session.link_with_email_password(
-    ///    "new-user@example".to_string(),
-    ///    "new-password".to_string(),
+    ///    Email::new("new-user@example"),
+    ///    Password::new("new-password"),
     /// ).await?;
     /// ```
     pub async fn link_with_email_password(
@@ -573,18 +604,22 @@ impl Session {
     /// ## Example
     /// ```
     /// use fars::Config;
-    /// use fars::data::IdpPostBody;
+    /// use fars::ApiKey;
+    /// use fars::Email;
+    /// use fars::Password;
+    /// use fars::OAuthRequestUri;
+    /// use fars::IdpPostBody;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     /// let session = config.sign_in_with_email_password(
-    ///     "user@example".to_string(),
-    ///     "password".to_string(),
+    ///     Email::new("user@example"),
+    ///     Password::new("password"),
     /// ).await?;
     ///
     /// let new_session = session.link_with_oauth_credential(
-    ///     "https://your-app.com/redirect/path/auth/handler".to_string(),
+    ///     OAuthRequestUri::new("https://your-app.com/redirect/path/auth/handler"),
     ///     IdpPostBody::Google {
     ///         id_token: "user-google-id-token-got-from-google-oauth-api".to_string(),
     ///     },
@@ -626,14 +661,17 @@ impl Session {
     /// ## Example
     /// ```
     /// use fars::Config;
-    /// use fars::data::ProviderId;
+    /// use fars::ApiKey;
+    /// use fars::Email;
+    /// use fars::Password;
+    /// use fars::ProviderId;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     /// let session = config.sign_in_with_email_password(
-    ///     "user@example".to_string(),
-    ///     "password".to_string(),
+    ///     Email::new("user@example"),
+    ///     Password::new("password"),
     /// ).await?;
     ///
     /// let new_session = session.unlink_provider(
@@ -675,17 +713,20 @@ impl Session {
     /// ## Example
     /// ```
     /// use fars::Config;
+    /// use fars::ApiKey;
+    /// use fars::Email;
+    /// use fars::Password;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     /// let session = config.sign_in_with_email_password(
-    ///     "user@example".to_string(),
-    ///     "password".to_string(),
+    ///     Email::new("user@example"),
+    ///     Password::new("password"),
     /// ).await?;
     ///
     /// let new_session = session.send_email_verification(
-    ///     None,
+    ///     None, // locale
     /// ).await?;
     /// ```
     pub async fn send_email_verification(
@@ -716,13 +757,16 @@ impl Session {
     /// ## Example
     /// ```
     /// use fars::Config;
+    /// use fars::ApiKey;
+    /// use fars::Email;
+    /// use fars::Password;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     /// let session = config.sign_in_with_email_password(
-    ///     "user@example".to_string(),
-    ///     "password".to_string(),
+    ///     Email::new("user@example"),
+    ///     Password::new("password"),
     /// ).await?;
     ///
     /// session.delete_account().await?;
@@ -754,14 +798,17 @@ impl Session {
     /// ## Example
     /// ```
     /// use fars::Config;
+    /// use fars::ApiKey;
+    /// use fars::Email;
+    /// use fars::Password;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     ///
     /// let session = config.sign_in_with_email_password(
-    ///     "user@example".to_string(),
-    ///     "password".to_string(),
+    ///     Email::new("user@example"),
+    ///     Password::new("password"),
     /// ).await?;
     ///
     /// // Expire the ID token.

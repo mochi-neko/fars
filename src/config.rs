@@ -251,14 +251,17 @@ impl Config {
     /// ## Example
     /// ```
     /// use fars::Config;
+    /// use fars::ApiKey;
+    /// use fars::Email;
+    /// use fars::Password;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     ///
     /// let session = config.sign_up_with_email_password(
-    ///     "user@example".to_string(),
-    ///     "password".to_string(),
+    ///     Email::new("user@example"),
+    ///     Password::new("password"),
     /// ).await?;
     /// ```
     pub async fn sign_up_with_email_password(
@@ -311,14 +314,17 @@ impl Config {
     /// ## Example
     /// ```
     /// use fars::Config;
+    /// use fars::ApiKey;
+    /// use fars::Email;
+    /// use fars::Password;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     ///
     /// let session = config.sign_in_with_email_password(
-    ///     "user@example".to_string(),
-    ///     "password".to_string(),
+    ///     Email::new("user@example"),
+    ///     Password::new("password"),
     /// ).await?;
     /// ```
     pub async fn sign_in_with_email_password(
@@ -367,9 +373,10 @@ impl Config {
     /// ## Example
     /// ```
     /// use fars::Config;
+    /// use fars::ApiKey;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     ///
     /// let session = config.sign_in_anonymously().await?;
@@ -416,14 +423,16 @@ impl Config {
     /// ## Example
     /// ```
     /// use fars::Config;
-    /// use fars::data::IdpPostBody;
+    /// use fars::ApiKey;
+    /// use fars::OAuthRequestUri;
+    /// use fars::IdpPostBody;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     ///
     /// let session = config.sign_in_with_oauth_credential(
-    ///     "https://your-app.com/redirect/path/auth/handler".to_string(),
+    ///     OAuthRequestUri::new("https://your-app.com/redirect/path/auth/handler"),
     ///     IdpPostBody::Google {
     ///         id_token: "user-google-oauth-open-id-token".to_string(),
     ///     },
@@ -481,13 +490,15 @@ impl Config {
     /// ## Example
     /// ```
     /// use fars::Config;
+    /// use fars::ApiKey;
+    /// use fars::RefreshToken;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     ///
     /// let session = config.exchange_refresh_token(
-    ///     "user-firebase-refresh-token".to_string(),
+    ///     RefreshToken::new("user-firebase-refresh-token"),
     /// ).await?;
     /// ```
     pub async fn exchange_refresh_token(
@@ -539,14 +550,17 @@ impl Config {
     /// ## Example
     /// ```
     /// use fars::Config;
+    /// use fars::ApiKey;
+    /// use fars::Email;
+    /// use fars::OAuthContinueUri;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     ///
     /// let providers = config.fetch_providers_for_email(
-    ///     "user@example".to_string(),
-    ///     "https://your-app.com/redirect/path/auth/handler".to_string(),
+    ///     Email::new("user@example"),
+    ///     OAuthContinueUri::new("https://your-app.com/redirect/path/auth/handler"),
     /// ).await?;
     /// ```
     pub async fn fetch_providers_for_email(
@@ -602,14 +616,16 @@ impl Config {
     /// ## Example
     /// ```
     /// use fars::Config;
+    /// use fars::ApiKey;
+    /// use fars::Email;
     ///
     /// let config = Config::new(
-    ///     "your-firebase-project-api-key".to_string(),
+    ///     ApiKey::new("your-firebase-project-api-key"),
     /// );
     ///
     /// config.send_reset_password_email(
-    ///     "user@example".to_string(),
-    ///     None,
+    ///     Email::new("user@example".),
+    ///     None, // locale
     /// ).await?;
     /// ```
     pub async fn send_reset_password_email(
