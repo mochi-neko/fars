@@ -7,6 +7,7 @@ rust-version = "1.75"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 description = "An unofficial Rust client for the Firebase Auth REST API."
+documentation = "https://docs.rs/fars"
 repository = "https://github.com/mochi-neko/fars"
 categories = ["api-bindings", "authentication"]
 keywords = ["firebase", "auth", "rest", "api", "client"]
