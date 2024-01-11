@@ -30,6 +30,7 @@ async fn main() -> anyhow::Result<()> {
         use fars::Email;
         use fars::Password;
         use fars::ProjectId;
+        use fars::VerificationConfig;
 
         // Parse the command line arguments.
         let arguments = Arguments::parse();
@@ -52,7 +53,7 @@ async fn main() -> anyhow::Result<()> {
             .await?;
 
         // Create a verification config.
-        let config = fars::verification::VerificationConfig::new(project_id);
+        let config = VerificationConfig::new(project_id);
 
         // Verify the ID token.
         let claims = config

@@ -3,20 +3,19 @@
 //!
 //! ## Features
 //! - default
-//!     -  APIs via session-based interfaces. See [`crate::config`] and [`crate::session`].
-//! - (Optional) `raw`
+//!     - APIs via session-based interfaces. See [`crate::config`] and [`crate::session`].
 //!     - APIs via raw interfaces. See [`crate::api`].
 //! - (Optional) `verify`
 //!     - ID token verification. See [`crate::verification`].
+//! - (Optional) `custom_client`
+//!     - HTTP client customization. See [`crate::client`].
 
 // public modules
 pub mod api;
+pub mod client;
 pub mod config;
 pub mod error;
 pub mod session;
-
-// Internal modules
-pub(crate) mod client;
 
 // Private modules
 mod data;
@@ -49,8 +48,15 @@ pub use crate::data::refresh_token::RefreshToken;
 pub use crate::data::user_data::UserData;
 
 // Feature "verify"
-#[cfg(feature = "verify")]
 pub mod verification;
+#[cfg(feature = "verify")]
+pub use crate::verification::IdTokenPayloadClaims;
+#[cfg(feature = "verify")]
+pub use crate::verification::VerificationConfig;
+#[cfg(feature = "verify")]
+pub use crate::verification::VerificationError;
+#[cfg(feature = "verify")]
+pub use crate::verification::VerificationResult;
 
 // Feature "custom_client"
 // Re-export reqwest for the feature "custom_client" to customize the HTTP client.

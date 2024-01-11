@@ -1,6 +1,31 @@
-//! Implements an internal API client for the Firebase Auth.
+//! Provides an internal API client for the Firebase Auth.
 //!
 //! See also [API reference](https://firebase.google.com/docs/reference/rest/auth).
+//!
+//! ## Examples
+//! ```rust
+//! use fars::Client;
+//!
+//! // Create a client.
+//! let client = Client::new();
+//! ```
+//!
+//! ## Custom HTTP client
+//! You can use a custom HTTP client by enabling the `custom_client` feature with the re-exported `reqwest` crate.
+//!
+//! ```rust
+//! use fars::Client;
+//! use std::time::Duration;
+//!
+//! // Create a custom reqwest client with timeout.
+//! let client = fars::reqwest::ClientBuilder::new()
+//!     .timeout(Duration::from_secs(60))
+//!     .connect_timeout(Duration::from_secs(10))
+//!     .build()?;
+//!
+//! // Customize HTTP client.
+//! let client = Client::custom(client);
+//! ```
 
 use serde::{de::DeserializeOwned, Serialize};
 

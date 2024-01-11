@@ -10,18 +10,20 @@
 //! An example of ID token verification with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 //!
 //! ```rust
-//! use fars::verification::VerificationConfig;
+//! use fars::VerificationConfig;
+//! use fars::ProjectId;
+//! use fars::IdToken;
 //!
 //! #[tokio::main]
 //! async fn main() -> anyhow::Result<()> {
 //!     // Create a verification config.
 //!     let config = VerificationConfig::new(
-//!         "firebase-project-id".to_string(),
+//!         ProjectId::new("firebase-project-id"),
 //!     );
 //!
 //!     // Verify the ID token.
 //!     match config.verify_id_token(
-//!         "id-token".to_string(),
+//!         &IdToken::new("id-token"),
 //!     ).await {
 //!         Ok(claims) => {
 //!             // Verification succeeded.
@@ -47,12 +49,20 @@ use crate::ProjectId;
 /// The result type for ID token verification.
 ///
 /// Please handle error case by [`VerificationError`].
+///
+/// ## NOTE
+/// This is only available when the feature "verify" is enabled.
+#[cfg(feature = "verify")]
 pub type VerificationResult = std::result::Result<
     crate::verification::IdTokenPayloadClaims,
     VerificationError,
 >;
 
 /// The error type for ID token verification.
+///
+/// ## NOTE
+/// This is only available when the feature "verify" is enabled.
+#[cfg(feature = "verify")]
 #[derive(Debug, thiserror::Error)]
 pub enum VerificationError {
     /// Decode ID token header failed.
@@ -98,7 +108,18 @@ pub enum VerificationError {
 /// Configuration for the ID token verification.
 ///
 /// ## NOTE
-/// This feature is only available when the feature "verify" is enabled.
+/// This is only available when the feature "verify" is enabled.
+///
+/// ## Examples
+/// ```
+/// use fars::VerificationConfig;
+/// use fars::ProjectId;
+///
+/// let config = VerificationConfig::new(
+///     ProjectId::new("firebase-project-id"),
+/// );
+/// ```
+#[cfg(feature = "verify")]
 pub struct VerificationConfig {
     /// A HTTP client.
     client: Client,
@@ -106,14 +127,25 @@ pub struct VerificationConfig {
     project_id: ProjectId,
 }
 
+#[cfg(feature = "verify")]
 impl VerificationConfig {
     /// Creates a new configuration for the ID token verification.
     ///
     /// ## NOTE
-    /// This feature is only available when the feature "verify" is enabled.
+    /// This is only available when the feature "verify" is enabled.
     ///
     /// ## Arguments
     /// - `project_id` - Your project ID of the Firebase project.
+    ///
+    /// ## Examples
+    /// ```
+    /// use fars::VerificationConfig;
+    /// use fars::ProjectId;
+    ///
+    /// let config = VerificationConfig::new(
+    ///     ProjectId::new("firebase-project-id"),
+    /// );
+    /// ```
     pub fn new(project_id: ProjectId) -> Self {
         Self {
             client: Client::new(),
@@ -121,6 +153,31 @@ impl VerificationConfig {
         }
     }
 
+    /// Creates a new configuration for the ID token verification with a custom HTTP client.
+    ///
+    /// ## NOTE
+    /// This is only available when the features "verify" and "custom_client" are enabled.
+    ///
+    /// ## Arguments
+    /// - `client` - A HTTP client.
+    /// - `project_id` - Your project ID of the Firebase project.
+    ///
+    /// ## Examples
+    /// ```
+    /// use fars::VerificationConfig;
+    /// use fars::ProjectId;
+    /// use std::time::Duration;
+    ///
+    /// let client = fars::reqwest::Client::builder()
+    ///     .timeout(Duration::from_secs(60))
+    ///     .connect_timeout(Duration::from_secs(10))
+    ///     .build()?;
+    ///
+    /// let config = VerificationConfig::custom(
+    ///     client,
+    ///     ProjectId::new("firebase-project-id"),
+    /// );
+    /// ```
     #[cfg(feature = "custom_client")]
     pub fn custom(
         client: Client,
@@ -137,7 +194,7 @@ impl VerificationConfig {
     /// See also [document](https://firebase.google.com/docs/auth/admin/verify-id-tokens#verify_id_tokens_using_a_third-party_jwt_library).
     ///
     /// ## NOTE
-    /// This feature is only available when the feature "verify" is enabled.
+    /// This is only available when the feature "verify" is enabled.
     ///
     /// ## Arguments
     /// - `id_token` - An ID token of the Firebase Auth.
@@ -150,14 +207,16 @@ impl VerificationConfig {
     ///
     /// ## Example
     /// ```
-    /// use fars::verification::VerificationConfig;
+    /// use fars::VerificationConfig;
+    /// use fars::ProjectId;
+    /// use fars::IdToken;
     ///
     /// let config = VerificationConfig::new(
-    ///     "firebase-project-id".to_string()
+    ///     ProjectId::new("firebase-project-id"),
     /// );
     ///
     /// let claims = config.verify_id_token(
-    ///     "id-token".to_string(),
+    ///     &IdToken::new("id-token"),
     /// ).await?;
     /// ```
     pub async fn verify_id_token(
@@ -176,6 +235,10 @@ impl VerificationConfig {
 /// ID token payload claims for the Firebase Auth.
 ///
 /// See also [document](https://firebase.google.com/docs/auth/admin/verify-id-tokens#verify_id_tokens_using_a_third-party_jwt_library).
+///
+/// ## NOTE
+/// This is only available when the feature "verify" is enabled.
+#[cfg(feature = "verify")]
 #[derive(Debug, Deserialize, Serialize)]
 pub struct IdTokenPayloadClaims {
     /// Expiration time.
@@ -205,6 +268,9 @@ pub struct IdTokenPayloadClaims {
 ///
 /// See also [document](https://firebase.google.com/docs/auth/admin/verify-id-tokens#verify_id_tokens_using_a_third-party_jwt_library).
 ///
+/// ## NOTE
+/// This is only available when the feature "verify" is enabled.
+///
 /// ## Arguments
 /// - `client` - A HTTP client.
 /// - `id_token` - An ID token of the Firebase Auth.
@@ -215,22 +281,7 @@ pub struct IdTokenPayloadClaims {
 ///
 /// ## Errors
 /// [`VerificationError`] if the ID token is invalid.
-///
-/// ## Example
-/// ```
-/// let client = reqwest::Client::new();
-/// let id_token = "id-token".to_string();
-/// let project_id = "project-id".to_string();
-///
-/// match fars::verification::verify_id_token(&client, &id_token, &project_id).await {
-///     Ok(claims) => {
-///         // Verify succeeded.
-///     },
-///     Err(error) => {
-///         // Verify failed.
-///     },
-/// }
-/// ```
+#[cfg(feature = "verify")]
 async fn verify_id_token(
     client: &Client,
     id_token: &IdToken,
