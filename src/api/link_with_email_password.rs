@@ -6,9 +6,9 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::Endpoint;
 use crate::ApiKey;
 use crate::Client;
+use crate::Endpoint;
 use crate::ProviderUserInfo;
 use crate::Result;
 

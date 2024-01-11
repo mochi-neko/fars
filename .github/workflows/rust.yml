@@ -17,19 +17,19 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build
         run: cargo build --verbose
-      - name: Build raw
-        run: cargo build --features raw --verbose
       - name: Build verify
         run: cargo build --features verify --verbose
-      - name: Build raw,verify
-        run: cargo build --features verify --verbose
+      - name: Build custom_client
+        run: cargo build --features custom_client --verbose
+      - name: Build verify,custom_client
+        run: cargo build --features verify,custom_client --verbose
       - name: Check document
         run: cargo doc --no-deps --verbose
-      - name: Check document raw
-        run: cargo doc --no-deps --verbose --features raw
       - name: Check document verify
         run: cargo doc --no-deps --verbose --features verify
-      - name: Check document raw,verify
-        run: cargo doc --no-deps --verbose --features raw,verify
+      - name: Check document custom_client
+        run: cargo doc --no-deps --verbose --features custom_client
+      - name: Check document verify,custom_client
+        run: cargo doc --no-deps --verbose --features verify,custom_client
       - name: Check format
         run: cargo fmt --all -- --check

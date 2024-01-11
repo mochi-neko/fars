@@ -31,6 +31,7 @@ use serde::{de::DeserializeOwned, Serialize};
 
 use crate::error::{ApiErrorResponse, CommonErrorCode};
 use crate::ApiKey;
+use crate::Endpoint;
 use crate::Error;
 use crate::LanguageCode;
 use crate::Result;
@@ -38,7 +39,7 @@ use crate::Result;
 /// HTTP client.
 #[derive(Clone, Debug)]
 pub struct Client {
-    pub(crate) inner: reqwest::Client,
+    inner: reqwest::Client,
 }
 
 impl Default for Client {
@@ -82,6 +83,12 @@ impl Client {
         Self {
             inner: client,
         }
+    }
+
+    /// Returns a reference to the inner HTTP client.
+    #[allow(dead_code)]
+    pub(crate) fn inner(&self) -> &reqwest::Client {
+        &self.inner
     }
 
     /// Sends a POST request to the Firebase Auth API.
@@ -188,53 +195,6 @@ impl Client {
                     response: error_response,
                 }),
             }
-        }
-    }
-}
-
-/// The endpoint to send the request to.
-pub(crate) enum Endpoint {
-    /// accounts:signInWithCustomToken
-    SignInWithCustomToken,
-    /// token
-    Token,
-    /// accounts:signUp
-    SignUp,
-    /// accounts:signInWithPassword
-    SignInWithPassword,
-    /// accounts:signInWithIdp
-    SignInWithIdp,
-    /// accounts:createAuthUri
-    CreateAuthUri,
-    /// accounts:sendOobCode
-    SendOobCode,
-    /// accounts:resetPassword
-    ResetPassword,
-    /// accounts:update
-    Update,
-    /// accounts:lookup
-    Lookup,
-    /// accounts:delete
-    Delete,
-}
-
-impl Endpoint {
-    /// Formats the endpoint to a string.
-    pub(crate) fn format(self) -> &'static str {
-        match self {
-            | Endpoint::SignInWithCustomToken => {
-                "accounts:signInWithCustomToken"
-            },
-            | Endpoint::Token => "token",
-            | Endpoint::SignUp => "accounts:signUp",
-            | Endpoint::SignInWithPassword => "accounts:signInWithPassword",
-            | Endpoint::SignInWithIdp => "accounts:signInWithIdp",
-            | Endpoint::CreateAuthUri => "accounts:createAuthUri",
-            | Endpoint::SendOobCode => "accounts:sendOobCode",
-            | Endpoint::ResetPassword => "accounts:resetPassword",
-            | Endpoint::Update => "accounts:update",
-            | Endpoint::Lookup => "accounts:lookup",
-            | Endpoint::Delete => "accounts:delete",
         }
     }
 }

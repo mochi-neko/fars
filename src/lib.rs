@@ -17,6 +17,9 @@ pub mod config;
 pub mod error;
 pub mod session;
 
+// Internal modules
+pub(crate) mod endpoint;
+
 // Private modules
 mod data;
 mod result;
@@ -27,6 +30,9 @@ pub use crate::config::Config;
 pub use crate::error::Error;
 pub use crate::result::Result;
 pub use crate::session::Session;
+
+// Re-exports for internal modules
+pub(crate) use crate::endpoint::Endpoint;
 
 // Re-exports for data module
 pub use crate::data::api_key::ApiKey;

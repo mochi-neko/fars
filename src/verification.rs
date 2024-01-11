@@ -39,11 +39,16 @@
 //! }
 //! ```
 
+#[cfg(feature = "verify")]
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "verify")]
 use std::collections::HashMap;
 
+#[cfg(feature = "verify")]
 use crate::Client;
+#[cfg(feature = "verify")]
 use crate::IdToken;
+#[cfg(feature = "verify")]
 use crate::ProjectId;
 
 /// The result type for ID token verification.
@@ -288,7 +293,7 @@ async fn verify_id_token(
     project_id: &ProjectId,
 ) -> VerificationResult {
     // Decode header of the ID token.
-    let header = jsonwebtoken::decode_header(&id_token.inner)
+    let header = jsonwebtoken::decode_header(&id_token.inner())
         .map_err(VerificationError::DecodeTokenHeaderFailed)?;
 
     // Verify type of the token in the header.
@@ -312,7 +317,7 @@ async fn verify_id_token(
 
     // Get public key list from the Google API.
     let response = client
-        .inner
+        .inner()
         .get("https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com")
         .send()
         .await
@@ -347,10 +352,10 @@ async fn verify_id_token(
     // Create validation for the ID token.
     let mut validation =
         jsonwebtoken::Validation::new(jsonwebtoken::Algorithm::RS256);
-    validation.set_audience(&[project_id.inner.clone()]);
+    validation.set_audience(&[project_id.inner()]);
     validation.set_issuer(&[format!(
         "https://securetoken.google.com/{}",
-        project_id.inner.clone()
+        project_id.inner()
     )]);
     validation.set_required_spec_claims(&[
         "exp",
@@ -363,7 +368,7 @@ async fn verify_id_token(
 
     // Decode and verify the ID token.
     let decoded = jsonwebtoken::decode::<IdTokenPayloadClaims>(
-        &id_token.inner,
+        &id_token.inner(),
         &decoding_key,
         &validation,
     )

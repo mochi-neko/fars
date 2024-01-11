@@ -560,7 +560,7 @@ impl Config {
     ///
     /// let providers = config.fetch_providers_for_email(
     ///     Email::new("user@example"),
-    ///     OAuthContinueUri::new("https://your-app.com/redirect/path/auth/handler"),
+    ///     OAuthContinueUri::new("https://your-app.com/current/path"),
     /// ).await?;
     /// ```
     pub async fn fetch_providers_for_email(

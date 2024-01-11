@@ -6,10 +6,9 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::Endpoint;
 use crate::ApiKey;
 use crate::Client;
-use crate::IdToken;
+use crate::Endpoint;
 use crate::LanguageCode;
 use crate::ProviderUserInfo;
 use crate::Result;
