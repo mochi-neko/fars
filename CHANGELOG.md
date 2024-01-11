@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support `confirm password reset` on session.
 - Support `confirm email verification` on session.
 
-## [0.2.0] - 2024-01-XX
+## [0.2.0] - 2024-01-11
 
 ### Added
 
@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- (Breaking changes) Make interfaces more explicit, e.g. `"api-key".to_string()` -> `ApiKey::new("api-key")`
+- (Breaking change) Make interfaces more explicit, e.g. `"api-key".to_string()` -> `ApiKey::new("api-key")`.
 - Be enable to access `Seesion.refresh_token` and `Seesion.expires_in`.
 - Ablish `raw` feature and raw interfaces are available by default.
 
