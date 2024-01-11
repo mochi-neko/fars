@@ -1,8 +1,7 @@
 /// ID token of the Firebase Auth.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct IdToken {
-    /// Inner representation.
-    pub inner: String,
+    inner: String,
 }
 
 impl IdToken {
@@ -14,5 +13,10 @@ impl IdToken {
         Self {
             inner: into.into(),
         }
+    }
+
+    /// Returns the inner representation.
+    pub fn inner(&self) -> &str {
+        &self.inner
     }
 }

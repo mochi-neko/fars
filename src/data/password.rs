@@ -1,7 +1,7 @@
 /// Password of an user.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct Password {
-    pub(crate) inner: String,
+    inner: String,
 }
 
 impl Password {
@@ -13,5 +13,9 @@ impl Password {
         Self {
             inner: inner.into(),
         }
+    }
+
+    pub(crate) fn inner(&self) -> &str {
+        &self.inner
     }
 }

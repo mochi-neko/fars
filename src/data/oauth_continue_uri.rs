@@ -1,7 +1,7 @@
 /// OAuth continue URI.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct OAuthContinueUri {
-    pub(crate) inner: String,
+    inner: String,
 }
 
 impl OAuthContinueUri {
@@ -13,5 +13,10 @@ impl OAuthContinueUri {
         Self {
             inner: into.into(),
         }
+    }
+
+    /// Returns the inner representation.
+    pub(crate) fn inner(&self) -> &str {
+        &self.inner
     }
 }

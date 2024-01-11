@@ -1,8 +1,7 @@
 /// Refresh token of the Firebase Auth to exchange for a new ID token and refresh token.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct RefreshToken {
-    /// Inner representation.
-    pub inner: String,
+    inner: String,
 }
 
 impl RefreshToken {
@@ -14,5 +13,10 @@ impl RefreshToken {
         Self {
             inner: into.into(),
         }
+    }
+
+    /// Returns the inner representation.
+    pub fn inner(&self) -> &str {
+        &self.inner
     }
 }

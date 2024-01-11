@@ -1,7 +1,7 @@
 /// The Firebase project API key.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct ApiKey {
-    pub(crate) inner: String,
+    inner: String,
 }
 
 impl ApiKey {
@@ -13,5 +13,9 @@ impl ApiKey {
         Self {
             inner: into.into(),
         }
+    }
+
+    pub(crate) fn inner(&self) -> &str {
+        &self.inner
     }
 }

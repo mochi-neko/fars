@@ -1,7 +1,7 @@
 /// A photo URL of a user.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct PhotoUrl {
-    pub(crate) inner: String,
+    inner: String,
 }
 
 impl PhotoUrl {
@@ -13,5 +13,10 @@ impl PhotoUrl {
         Self {
             inner: into.into(),
         }
+    }
+
+    /// Returns the inner representation.
+    pub fn inner(&self) -> &str {
+        &self.inner
     }
 }

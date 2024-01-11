@@ -1,7 +1,7 @@
 /// A display name of a user.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct DisplayName {
-    pub(crate) inner: String,
+    inner: String,
 }
 
 impl DisplayName {
@@ -13,5 +13,9 @@ impl DisplayName {
         Self {
             inner: into.into(),
         }
+    }
+
+    pub(crate) fn inner(&self) -> &str {
+        &self.inner
     }
 }

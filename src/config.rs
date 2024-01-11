@@ -4,7 +4,7 @@
 //! 1. Provides a session ([`crate::Session`]) via sigining in (or equivalent) methods.
 //! 2. Provides APIs that do not require any ID token.
 //!
-//! About APIs that require an ID token, see [`crate::session`].
+//! See aslo [`crate::session`] for APIs that require an ID token.
 //!
 //! ## 1. Siging in methods
 //! Supported sigining in methods are as follows:
@@ -45,18 +45,21 @@
 //!
 //! ```rust
 //! use fars::Config;
+//! use fars::ApiKey;
+//! use fars::Email;
+//! use fars::Password;
 //!
 //! #[tokio::main]
 //! async fn main() -> anyhow::Result<()> {
 //!     // Create a config.
 //!     let config = Config::new(
-//!         "your-firebase-project-api-key".to_string(),
+//!         ApiKey::new("your-firebase-project-api-key"),
 //!     );
 //!
 //!     // Get a session by signing in with email and password.
 //!     let session = config.sign_in_with_email_password(
-//!         "user@example".to_string(),
-//!         "password".to_string(),
+//!         Email::new("user@example"),
+//!         Password::new("password"),
 //!     ).await?;
 //!
 //!     // Do something with the session.
@@ -74,13 +77,15 @@
 //!
 //! ```rust
 //! use fars::Config;
-//! use fars::data::IdpPostBody;
+//! use fars::ApiKey;
+//! use fars::OAuthRequestUri;
+//! use fars::IdpPostBody;
 //!
 //! #[tokio::main]
 //! async fn main() -> anyhow::Result<()> {
 //!     // Create a config.
 //!     let config = Config::new(
-//!         "your-firebase-project-api-key".to_string(),
+//!         ApiKey::new("your-firebase-project-api-key"),
 //!     );
 //!
 //!     // Get a credential for Google OAuth by any method.
@@ -88,7 +93,7 @@
 //!
 //!     // Get a session by signing in with Google OAuth credential.
 //!     let session = config.sign_in_with_oauth_credential(
-//!         "https://your-app.com/redirect/path/auth/handler".to_string(),
+//!         OAuthRequestUri::new("https://your-app.com/redirect/path/auth/handler"),
 //!         IdpPostBody::Google {
 //!             id_token: google_open_id_token,
 //!         },
@@ -109,17 +114,19 @@
 //!
 //! ```rust
 //! use fars::Config;
+//! use fars::ApiKey;
+//! use fars::Email;
 //!
 //! #[tokio::main]
 //! async fn main() -> anyhow::Result<()> {
 //!     // Create a config.
 //!     let config = Config::new(
-//!         "your-firebase-project-api-key".to_string(),
+//!         ApiKey::new("your-firebase-project-api-key"),
 //!     );
 //!
 //!     // Send reset password email to specified email.
 //!     config.send_reset_password_email(
-//!         "user@example".to_string(),
+//!         Email::new("user@example"),
 //!     ).await?;
 //!
 //!     // Do something with the resutl.
@@ -150,9 +157,10 @@ use crate::Session;
 /// ## Example
 /// ```
 /// use fars::Config;
+/// use fars::ApiKey;
 ///
 /// let config = Config::new(
-///     "your-firebase-project-api-key".to_string(),
+///     ApiKey::new("your-firebase-project-api-key"),
 /// );
 /// ```
 #[derive(Clone, Debug)]
@@ -187,13 +195,30 @@ impl Config {
 
     /// Creates a new config with a custom HTTP client.
     ///
+    /// ## NOTE
+    /// This method requires the `custom_client` feature.
+    ///
     /// ## Arguments
     /// - `api_key` - Your Firebase project API key.
     /// - `client` - A custom HTTP client.
     ///
     /// ## Example
     /// ```
-    /// // TODO:
+    /// use fars::Config;
+    /// use fars::ApiKey;
+    /// use std::time::Duration;
+    ///
+    /// // Create a custom reqwest client with timeout.
+    /// let client = fars::reqwest::ClientBuilder::new()
+    ///     .timeout(Duration::from_secs(60))
+    ///     .connect_timeout(Duration::from_secs(10))
+    ///     .build()?;
+    ///
+    /// // Create a custom config.
+    /// let config = Config::custom(
+    ///     ApiKey::new("your-firebase-project-api-key"),
+    ///     Client::custom(client),
+    /// );
     /// ```
     #[cfg(feature = "custom_client")]
     pub fn custom(
@@ -244,8 +269,8 @@ impl Config {
         // Create request payload.
         let request_payload =
             api::SignUpWithEmailPasswordRequestBodyPayload::new(
-                email.inner,
-                password.inner,
+                email.inner().to_string(),
+                password.inner().to_string(),
             );
 
         // Send request.
@@ -304,8 +329,8 @@ impl Config {
         // Create request payload.
         let request_payload =
             api::SignInWithEmailPasswordRequestBodyPayload::new(
-                email.inner,
-                password.inner,
+                email.inner().to_string(),
+                password.inner().to_string(),
             );
 
         // Send request.
@@ -412,7 +437,9 @@ impl Config {
         // Create request payload.
         let request_payload =
             api::SignInWithOAuthCredentialRequestBodyPayload::new(
-                request_uri.inner,
+                request_uri
+                    .inner()
+                    .to_string(),
                 post_body,
                 false,
             );
@@ -469,7 +496,9 @@ impl Config {
     ) -> Result<Session> {
         // Create request payload.
         let request_payload = api::ExchangeRefreshTokenRequestBodyPayload::new(
-            refresh_token.inner,
+            refresh_token
+                .inner()
+                .to_string(),
         );
 
         // Send request.
@@ -528,8 +557,10 @@ impl Config {
         // Create request payload.
         let request_payload =
             api::FetchProvidersForEmailRequestBodyPayload::new(
-                email.inner,
-                continue_uri.inner,
+                email.inner().to_string(),
+                continue_uri
+                    .inner()
+                    .to_string(),
             );
 
         // Send request.
@@ -588,7 +619,9 @@ impl Config {
     ) -> Result<()> {
         // Create request payload.
         let request_payload =
-            api::SendPasswordResetEmailRequestBodyPayload::new(email.inner);
+            api::SendPasswordResetEmailRequestBodyPayload::new(
+                email.inner().to_string(),
+            );
 
         // Send request.
         api::send_password_reset_email(

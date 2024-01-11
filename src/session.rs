@@ -771,7 +771,9 @@ impl Session {
     pub async fn refresh_token(self) -> Result<Self> {
         // Create request payload.
         let request_payload = api::ExchangeRefreshTokenRequestBodyPayload::new(
-            self.refresh_token.inner,
+            self.refresh_token
+                .inner()
+                .to_string(),
         );
 
         // Send request.
@@ -802,8 +804,10 @@ impl Session {
     ) -> Result<()> {
         // Create request payload.
         let request_payload = api::ChangeEmailRequestBodyPayload::new(
-            self.id_token.inner.clone(),
-            new_email.inner,
+            self.id_token
+                .inner()
+                .to_string(),
+            new_email.inner().to_string(),
             false,
         );
 
@@ -825,8 +829,12 @@ impl Session {
     ) -> Result<()> {
         // Create request payload.
         let request_payload = api::ChangePasswordRequestBodyPayload::new(
-            self.id_token.inner.clone(),
-            new_password.inner,
+            self.id_token
+                .inner()
+                .to_string(),
+            new_password
+                .inner()
+                .to_string(),
             false,
         );
 
@@ -848,9 +856,15 @@ impl Session {
     ) -> Result<()> {
         // Create request payload.
         let request_payload = api::UpdateProfileRequestBodyPayload::new(
-            self.id_token.inner.clone(),
-            display_name.map(|display_name| display_name.inner.clone()),
-            photo_url.map(|photo_url| photo_url.inner.clone()),
+            self.id_token
+                .inner()
+                .to_string(),
+            display_name.map(|display_name| {
+                display_name
+                    .inner()
+                    .to_string()
+            }),
+            photo_url.map(|photo_url| photo_url.inner().to_string()),
             None,
             false,
         );
@@ -878,7 +892,9 @@ impl Session {
 
         // Create request payload.
         let request_payload = api::UpdateProfileRequestBodyPayload::new(
-            self.id_token.inner.clone(),
+            self.id_token
+                .inner()
+                .to_string(),
             None,
             None,
             Some(delete_attribute),
@@ -899,7 +915,9 @@ impl Session {
     async fn get_user_data_internal(&self) -> Result<UserData> {
         // Create request payload.
         let request_payload = api::GetUserDataRequestBodyPayload::new(
-            self.id_token.inner.clone(),
+            self.id_token
+                .inner()
+                .to_string(),
         );
 
         // Send request.
@@ -943,9 +961,11 @@ impl Session {
     ) -> Result<Self> {
         // Create request payload.
         let request_payload = api::LinkWithEmailPasswordRequestBodyPayload::new(
-            self.id_token.inner.clone(),
-            email.inner,
-            password.inner,
+            self.id_token
+                .inner()
+                .to_string(),
+            email.inner().to_string(),
+            password.inner().to_string(),
         );
 
         // Send request.
@@ -974,8 +994,12 @@ impl Session {
         // Create request payload.
         let request_payload =
             api::LinkWithOAuthCredentialRequestBodyPayload::new(
-                self.id_token.inner.clone(),
-                request_uri.inner,
+                self.id_token
+                    .inner()
+                    .to_string(),
+                request_uri
+                    .inner()
+                    .to_string(),
                 post_body,
                 false,
             );
@@ -1004,7 +1028,9 @@ impl Session {
     ) -> Result<()> {
         // Create request payload.
         let request_payload = api::UnlinkProviderRequestBodyPayload::new(
-            self.id_token.inner.clone(),
+            self.id_token
+                .inner()
+                .to_string(),
             delete_provider,
         );
 
@@ -1025,7 +1051,9 @@ impl Session {
     ) -> Result<()> {
         // Create request payload.
         let request_payload = api::SendEmailVerificationRequestBodyPayload::new(
-            self.id_token.inner.clone(),
+            self.id_token
+                .inner()
+                .to_string(),
         );
 
         // Send request.
@@ -1043,7 +1071,9 @@ impl Session {
     async fn delete_account_internal(&self) -> Result<()> {
         // Create request payload.
         let request_payload = api::DeleteAccountRequestBodyPayload::new(
-            self.id_token.inner.clone(),
+            self.id_token
+                .inner()
+                .to_string(),
         );
 
         // Send request.

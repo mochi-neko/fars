@@ -40,7 +40,7 @@ async fn main() -> anyhow::Result<()> {
         let api_key = ApiKey::new(std::env::var("FIREBASE_API_KEY")?);
 
         // Create a custom reqwest client with timeout.
-        let client = reqwest::ClientBuilder::new()
+        let client = fars::reqwest::ClientBuilder::new()
             .timeout(Duration::from_secs(60))
             .connect_timeout(Duration::from_secs(10))
             .build()?;

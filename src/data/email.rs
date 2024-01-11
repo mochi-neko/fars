@@ -1,7 +1,7 @@
 /// Email of an user.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct Email {
-    pub(crate) inner: String,
+    inner: String,
 }
 
 impl Email {
@@ -13,5 +13,9 @@ impl Email {
         Self {
             inner: inner.into(),
         }
+    }
+
+    pub(crate) fn inner(&self) -> &str {
+        &self.inner
     }
 }

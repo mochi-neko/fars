@@ -1,7 +1,7 @@
 /// The Firebase project ID.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct ProjectId {
-    pub(crate) inner: String,
+    inner: String,
 }
 
 impl ProjectId {
@@ -13,5 +13,10 @@ impl ProjectId {
         Self {
             inner: into.into(),
         }
+    }
+
+    /// Returns the inner representation.
+    pub fn inner(&self) -> &str {
+        &self.inner
     }
 }

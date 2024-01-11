@@ -31,6 +31,27 @@ impl Client {
     }
 
     /// Creates a new HTTP client with a custom instance.
+    ///
+    /// ## NOTE
+    /// This method requires the `custom_client` feature.
+    ///
+    /// ## Arguments
+    /// - `client` - A custom HTTP client instance.
+    ///
+    /// ## Example
+    /// ```
+    /// use fars::Client;
+    /// use std::time::Duration;
+    ///
+    /// // Create a custom reqwest client with timeout.
+    /// let client = fars::reqwest::ClientBuilder::new()
+    ///     .timeout(Duration::from_secs(60))
+    ///     .connect_timeout(Duration::from_secs(10))
+    ///     .build()?;
+    ///
+    /// // Customize HTTP client.
+    /// let client = Client::custom(client);
+    /// ```
     #[cfg(feature = "custom_client")]
     pub fn custom(client: crate::reqwest::Client) -> Self {
         Self {
@@ -73,7 +94,7 @@ impl Client {
         let url = format!(
             "https://identitytoolkit.googleapis.com/v1/{}?key={}",
             endpoint.format(),
-            api_key.inner
+            api_key.inner()
         );
 
         // Create request builder and set method and payload.

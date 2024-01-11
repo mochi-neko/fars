@@ -1,7 +1,7 @@
 /// OAuth request URI.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct OAuthRequestUri {
-    pub(crate) inner: String,
+    inner: String,
 }
 
 impl OAuthRequestUri {
@@ -13,5 +13,10 @@ impl OAuthRequestUri {
         Self {
             inner: into.into(),
         }
+    }
+
+    /// Returns the inner representation.
+    pub fn inner(&self) -> &str {
+        &self.inner
     }
 }
