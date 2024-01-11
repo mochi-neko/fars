@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `LaunguageCode` to specify locale.
 - Add `custom_client` feature to provide HTTP client customization interfaces.
 
 ### Changed
