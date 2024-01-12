@@ -4,7 +4,7 @@ An unofficial Rust client for the [Firebase Auth REST API](https://firebase.goog
 
 ## Installation
 
-Please install this library by adding by CLI:
+Please install this library by CLI:
 
 ```shell
 $ cargo add fars
