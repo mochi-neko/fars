@@ -100,6 +100,7 @@ pub struct UnlinkProviderResponsePayload {
 ///
 /// ## Example
 /// ```
+/// use std::collections::HashSet;
 /// use fars::api;
 /// use fars::ProviderId;
 /// use fars::Client;
@@ -107,7 +108,7 @@ pub struct UnlinkProviderResponsePayload {
 ///
 /// let request_payload = api::UnlinkProviderRequestBodyPayload::new(
 ///     "id-token".to_string(),
-///     [ProviderId::Google].iter().cloned().collect(),
+///     HashSet::from([ProviderId::Google]),
 /// );
 ///
 /// let response_payload = api::unlink_provider(

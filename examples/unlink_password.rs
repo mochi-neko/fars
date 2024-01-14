@@ -4,6 +4,8 @@
 //! $ cargo run --example unlink_password -- --email <email> --password <password>
 //! ```
 
+use std::collections::HashSet;
+
 use clap::Parser;
 use fars::ApiKey;
 use fars::Config;
@@ -46,10 +48,7 @@ async fn main() -> anyhow::Result<()> {
     // Unlink email and password.
     let session = session
         .unlink_provider(
-            [ProviderId::Password]
-                .iter()
-                .cloned()
-                .collect(),
+            HashSet::from([ProviderId::Password]),
         )
         .await?;
 

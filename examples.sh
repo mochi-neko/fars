@@ -5,6 +5,8 @@
 
 # export FIREBASE_API_KEY=""
 # export FIREEBASE_PROJECT_ID=""
+# export GOOGLE_CLIENT_ID=""
+# export GOOGLE_CLIENT_SECRET=""
 
 EMAIL="t.o.e.4315@gmail.com"
 PASSWORD="password"
@@ -15,7 +17,6 @@ DUMMY_PASSWORD="password"
 REFRESH_TOKEN=""
 
 REQUEST_URI="http://localhost"
-GOOGLE_ID_TOKEN=""
 FACEBOOK_ACCESS_TOKEN=""
 TWITTER_ACCESS_TOKEN=""
 TWITTER_OAUTH_TOKEN_SECRET=""
@@ -29,11 +30,9 @@ cargo run --example sign_up_with_email_password -- --email $DUMMY_EMAIL --passwo
 cargo run --example delete_account -- --email $DUMMY_EMAIL --password $DUMMY_PASSWORD
 cargo run --example sign_in_with_email_password -- --email $EMAIL --password $PASSWORD
 cargo run --example sign_in_anonymously
+# cargo run --example sign_in_with_google_oauth_credential
 if [ ${REFRESH_TOKEN} -ne "" ]; then
     cargo run --example sign_in_with_refresh_token -- --refresh-token $REFRESH_TOKEN
-fi
-if [ ${GOOGLE_ID_TOKEN} -ne "" ]; then
-    cargo run --example sign_in_with_google_oauth_credential -- --request-uri $REQUEST_URI --id-token $GOOGLE_ID_TOKEN
 fi
 if [ ${FACEBOOK_ACCESS_TOKEN} -ne "" ]; then
     cargo run --example sign_in_with_facebook_oauth_credential -- --request-uri $REQUEST_URI --access-token $FACEBOOK_ACCESS_TOKEN

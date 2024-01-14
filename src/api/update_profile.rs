@@ -4,6 +4,8 @@
 //!
 //! See also [API reference](https://firebase.google.com/docs/reference/rest/auth#section-update-profile).
 
+use std::collections::HashSet;
+
 use serde::{Deserialize, Serialize};
 
 use crate::ApiKey;
@@ -50,7 +52,7 @@ impl UpdateProfileRequestBodyPayload {
         id_token: String,
         display_name: Option<String>,
         photo_url: Option<String>,
-        delete_attribute: Option<Vec<DeleteAttribute>>,
+        delete_attribute: Option<HashSet<DeleteAttribute>>,
         return_secure_token: bool,
     ) -> Self {
         let delete_attribute = match delete_attribute {

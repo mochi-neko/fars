@@ -76,10 +76,12 @@
 //! An example of sign in with Google OAuth credential with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 //!
 //! ```rust
+//! use std::collections::HashMap;
 //! use fars::Config;
 //! use fars::ApiKey;
 //! use fars::OAuthRequestUri;
 //! use fars::IdpPostBody;
+//! use fars::ProviderId;
 //!
 //! #[tokio::main]
 //! async fn main() -> anyhow::Result<()> {
@@ -94,9 +96,13 @@
 //!     // Get a session by signing in with Google OAuth credential.
 //!     let session = config.sign_in_with_oauth_credential(
 //!         OAuthRequestUri::new("https://your-app.com/redirect/path/auth/handler"),
-//!         IdpPostBody::Google {
-//!             id_token: google_open_id_token,
-//!         },
+//!         IdpPostBody::new(
+//!             ProviderId::Google,
+//!             HashMap::from([(
+//!                 "access_token",
+//!                 "google-access-token".to_string(),
+//!             )]),
+//!         )?,
 //!     ).await?;
 //!
 //!     // Do something with the session.
@@ -422,10 +428,12 @@ impl Config {
     ///
     /// ## Example
     /// ```
+    /// use std::collections::HashMap;
     /// use fars::Config;
     /// use fars::ApiKey;
     /// use fars::OAuthRequestUri;
     /// use fars::IdpPostBody;
+    /// use fars::ProviderId;
     ///
     /// let config = Config::new(
     ///     ApiKey::new("your-firebase-project-api-key"),
@@ -433,9 +441,13 @@ impl Config {
     ///
     /// let session = config.sign_in_with_oauth_credential(
     ///     OAuthRequestUri::new("https://your-app.com/redirect/path/auth/handler"),
-    ///     IdpPostBody::Google {
-    ///         id_token: "user-google-oauth-open-id-token".to_string(),
-    ///     },
+    ///     IdpPostBody::new(
+    ///         ProviderId::Google,
+    ///         HashMap::from([(
+    ///             "access_token",
+    ///             "google-access-token".to_string(),
+    ///         )]),
+    ///     )?,
     /// ).await?;
     /// ```
     pub async fn sign_in_with_oauth_credential(

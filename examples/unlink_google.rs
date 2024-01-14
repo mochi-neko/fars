@@ -1,8 +1,11 @@
 //! An example to unlink Google OAuth credential by session-based interface.
 //!
 //! ```shell
-//! $ cargo run --example unlink_google -- --request-uri <request_uri> --id-token <id_token>
+//! $ cargo run --example unlink_google -- --request-uri <request_uri> --access-token <access_token>
 //! ```
+
+use std::collections::HashMap;
+use std::collections::HashSet;
 
 use clap::Parser;
 use fars::ApiKey;
@@ -16,7 +19,7 @@ struct Arguments {
     #[arg(short, long)]
     request_uri: String,
     #[arg(short, long)]
-    id_token: String,
+    access_token: String,
 }
 
 #[tokio::main]
@@ -38,20 +41,19 @@ async fn main() -> anyhow::Result<()> {
     let session = session
         .link_with_oauth_credential(
             OAuthRequestUri::new(arguments.request_uri.clone()),
-            IdpPostBody::Google {
-                id_token: arguments.id_token.clone(),
-            },
+            IdpPostBody::new(
+                ProviderId::Google,
+                HashMap::from([(
+                    "access_token",
+                    arguments.access_token.clone(),
+                )]),
+            )?,
         )
         .await?;
 
     // Unlink Google OAuth credential.
     let session = session
-        .unlink_provider(
-            [ProviderId::Google]
-                .iter()
-                .cloned()
-                .collect(),
-        )
+        .unlink_provider(HashSet::from([ProviderId::Google]))
         .await?;
 
     println!(

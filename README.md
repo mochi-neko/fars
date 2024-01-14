@@ -60,19 +60,17 @@ Suppoted APIs of the [Firebase Auth REST API](https://firebase.google.com/docs/r
 
 Supported OAuth ID provides are as follows:
 
-- [ ] (Not implemented) Apple (`apple.com`)
-- [ ] (Not implemented) Apple Game Center (`gc.apple.com`)
+- [ ] (Not tested) Apple (`apple.com`)
+- [ ] (Not tested) Apple Game Center (`gc.apple.com`)
 - [ ] (Not tested) Facebook (`facebook.com`)
-- [ ] (Not implemented) GitHub (`github.com`)
+- [ ] (Not tested) GitHub (`github.com`)
 - [x] Google (`google.com`)
-- [ ] (Not implemented) Google Play Games (`playgames.google.com`)
-- [ ] (Not implemented) LinkedIn (`linkedin.com`)
-- [ ] (Not implemented) Microsoft (`microsoft.com`)
+- [ ] (Not tested) Google Play Games (`playgames.google.com`)
+- [ ] (Not tested) LinkedIn (`linkedin.com`)
+- [ ] (Not tested) Microsoft (`microsoft.com`)
 - [ ] (Not tested) Twitter (`twitter.com`)
-- [ ] (Not implemented) Yahoo (`yahoo.com`)
-
-> [!NOTE]
-> Unsupported providers have either not been tested or the format of `IdpPostBody` is not documented at the [official API reference](https://firebase.google.com/docs/reference/rest/auth).
+- [ ] (Not tested) Yahoo (`yahoo.com`)
+- [ ] (Not tested) Custom (`{custom-provder-id}`)
 
 ## API Usages
 
@@ -164,16 +162,18 @@ See also [supported OAuth providers](#supported-oauth-id-providers).
 To sign in with Google OAuth credential, 
 
 1. Create a config (`fars::Config`) with your Firebase project API key.
-2. Get OpenID token from Google OAuth API. See [reference](https://developers.google.com/identity/protocols/oauth2/web-server#obtainingaccesstokens).
-3. Sign in with specifying `request_uri` and `IdpPostBody::Google`.
+2. Get an access token of a user from Google OAuth API. See [reference](https://developers.google.com/identity/protocols/oauth2/web-server#obtainingaccesstokens).
+3. Sign in with specifying `request_uri` and `IdpPostBody`.
 
 A sample code to [sign in with Google OAuth credential](https://firebase.google.com/docs/reference/rest/auth#section-sign-in-with-oauth-credential) with [tokio](https://github.com/tokio-rs/tokio) and [anyhow](https://github.com/dtolnay/anyhow) is as follows:
 
 ```rust
+use std::collections::HashMap;
 use fars::Config;
 use fars::ApiKey;
 use fars::OAuthRequestUri;
 use fars::IdpPostBody;
+use fars::ProviderId
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -182,16 +182,20 @@ async fn main() -> anyhow::Result<()> {
         ApiKey::new("your-firebase-project-api-key"),
     );
 
-    // 2. Get an OpenID token from Google OAuth by any method.
-    let google_id_token = "google-open-id-token".to_string();
+    // 2. Get an access token from Google OAuth by any method.
+    let google_access_token = "google-access-token".to_string();
 
     // 3. Get a session by signing in with Google OAuth credential.
     let session = config
         .sign_in_with_oauth_credential(
             OAuthRequestUri::new("https://your-app.com/redirect/path/auth/handler"),
-            IdpPostBody::Google {
-                id_token: google_id_token,
-            },
+            IdpPostBody::new(
+                ProviderId::Google, // Specify IDP
+                HashMap::from([(
+                    "access_token",
+                    google_access_token,
+                )]), // Set post body as key-value pairs.
+            )?,
         )
         .await?;
 

@@ -6,11 +6,14 @@
 //! $ cargo run --example sign_in_with_twitter_oauth_credential -- --request-uri <request_uri> --access-token <access_token> --oauth-token-secret <oauth_token_secret>
 //! ```
 
+use std::collections::HashMap;
+
 use clap::Parser;
 use fars::ApiKey;
 use fars::Config;
 use fars::IdpPostBody;
 use fars::OAuthRequestUri;
+use fars::ProviderId;
 
 #[derive(Parser)]
 struct Arguments {
@@ -37,12 +40,21 @@ async fn main() -> anyhow::Result<()> {
     let session = config
         .sign_in_with_oauth_credential(
             OAuthRequestUri::new(arguments.request_uri.clone()),
-            IdpPostBody::Twitter {
-                access_token: arguments.access_token.clone(),
-                oauth_token_secret: arguments
-                    .oauth_token_secret
-                    .clone(),
-            },
+            IdpPostBody::new(
+                ProviderId::Twitter,
+                HashMap::from([
+                    (
+                        "access_token",
+                        arguments.access_token.clone(),
+                    ),
+                    (
+                        "oauth_token_secret",
+                        arguments
+                            .oauth_token_secret
+                            .clone(),
+                    ),
+                ]),
+            )?,
         )
         .await?;
 

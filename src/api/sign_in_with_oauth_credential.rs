@@ -22,7 +22,7 @@ pub struct SignInWithOAuthCredentialRequestBodyPayload {
     request_uri: String,
     /// Contains the OAuth credential (an ID token or access token) and provider ID which issues the credential.
     #[serde(rename = "postBody")]
-    post_body: IdpPostBody,
+    post_body: String,
     /// Whether or not to return an ID and refresh token. Should always be true.
     #[serde(rename = "returnSecureToken")]
     return_secure_token: bool,
@@ -47,7 +47,7 @@ impl SignInWithOAuthCredentialRequestBodyPayload {
     ) -> Self {
         Self {
             request_uri,
-            post_body,
+            post_body: post_body.query,
             return_secure_token: true,
             return_ipd_credential,
         }
@@ -141,14 +141,22 @@ pub struct SignInWithOAuthCredentialResponsePayload {
 ///
 /// ## Example
 /// ```
+/// use std::collections::HashMap;
 /// use fars::api;
 /// use fars::IdpPostBody;
+/// use fars::ProviderId;
 /// use fars::Client;
 /// use fars::ApiKey;
 ///
 /// let request_payload = api::SignInWithOAuthCredentialRequestBodyPayload::new(
 ///     "request-uri".to_string(),
-///     IdpPostBody::Google{ id_token: "google-oauth-open-id-token".to_string() },
+///     IdpPostBody::new(
+///         ProviderId::Google,
+///         HashMap::from([(
+///             "access_token",
+///             "google-access-token".to_string(),
+///         )]),
+///     )?,
 ///     false,
 /// );
 ///

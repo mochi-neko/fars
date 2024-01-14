@@ -6,10 +6,13 @@
 //! $ cargo run --example sign_in_with_facebook_oauth_credential -- --request-uri <request_uri> --access-token <access_token>
 //! ```
 
+use std::collections::HashMap;
+
 use clap::Parser;
 use fars::ApiKey;
 use fars::Config;
 use fars::IdpPostBody;
+use fars::ProviderId;
 use fars::OAuthRequestUri;
 
 #[derive(Parser)]
@@ -35,9 +38,13 @@ async fn main() -> anyhow::Result<()> {
     let session = config
         .sign_in_with_oauth_credential(
             OAuthRequestUri::new(arguments.request_uri.clone()),
-            IdpPostBody::Facebook {
-                access_token: arguments.access_token.clone(),
-            },
+            IdpPostBody::new(
+                ProviderId::Facebook,
+                HashMap::from([(
+                    "access_token",
+                    arguments.access_token.clone(),
+                )]),
+            )?,
         )
         .await?;
 

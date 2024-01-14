@@ -68,3 +68,5 @@ pub use crate::verification::VerificationResult;
 // Re-export reqwest for the feature "custom_client" to customize the HTTP client.
 #[cfg(feature = "custom_client")]
 pub use reqwest;
+
+pub mod oauth;

@@ -443,6 +443,7 @@ impl Session {
     ///
     /// ## Example
     /// ```
+    /// use std::collections::HashSet;
     /// use fars::Config;
     /// use fars::ApiKey;
     /// use fars::Email;
@@ -458,10 +459,10 @@ impl Session {
     /// ).await?;
     ///
     /// let new_session = session.delete_profile(
-    ///     [DeleteAttribute::DisplayName, DeleteAttribute::PhotoUrl]
-    ///         .iter()
-    ///         .cloned()
-    ///         .collect(),
+    ///     HashSet::from([
+    ///         DeleteAttribute::DisplayName,
+    ///         DeleteAttribute::PhotoUrl,
+    ///     ]),
     /// ).await?;
     /// ```
     pub async fn delete_profile(
@@ -543,10 +544,12 @@ impl Session {
     ///
     /// ## Example
     /// ```
+    /// use std::collections::HashMap;
     /// use fars::Config;
     /// use fars::ApiKey;
     /// use fars::OAuthRequestUri;
     /// use fars::IdpPostBody;
+    /// use fars::ProviderId;
     /// use fars::Email;
     /// use fars::Password;
     ///
@@ -555,9 +558,13 @@ impl Session {
     /// );
     /// let session = config.sign_in_oauth_credencial(
     ///     OAuthRequestUri::new("https://your-app.com/redirect/path/auth/handler"),
-    ///     IdpPostBody::Google {
-    ///         id_token: "user-google-oauth-open-id-token".to_string(),
-    ///     },
+    ///     IdpPostBody::new(
+    ///         ProviderId::Google,
+    ///         HashMap::from([(
+    ///             "access_token",
+    ///             "google-access-token".to_string(),
+    ///         )]),
+    ///     )?,
     /// ).await?;
     ///
     /// let new_session = session.link_with_email_password(
@@ -620,9 +627,13 @@ impl Session {
     ///
     /// let new_session = session.link_with_oauth_credential(
     ///     OAuthRequestUri::new("https://your-app.com/redirect/path/auth/handler"),
-    ///     IdpPostBody::Google {
-    ///         id_token: "user-google-id-token-got-from-google-oauth-api".to_string(),
-    ///     },
+    ///     IdpPostBody::new(
+    ///         ProviderId::Google,
+    ///         HashMap::from([(
+    ///             "access_token",
+    ///             "google-access-token".to_string(),
+    ///         )]),
+    ///     )?,
     /// ).await?;
     /// ```
     pub async fn link_with_oauth_credential(
@@ -660,6 +671,7 @@ impl Session {
     ///
     /// ## Example
     /// ```
+    /// use std::collections::HashSet;
     /// use fars::Config;
     /// use fars::ApiKey;
     /// use fars::Email;
@@ -675,7 +687,7 @@ impl Session {
     /// ).await?;
     ///
     /// let new_session = session.unlink_provider(
-    ///    [ProviderId::Google].iter().cloned().collect(),
+    ///     HashSet::from([ProviderId::Google]),
     /// ).await?;
     /// ```
     pub async fn unlink_provider(
@@ -931,12 +943,6 @@ impl Session {
         &self,
         delete_attribute: HashSet<DeleteAttribute>,
     ) -> Result<()> {
-        // Format delete attributes.
-        let delete_attribute = delete_attribute
-            .iter()
-            .copied()
-            .collect();
-
         // Create request payload.
         let request_payload = api::UpdateProfileRequestBodyPayload::new(
             self.id_token

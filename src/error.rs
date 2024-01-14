@@ -51,12 +51,17 @@ pub enum Error {
     },
     /// Parse `expires_in` failed.
     #[error("Parse expires_in failed: {error:?}")]
-    ParseExpriesInFailed {
+    ParseExpiresInFailed {
         error: std::num::ParseIntError,
     },
     /// Not found any user data in a response.
     #[error("Not found any user data in a response")]
     NotFoundAnyUserData,
+    /// Url encode failed.
+    #[error("Url encode failed: {error:?}")]
+    UrlEncodeFailed {
+        error: serde_urlencoded::ser::Error,
+    },
 }
 
 /// Error response payload for the auth endpoints.
