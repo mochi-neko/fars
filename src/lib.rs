@@ -15,7 +15,6 @@ pub mod api;
 pub mod client;
 pub mod config;
 pub mod error;
-pub mod oauth;
 pub mod session;
 
 // Internal modules
@@ -72,38 +71,4 @@ pub use reqwest;
 
 // Feature "oauth"
 #[cfg(feature = "oauth")]
-pub use crate::oauth::client::OAuthClient;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::data::OAuthAccessToken;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::data::OAuthAuthUrl;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::data::OAuthAuthorizationCode;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::data::OAuthAuthorizationState;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::data::OAuthAuthorizeUrl;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::data::OAuthClientId;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::data::OAuthClientSecret;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::data::OAuthRedirectUrl;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::data::OAuthRefreshToken;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::data::OAuthRevocationUrl;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::data::OAuthScope;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::data::OAuthTokenUrl;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::error::OAuthError;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::idp::google::OAuthGoogleClient;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::result::OAuthResult;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::session::OAuthSession;
-#[cfg(feature = "oauth")]
-pub use crate::oauth::token::OAuthToken;
+pub mod oauth;

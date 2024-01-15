@@ -12,6 +12,9 @@ repository = "https://github.com/mochi-neko/fars"
 categories = ["api-bindings", "authentication"]
 keywords = ["firebase", "auth", "rest", "api", "client"]
 
+[package.metadata.docs.rs]
+all-features = true
+
 [lib]
 path = "src/lib.rs"
 

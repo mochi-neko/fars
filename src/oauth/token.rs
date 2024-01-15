@@ -1,7 +1,7 @@
 use std::time::Duration;
 
-use crate::OAuthAccessToken;
-use crate::OAuthRefreshToken;
+use crate::oauth::OAuthAccessToken;
+use crate::oauth::OAuthRefreshToken;
 
 /// The OAuth2 token.
 pub struct OAuthToken {

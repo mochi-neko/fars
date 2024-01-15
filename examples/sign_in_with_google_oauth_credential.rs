@@ -4,49 +4,31 @@
 //! $ cargo run --example sign_in_with_google_oauth_credential --features oauth
 //! ```
 
-#[cfg(feature = "oauth")]
+#![cfg(feature = "oauth")]
+
 use std::collections::HashMap;
-#[cfg(feature = "oauth")]
 use std::collections::HashSet;
-#[cfg(feature = "oauth")]
 use std::sync::Arc;
 
-#[cfg(feature = "oauth")]
 use axum::extract::{Query, State};
-#[cfg(feature = "oauth")]
 use axum::{routing::get, Router};
 use serde::Deserialize;
-#[cfg(feature = "oauth")]
 use tokio::sync::{mpsc, Mutex};
 
-#[cfg(feature = "oauth")]
+use fars::oauth::OAuthAuthorizationCode;
+use fars::oauth::OAuthAuthorizationState;
+use fars::oauth::OAuthClientId;
+use fars::oauth::OAuthClientSecret;
+use fars::oauth::OAuthGoogleClient;
+use fars::oauth::OAuthRedirectUrl;
+use fars::oauth::OAuthScope;
+use fars::oauth::OAuthSession;
 use fars::ApiKey;
-#[cfg(feature = "oauth")]
 use fars::Config;
-#[cfg(feature = "oauth")]
 use fars::IdpPostBody;
-#[cfg(feature = "oauth")]
-use fars::OAuthAuthorizationCode;
-#[cfg(feature = "oauth")]
-use fars::OAuthAuthorizationState;
-#[cfg(feature = "oauth")]
-use fars::OAuthClientId;
-#[cfg(feature = "oauth")]
-use fars::OAuthClientSecret;
-#[cfg(feature = "oauth")]
-use fars::OAuthGoogleClient;
-#[cfg(feature = "oauth")]
-use fars::OAuthRedirectUrl;
-#[cfg(feature = "oauth")]
 use fars::OAuthRequestUri;
-#[cfg(feature = "oauth")]
-use fars::OAuthScope;
-#[cfg(feature = "oauth")]
-use fars::OAuthSession;
-#[cfg(feature = "oauth")]
 use fars::ProviderId;
 
-#[cfg(feature = "oauth")]
 #[derive(Clone)]
 struct ServerState {
     config: Arc<Mutex<Config>>,
@@ -55,7 +37,6 @@ struct ServerState {
 }
 
 #[allow(dead_code)]
-#[cfg(feature = "oauth")]
 #[derive(Deserialize)]
 struct QueryParameters {
     code: Option<String>,
@@ -66,7 +47,6 @@ struct QueryParameters {
     error: Option<String>,
 }
 
-#[cfg(feature = "oauth")]
 async fn handle_redirect(
     state: State<ServerState>,
     Query(params): Query<QueryParameters>,
@@ -105,7 +85,6 @@ async fn handle_redirect(
     }
 }
 
-#[cfg(feature = "oauth")]
 async fn continue_sign_in(
     state: State<ServerState>,
     auth_code: String,
@@ -173,72 +152,61 @@ async fn continue_sign_in(
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    #[cfg(not(feature = "oauth"))]
-    {
-        return Err(anyhow::anyhow!(
-            "Feature \"oauth\" is not enabled.",
-        ));
+    // Get secrets from the environment variables.
+    let google_client_id =
+        OAuthClientId::new(std::env::var("GOOGLE_CLIENT_ID")?);
+    let google_client_secret =
+        OAuthClientSecret::new(std::env::var("GOOGLE_CLIENT_SECRET")?);
+
+    // Create an OAuth client.
+    let oauth_client = OAuthGoogleClient::new(
+        google_client_id,
+        google_client_secret,
+        OAuthRedirectUrl::new("http://localhost:8080/auth/google-callback")?,
+    )?;
+
+    // Generate an OAuth session with authorization URL.
+    let session = oauth_client.generate_authorization_url(HashSet::from([
+        OAuthScope::new("https://www.googleapis.com/auth/userinfo.email"),
+        OAuthScope::new("https://www.googleapis.com/auth/userinfo.profile"),
+        OAuthScope::new("openid"),
+    ]));
+
+    // Open the authorization URL in the default browser.
+    webbrowser::open(session.url.inner())?;
+
+    // Create a channel to receive a signal to stop the server.
+    let (tx, mut rx) = mpsc::channel::<()>(1);
+
+    // Create a server state.
+    let server_state = ServerState {
+        config: Arc::new(Mutex::new(Config::new(ApiKey::new(
+            std::env::var("FIREBASE_API_KEY")?,
+        )))),
+        oauth_session: Arc::new(Mutex::new(session)),
+        tx,
+    };
+
+    // Build application with redirection handler.
+    let app = Router::new()
+        .route(
+            "/auth/google-callback",
+            get(handle_redirect),
+        )
+        .with_state(server_state);
+
+    // Run it with hyper on localhost:8080 to receive the authorization code by redirection.
+    let listener = tokio::net::TcpListener::bind("localhost:8080").await?;
+
+    // Wait for the server to stop or receive a signal to stop the server.
+    tokio::select! {
+        | _ = rx.recv() => {
+            println!("Received a signal to stop the server.");
+        },
+        | _ = async { axum::serve(listener, app).await } => {
+            println!("Server stopped.");
+        },
     }
-    #[cfg(feature = "oauth")]
-    {
-        // Get secrets from the environment variables.
-        let google_client_id =
-            OAuthClientId::new(std::env::var("GOOGLE_CLIENT_ID")?);
-        let google_client_secret =
-            OAuthClientSecret::new(std::env::var("GOOGLE_CLIENT_SECRET")?);
 
-        // Create an OAuth client.
-        let oauth_client = OAuthGoogleClient::new(
-            google_client_id,
-            google_client_secret,
-            OAuthRedirectUrl::new(
-                "http://localhost:8080/auth/google-callback",
-            )?,
-        )?;
-
-        // Generate an OAuth session with authorization URL.
-        let session = oauth_client.generate_authorization_url(HashSet::from([
-            OAuthScope::new("https://www.googleapis.com/auth/userinfo.email"),
-            OAuthScope::new("https://www.googleapis.com/auth/userinfo.profile"),
-            OAuthScope::new("openid"),
-        ]));
-
-        // Open the authorization URL in the default browser.
-        webbrowser::open(session.url.inner())?;
-
-        // Create a channel to receive a signal to stop the server.
-        let (tx, mut rx) = mpsc::channel::<()>(1);
-
-        // Create a server state.
-        let server_state = ServerState {
-            config: Arc::new(Mutex::new(Config::new(ApiKey::new(
-                std::env::var("FIREBASE_API_KEY")?,
-            )))),
-            oauth_session: Arc::new(Mutex::new(session)),
-            tx,
-        };
-
-        // Build application with redirection handler.
-        let app = Router::new()
-            .route(
-                "/auth/google-callback",
-                get(handle_redirect),
-            )
-            .with_state(server_state);
-
-        // Run it with hyper on localhost:8080 to receive the authorization code by redirection.
-        let listener = tokio::net::TcpListener::bind("localhost:8080").await?;
-
-        // Wait for the server to stop or receive a signal to stop the server.
-        tokio::select! {
-            | _ = rx.recv() => {
-                println!("Received a signal to stop the server.");
-            },
-            | _ = async { axum::serve(listener, app).await } => {
-                println!("Server stopped.");
-            },
-        }
-
-        Ok(())
-    }
+    Ok(())
 }

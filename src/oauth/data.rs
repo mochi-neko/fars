@@ -1,5 +1,5 @@
-use crate::OAuthError;
-use crate::OAuthResult;
+use crate::oauth::OAuthError;
+use crate::oauth::OAuthResult;
 
 pub struct OAuthClientId {
     inner: oauth2::ClientId,

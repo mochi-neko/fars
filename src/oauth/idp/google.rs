@@ -1,15 +1,15 @@
 use std::collections::HashSet;
 
-use crate::OAuthAuthUrl;
-use crate::OAuthClient;
-use crate::OAuthClientId;
-use crate::OAuthClientSecret;
-use crate::OAuthRedirectUrl;
-use crate::OAuthResult;
-use crate::OAuthRevocationUrl;
-use crate::OAuthScope;
-use crate::OAuthSession;
-use crate::OAuthTokenUrl;
+use crate::oauth::OAuthAuthUrl;
+use crate::oauth::OAuthClient;
+use crate::oauth::OAuthClientId;
+use crate::oauth::OAuthClientSecret;
+use crate::oauth::OAuthRedirectUrl;
+use crate::oauth::OAuthResult;
+use crate::oauth::OAuthRevocationUrl;
+use crate::oauth::OAuthScope;
+use crate::oauth::OAuthSession;
+use crate::oauth::OAuthTokenUrl;
 
 pub struct OAuthGoogleClient {
     inner: OAuthClient,

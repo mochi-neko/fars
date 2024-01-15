@@ -1,14 +1,14 @@
 use oauth2::{CsrfToken, PkceCodeVerifier, TokenResponse};
 
-use crate::OAuthAccessToken;
-use crate::OAuthAuthorizationCode;
-use crate::OAuthAuthorizationState;
-use crate::OAuthAuthorizeUrl;
-use crate::OAuthClient;
-use crate::OAuthError;
-use crate::OAuthRefreshToken;
-use crate::OAuthResult;
-use crate::OAuthToken;
+use crate::oauth::OAuthAccessToken;
+use crate::oauth::OAuthAuthorizationCode;
+use crate::oauth::OAuthAuthorizationState;
+use crate::oauth::OAuthAuthorizeUrl;
+use crate::oauth::OAuthClient;
+use crate::oauth::OAuthError;
+use crate::oauth::OAuthRefreshToken;
+use crate::oauth::OAuthResult;
+use crate::oauth::OAuthToken;
 
 /// The OAuth2 session for authorization.
 pub struct OAuthSession {
