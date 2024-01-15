@@ -1,2 +1,12 @@
-pub mod oauth_client;
-pub mod oauth_google;
+#[cfg(feature = "oauth")]
+pub(super) mod client;
+#[cfg(feature = "oauth")]
+pub(super) mod error;
+#[cfg(feature = "oauth")]
+pub(crate) mod idp;
+#[cfg(feature = "oauth")]
+pub(super) mod result;
+#[cfg(feature = "oauth")]
+pub(super) mod session;
+#[cfg(feature = "oauth")]
+pub(super) mod token;

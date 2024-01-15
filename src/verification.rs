@@ -228,12 +228,7 @@ impl VerificationConfig {
         &self,
         id_token: &IdToken,
     ) -> VerificationResult {
-        verify_id_token(
-            &self.client,
-            &id_token,
-            &self.project_id,
-        )
-        .await
+        verify_id_token(&self.client, id_token, &self.project_id).await
     }
 }
 
@@ -293,7 +288,7 @@ async fn verify_id_token(
     project_id: &ProjectId,
 ) -> VerificationResult {
     // Decode header of the ID token.
-    let header = jsonwebtoken::decode_header(&id_token.inner())
+    let header = jsonwebtoken::decode_header(id_token.inner())
         .map_err(VerificationError::DecodeTokenHeaderFailed)?;
 
     // Verify type of the token in the header.
@@ -368,7 +363,7 @@ async fn verify_id_token(
 
     // Decode and verify the ID token.
     let decoded = jsonwebtoken::decode::<IdTokenPayloadClaims>(
-        &id_token.inner(),
+        id_token.inner(),
         &decoding_key,
         &validation,
     )

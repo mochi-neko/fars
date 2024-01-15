@@ -15,6 +15,7 @@ pub mod api;
 pub mod client;
 pub mod config;
 pub mod error;
+pub mod oauth;
 pub mod session;
 
 // Internal modules
@@ -69,4 +70,16 @@ pub use crate::verification::VerificationResult;
 #[cfg(feature = "custom_client")]
 pub use reqwest;
 
-pub mod oauth;
+// Feature "oauth"
+#[cfg(feature = "oauth")]
+pub use crate::oauth::client::OAuthClient;
+#[cfg(feature = "oauth")]
+pub use crate::oauth::error::OAuthError;
+#[cfg(feature = "oauth")]
+pub use crate::oauth::idp::google::OAuthGoogleClient;
+#[cfg(feature = "oauth")]
+pub use crate::oauth::result::OAuthResult;
+#[cfg(feature = "oauth")]
+pub use crate::oauth::session::OAuthSession;
+#[cfg(feature = "oauth")]
+pub use crate::oauth::token::OAuthToken;

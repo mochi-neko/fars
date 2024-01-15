@@ -1,4 +1,6 @@
-use super::oauth_client::{OAuthClient, OAuthResult, OAuthSession};
+use crate::OAuthClient;
+use crate::OAuthResult;
+use crate::OAuthSession;
 
 pub struct OAuthGoogleClient {
     inner: OAuthClient,
