@@ -4,7 +4,16 @@
 //! $ cargo run --example verify_id_token --features verify -- --email <email> --password <password>
 //! ```
 
+#![cfg(feature = "verify")]
+
 use clap::Parser;
+
+use fars::verification::VerificationConfig;
+use fars::ApiKey;
+use fars::Config;
+use fars::Email;
+use fars::Password;
+use fars::ProjectId;
 
 #[derive(Parser)]
 struct Arguments {
@@ -16,55 +25,38 @@ struct Arguments {
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    #[cfg(not(feature = "verify"))]
-    {
-        return Err(anyhow::anyhow!(
-            "Feature \"verify\" is not enabled.",
-        ));
-    }
+    // Parse the command line arguments.
+    let arguments = Arguments::parse();
 
-    #[cfg(feature = "verify")]
-    {
-        use fars::ApiKey;
-        use fars::Config;
-        use fars::Email;
-        use fars::Password;
-        use fars::ProjectId;
-        use fars::VerificationConfig;
+    // Read API key from the environment variable.
+    let api_key = ApiKey::new(std::env::var("FIREBASE_API_KEY")?);
 
-        // Parse the command line arguments.
-        let arguments = Arguments::parse();
+    // Read project ID from the environment variable.
+    let project_id = ProjectId::new(std::env::var("FIREBASE_PROJECT_ID")?);
 
-        // Read API key from the environment variable.
-        let api_key = ApiKey::new(std::env::var("FIREBASE_API_KEY")?);
+    // Create a config.
+    let config = Config::new(api_key);
 
-        // Read project ID from the environment variable.
-        let project_id = ProjectId::new(std::env::var("FIREBASE_PROJECT_ID")?);
+    // Get a session by signing in with email and password.
+    let session = config
+        .sign_in_with_email_password(
+            Email::new(arguments.email.clone()),
+            Password::new(arguments.password.clone()),
+        )
+        .await?;
 
-        // Create a config.
-        let config = Config::new(api_key);
+    // Create a verification config.
+    let config = VerificationConfig::new(project_id);
 
-        // Get a session by signing in with email and password.
-        let session = config
-            .sign_in_with_email_password(
-                Email::new(arguments.email.clone()),
-                Password::new(arguments.password.clone()),
-            )
-            .await?;
+    // Verify the ID token.
+    let claims = config
+        .verify_id_token(&session.id_token)
+        .await?;
 
-        // Create a verification config.
-        let config = VerificationConfig::new(project_id);
+    println!(
+        "Token ID verification succeeded: {:?}",
+        claims
+    );
 
-        // Verify the ID token.
-        let claims = config
-            .verify_id_token(&session.id_token)
-            .await?;
-
-        println!(
-            "Token ID verification succeeded: {:?}",
-            claims
-        );
-
-        return Ok(());
-    }
+    return Ok(());
 }

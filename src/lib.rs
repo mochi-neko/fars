@@ -9,6 +9,8 @@
 //!     - ID token verification. See [`crate::verification`].
 //! - (Optional) `custom_client`
 //!     - HTTP client customization. See [`crate::client`].
+//! - (Optional) `oauth`
+//!    - OAuth 2.0 client. See [`crate::oauth`].
 
 // public modules
 pub mod api;
@@ -54,15 +56,8 @@ pub use crate::data::refresh_token::RefreshToken;
 pub use crate::data::user_data::UserData;
 
 // Feature "verify"
+#[cfg(feature = "verify")]
 pub mod verification;
-#[cfg(feature = "verify")]
-pub use crate::verification::IdTokenPayloadClaims;
-#[cfg(feature = "verify")]
-pub use crate::verification::VerificationConfig;
-#[cfg(feature = "verify")]
-pub use crate::verification::VerificationError;
-#[cfg(feature = "verify")]
-pub use crate::verification::VerificationResult;
 
 // Feature "custom_client"
 // Re-export reqwest for the feature "custom_client" to customize the HTTP client.
