@@ -21,19 +21,17 @@ jobs:
         run: cargo build --features verify --verbose
       - name: Build custom_client
         run: cargo build --features custom_client --verbose
+      - name: Build oauth
+        run: cargo build --features oauth --verbose
       - name: Build verify,custom_client
         run: cargo build --features verify,custom_client --verbose
+      - name: Build verify,oauth
+        run: cargo build --features verify,oauth --verbose
+      - name: Build custom_client,oauth
+        run: cargo build --features custom_client,oauth --verbose
       - name: Build full
         run: cargo build --features full --verbose
       - name: Check document
-        run: cargo doc --no-deps --verbose
-      - name: Check document verify
-        run: cargo doc --no-deps --verbose --features verify
-      - name: Check document custom_client
-        run: cargo doc --no-deps --verbose --features custom_client
-      - name: Check document verify,custom_client
-        run: cargo doc --no-deps --verbose --features verify,custom_client
-      - name: Check document full
-        run: cargo doc --no-deps --verbose --features full
+        run: cargo doc --no-deps --features full --verbose
       - name: Check format
         run: cargo fmt --all -- --check
