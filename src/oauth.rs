@@ -1,6 +1,8 @@
 #[cfg(feature = "oauth")]
 pub(super) mod client;
 #[cfg(feature = "oauth")]
+pub(super) mod data;
+#[cfg(feature = "oauth")]
 pub(super) mod error;
 #[cfg(feature = "oauth")]
 pub(crate) mod idp;

@@ -1,11 +1,19 @@
-use oauth2::{AuthorizationCode, CsrfToken, PkceCodeVerifier, TokenResponse};
+use oauth2::{CsrfToken, PkceCodeVerifier, TokenResponse};
 
-use crate::{OAuthClient, OAuthError, OAuthResult, OAuthToken};
+use crate::OAuthAccessToken;
+use crate::OAuthAuthorizationCode;
+use crate::OAuthAuthorizationState;
+use crate::OAuthAuthorizeUrl;
+use crate::OAuthClient;
+use crate::OAuthError;
+use crate::OAuthRefreshToken;
+use crate::OAuthResult;
+use crate::OAuthToken;
 
 /// The OAuth2 session for authorization.
 pub struct OAuthSession {
     /// The authorization URL.
-    pub url: String,
+    pub url: OAuthAuthorizeUrl,
     /// The OAuth client.
     pub(crate) client: OAuthClient,
     /// The PKCE code verifier.
@@ -18,11 +26,14 @@ impl OAuthSession {
     /// Exchanges an authorization code into an access token.
     pub async fn exchange_code_into_token(
         &self,
-        code: String,
-        state: String,
+        code: OAuthAuthorizationCode,
+        state: OAuthAuthorizationState,
     ) -> OAuthResult<OAuthToken> {
         // Check the CSRF state.
-        if state.ne(self.csrf_state.secret()) {
+        if state
+            .inner()
+            .ne(self.csrf_state.secret())
+        {
             return Err(OAuthError::StateMismatch);
         }
 
@@ -30,7 +41,7 @@ impl OAuthSession {
         let token_response = self
             .client
             .inner
-            .exchange_code(AuthorizationCode::new(code))
+            .exchange_code(code.inner().to_owned())
             .set_pkce_verifier(PkceCodeVerifier::new(
                 self.pkce_code_verifier
                     .clone(),
@@ -40,14 +51,14 @@ impl OAuthSession {
             .map_err(OAuthError::ExchangeTokenFailed)?;
 
         Ok(OAuthToken {
-            access_token: token_response
-                .access_token()
-                .secret()
-                .to_string(),
+            access_token: OAuthAccessToken::new(
+                token_response
+                    .access_token()
+                    .secret(),
+            ),
             refresh_token: token_response
                 .refresh_token()
-                .map(|token| token.secret().to_string())
-                .unwrap_or_default(),
+                .map(|token| OAuthRefreshToken::new(token.secret())),
             expires_in: token_response.expires_in(),
         })
     }

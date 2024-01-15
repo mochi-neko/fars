@@ -7,13 +7,14 @@
 #[cfg(feature = "oauth")]
 use std::collections::HashMap;
 #[cfg(feature = "oauth")]
+use std::collections::HashSet;
+#[cfg(feature = "oauth")]
 use std::sync::Arc;
 
 #[cfg(feature = "oauth")]
 use axum::extract::{Query, State};
 #[cfg(feature = "oauth")]
 use axum::{routing::get, Router};
-#[cfg(feature = "oauth")]
 use serde::Deserialize;
 #[cfg(feature = "oauth")]
 use tokio::sync::{mpsc, Mutex};
@@ -25,9 +26,21 @@ use fars::Config;
 #[cfg(feature = "oauth")]
 use fars::IdpPostBody;
 #[cfg(feature = "oauth")]
+use fars::OAuthAuthorizationCode;
+#[cfg(feature = "oauth")]
+use fars::OAuthAuthorizationState;
+#[cfg(feature = "oauth")]
+use fars::OAuthClientId;
+#[cfg(feature = "oauth")]
+use fars::OAuthClientSecret;
+#[cfg(feature = "oauth")]
 use fars::OAuthGoogleClient;
 #[cfg(feature = "oauth")]
+use fars::OAuthRedirectUrl;
+#[cfg(feature = "oauth")]
 use fars::OAuthRequestUri;
+#[cfg(feature = "oauth")]
+use fars::OAuthScope;
 #[cfg(feature = "oauth")]
 use fars::OAuthSession;
 #[cfg(feature = "oauth")]
@@ -106,7 +119,10 @@ async fn continue_sign_in(
 
     // Exchange authorization code into OAuth token.
     let token = oauth_session
-        .exchange_code_into_token(auth_code, auth_state)
+        .exchange_code_into_token(
+            OAuthAuthorizationCode::new(auth_code),
+            OAuthAuthorizationState::new(auth_state),
+        )
         .await
         .map_err(|e| {
             // Stop server
@@ -127,7 +143,10 @@ async fn continue_sign_in(
                 ProviderId::Google,
                 HashMap::from([(
                     "access_token",
-                    token.access_token.clone(),
+                    token
+                        .access_token
+                        .inner()
+                        .to_owned(),
                 )]),
             )?,
         )
@@ -163,25 +182,29 @@ async fn main() -> anyhow::Result<()> {
     #[cfg(feature = "oauth")]
     {
         // Get secrets from the environment variables.
-        let google_client_id = std::env::var("GOOGLE_CLIENT_ID")?;
-        let google_client_secret = std::env::var("GOOGLE_CLIENT_SECRET")?;
+        let google_client_id =
+            OAuthClientId::new(std::env::var("GOOGLE_CLIENT_ID")?);
+        let google_client_secret =
+            OAuthClientSecret::new(std::env::var("GOOGLE_CLIENT_SECRET")?);
 
         // Create an OAuth client.
         let oauth_client = OAuthGoogleClient::new(
             google_client_id,
             google_client_secret,
-            "http://localhost:8080/auth/google-callback".to_string(),
+            OAuthRedirectUrl::new(
+                "http://localhost:8080/auth/google-callback",
+            )?,
         )?;
 
         // Generate an OAuth session with authorization URL.
-        let session = oauth_client.generate_authorization_url(vec![
-            "https://www.googleapis.com/auth/userinfo.email".to_string(),
-            "https://www.googleapis.com/auth/userinfo.profile".to_string(),
-            "openid".to_string(),
-        ]);
+        let session = oauth_client.generate_authorization_url(HashSet::from([
+            OAuthScope::new("https://www.googleapis.com/auth/userinfo.email"),
+            OAuthScope::new("https://www.googleapis.com/auth/userinfo.profile"),
+            OAuthScope::new("openid"),
+        ]));
 
         // Open the authorization URL in the default browser.
-        webbrowser::open(&session.url)?;
+        webbrowser::open(session.url.inner())?;
 
         // Create a channel to receive a signal to stop the server.
         let (tx, mut rx) = mpsc::channel::<()>(1);
