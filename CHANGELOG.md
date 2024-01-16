@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `oauth` feature to provide OAuth 2.0 client for siging in with OAuth credential.
 - Add GitHub OAuth support.
+- Add Facebook OAuth support.
 
 ### Changed
 

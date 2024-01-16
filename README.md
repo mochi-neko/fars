@@ -64,7 +64,7 @@ Supported OAuth ID provides are as follows:
 
 - [ ] (Not tested) Apple (`apple.com`)
 - [ ] (Not tested) Apple Game Center (`gc.apple.com`)
-- [ ] (Not tested) Facebook (`facebook.com`)
+- [x] Facebook (`facebook.com`)
 - [x] GitHub (`github.com`)
 - [x] Google (`google.com`)
 - [ ] (Not tested) Google Play Games (`playgames.google.com`)

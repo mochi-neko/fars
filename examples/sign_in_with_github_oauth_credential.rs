@@ -49,7 +49,7 @@ async fn handle_redirect(
     // Check query parameters.
     if let Some(error) = params.error {
         eprintln!("Error: {}", error);
-        return "".to_string();
+        return "Error".to_string();
     }
 
     let auth_code;
@@ -57,7 +57,7 @@ async fn handle_redirect(
         auth_code = code;
     } else {
         eprintln!("Error: No authorization code.");
-        return "".to_string();
+        return "Error".to_string();
     }
 
     let auth_state;
@@ -65,7 +65,7 @@ async fn handle_redirect(
         auth_state = param_state;
     } else {
         eprintln!("Error: No state.");
-        return "".to_string();
+        return "Error".to_string();
     }
 
     // Continue to sign in process.
@@ -75,7 +75,7 @@ async fn handle_redirect(
         },
         | Err(e) => {
             eprintln!("Error: {:?}", e);
-            "".to_string()
+            "Error".to_string()
         },
     }
 }
@@ -139,15 +139,14 @@ async fn continue_sign_in(
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Get secrets from the environment variables.
-    let github_client_id =
-        OAuthClientId::new(std::env::var("GITHUB_CLIENT_ID")?);
-    let github_client_secret =
+    let client_id = OAuthClientId::new(std::env::var("GITHUB_CLIENT_ID")?);
+    let client_secret =
         OAuthClientSecret::new(std::env::var("GITHUB_CLIENT_SECRET")?);
 
     // Create an OAuth client.
     let oauth_client = OAuthGitHubClient::new(
-        github_client_id,
-        github_client_secret,
+        client_id,
+        client_secret,
         OAuthRedirectUrl::new("http://localhost:8080/auth/github-callback")?,
     )?;
 

@@ -33,6 +33,7 @@ pub use data::OAuthRevocationUrl;
 pub use data::OAuthScope;
 pub use data::OAuthTokenUrl;
 pub use error::OAuthError;
+pub use idp::facebook::OAuthFacebookClient;
 pub use idp::github::OAuthGitHubClient;
 pub use idp::google::OAuthGoogleClient;
 pub use result::OAuthResult;

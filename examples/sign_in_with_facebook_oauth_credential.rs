@@ -1,7 +1,7 @@
-//! An example to sign in with Google OAuth credential by session-based interface.
+//! An example to sign in with Facebook OAuth credential by session-based interface.
 //!
 //! ```shell
-//! $ cargo run --example sign_in_with_google_oauth_credential --features oauth
+//! $ cargo run --example sign_in_with_facebook_oauth_credential --features oauth
 //! ```
 
 #![cfg(feature = "oauth")]
@@ -18,7 +18,7 @@ use fars::oauth::OAuthAuthorizationCode;
 use fars::oauth::OAuthAuthorizationState;
 use fars::oauth::OAuthClientId;
 use fars::oauth::OAuthClientSecret;
-use fars::oauth::OAuthGoogleClient;
+use fars::oauth::OAuthFacebookClient;
 use fars::oauth::OAuthRedirectUrl;
 use fars::oauth::OAuthScope;
 use fars::oauth::OAuthSession;
@@ -39,10 +39,10 @@ struct ServerState {
 struct QueryParameters {
     code: Option<String>,
     scope: Option<String>,
-    authuser: Option<usize>,
-    prompt: Option<String>,
     state: Option<String>,
     error: Option<String>,
+    error_reason: Option<String>,
+    error_description: Option<String>,
 }
 
 async fn handle_redirect(
@@ -51,7 +51,16 @@ async fn handle_redirect(
 ) -> String {
     // Check query parameters.
     if let Some(error) = params.error {
-        eprintln!("Error: {}", error);
+        eprintln!(
+            "Error: {}, {:}, {:}",
+            error,
+            params
+                .error_reason
+                .unwrap_or_default(),
+            params
+                .error_description
+                .unwrap_or_default(),
+        );
         return "Error".to_string();
     }
 
@@ -74,7 +83,7 @@ async fn handle_redirect(
     // Continue to sign in process.
     match continue_sign_in(state, auth_code, auth_state).await {
         | Ok(_) => {
-            "Succeeded to sign in with Google OAuth credential.".to_string()
+            "Succeeded to sign in with Facebook OAuth credential.".to_string()
         },
         | Err(e) => {
             eprintln!("Error: {:?}", e);
@@ -116,7 +125,7 @@ async fn continue_sign_in(
     let session = config
         .sign_in_with_oauth_credential(
             OAuthRequestUri::new("http://localhost:8080"),
-            token.create_idp_post_body(ProviderId::Google)?,
+            token.create_idp_post_body(ProviderId::Facebook)?,
         )
         .await
         .map_err(|e| {
@@ -128,7 +137,7 @@ async fn continue_sign_in(
         })?;
 
     println!(
-        "Succeeded to sign in with Google OAuth credential: {:?}",
+        "Succeeded to sign in with Facebook OAuth credential: {:?}",
         session
     );
 
@@ -142,21 +151,19 @@ async fn continue_sign_in(
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Get secrets from the environment variables.
-    let client_id = OAuthClientId::new(std::env::var("GOOGLE_CLIENT_ID")?);
+    let client_id = OAuthClientId::new(std::env::var("FACEBOOK_CLIENT_ID")?);
     let client_secret =
-        OAuthClientSecret::new(std::env::var("GOOGLE_CLIENT_SECRET")?);
+        OAuthClientSecret::new(std::env::var("FACEBOOK_CLIENT_SECRET")?);
 
     // Create an OAuth client.
-    let oauth_client = OAuthGoogleClient::new(
+    let oauth_client = OAuthFacebookClient::new(
         client_id,
         client_secret,
-        OAuthRedirectUrl::new("http://localhost:8080/auth/google-callback")?,
+        OAuthRedirectUrl::new("http://localhost:8080/auth/facebook-callback")?,
     )?;
 
     // Generate an OAuth session with authorization URL.
     let session = oauth_client.generate_authorization_session(HashSet::from([
-        OAuthScope::new("https://www.googleapis.com/auth/userinfo.email"),
-        OAuthScope::new("https://www.googleapis.com/auth/userinfo.profile"),
         OAuthScope::new("openid"),
     ]));
 
@@ -178,7 +185,7 @@ async fn main() -> anyhow::Result<()> {
     // Build application with redirection handler.
     let app = Router::new()
         .route(
-            "/auth/google-callback",
+            "/auth/facebook-callback",
             get(handle_redirect),
         )
         .with_state(server_state);
