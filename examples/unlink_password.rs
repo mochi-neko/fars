@@ -47,9 +47,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Unlink email and password.
     let session = session
-        .unlink_provider(
-            HashSet::from([ProviderId::Password]),
-        )
+        .unlink_provider(HashSet::from([ProviderId::Password]))
         .await?;
 
     println!(
