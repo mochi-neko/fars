@@ -25,8 +25,8 @@ pub enum ProviderId {
     Twitter,
     /// Yahoo.
     Yahoo,
-    /// Unknown.
-    Unknown(String),
+    /// Custom ID provider.
+    Custom(String),
 }
 
 impl Display for ProviderId {
@@ -46,7 +46,7 @@ impl Display for ProviderId {
             | ProviderId::Microsoft => write!(f, "microsoft.com"),
             | ProviderId::Twitter => write!(f, "twitter.com"),
             | ProviderId::Yahoo => write!(f, "yahoo.com"),
-            | ProviderId::Unknown(string) => write!(f, "{}", string),
+            | ProviderId::Custom(string) => write!(f, "{}", string),
         }
     }
 }
@@ -69,7 +69,7 @@ impl ProviderId {
             | ProviderId::Microsoft => "microsoft.com".to_string(),
             | ProviderId::Twitter => "twitter.com".to_string(),
             | ProviderId::Yahoo => "yahoo.com".to_string(),
-            | ProviderId::Unknown(string) => string.clone(),
+            | ProviderId::Custom(string) => string.clone(),
         }
     }
 
@@ -93,7 +93,7 @@ impl ProviderId {
             | "microsoft.com" => ProviderId::Microsoft,
             | "twitter.com" => ProviderId::Twitter,
             | "yahoo.com" => ProviderId::Yahoo,
-            | _ => ProviderId::Unknown(string),
+            | _ => ProviderId::Custom(string),
         }
     }
 }

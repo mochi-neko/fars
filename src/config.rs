@@ -24,19 +24,19 @@
 //! ## Supported OAuth ID providers
 //! Supported OAuth ID provides are as follows:
 //!
-//! - [ ] (Not implemented) Apple (`apple.com`)
-//! - [ ] (Not implemented) Apple Game Center (`gc.apple.com`)
+//! - [ ] (Not tested) Apple (`apple.com`)
+//! - [ ] (Not tested) Apple Game Center (`gc.apple.com`)
 //! - [ ] (Not tested) Facebook (`facebook.com`)
-//! - [ ] (Not implemented) GitHub (`github.com`)
+//! - [x] GitHub (`github.com`)
 //! - [x] Google (`google.com`)
-//! - [ ] (Not implemented) Google Play Games (`playgames.google.com`)
-//! - [ ] (Not implemented) LinkedIn (`linkedin.com`)
-//! - [ ] (Not implemented) Microsoft (`microsoft.com`)
+//! - [ ] (Not tested) Google Play Games (`playgames.google.com`)
+//! - [ ] (Not tested) LinkedIn (`linkedin.com`)
+//! - [ ] (Not tested) Microsoft (`microsoft.com`)
 //! - [ ] (Not tested) Twitter (`twitter.com`)
-//! - [ ] (Not implemented) Yahoo (`yahoo.com`)
-//! - [ ] (Not implemented) custom
+//! - [ ] (Not tested) Yahoo (`yahoo.com`)
+//! - [ ] (Not tested) Custom (`{custom-provider-id}`)
 //!
-//! Unsupported providers have either not been tested or the format of [`crate::IdpPostBody`] is not documented at the [official API reference](https://firebase.google.com/docs/reference/rest/auth).
+//! See also [`crate::oauth]` (optional feature: `oauth`) that provides OAuth client methods to get an OAuth access token.
 //!
 //! ## Examples
 //!

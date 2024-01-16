@@ -1,6 +1,12 @@
 use crate::oauth::OAuthError;
 use crate::oauth::OAuthResult;
 
+#[derive(Clone, Eq, PartialEq, Hash)]
+pub enum OAuthCodeChallengeOption {
+    S256,
+    NotSupported,
+}
+
 pub struct OAuthClientId {
     inner: oauth2::ClientId,
 }

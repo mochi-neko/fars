@@ -26,7 +26,9 @@ All features in this crate are as follows:
 - (Optional) `verify`
     - [ID token verification](#optional-id-token-verification)
 - (Optional) `custom_client`
-    - [HTTP client customization](#http-client-customization) 
+    - [HTTP client customization](#http-client-customization)
+- (Optional) `oauth`
+    - [OAuth 2.0 client](#optional-oauth-20-client)
 
 ## Supported APIs
 
@@ -63,7 +65,7 @@ Supported OAuth ID provides are as follows:
 - [ ] (Not tested) Apple (`apple.com`)
 - [ ] (Not tested) Apple Game Center (`gc.apple.com`)
 - [ ] (Not tested) Facebook (`facebook.com`)
-- [ ] (Not tested) GitHub (`github.com`)
+- [x] GitHub (`github.com`)
 - [x] Google (`google.com`)
 - [ ] (Not tested) Google Play Games (`playgames.google.com`)
 - [ ] (Not tested) LinkedIn (`linkedin.com`)
@@ -398,7 +400,7 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
-## HTTP client customization
+## (Optional) HTTP client customization
 
 Provides HTTP client customization interface for Firebase Auth APIs.
 
@@ -448,6 +450,10 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 ```
+
+## (Optional) OAuth 2.0 Client
+
+TODO:
 
 ## Other examples
 

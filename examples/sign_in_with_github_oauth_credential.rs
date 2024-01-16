@@ -1,7 +1,7 @@
-//! An example to sign in with Google OAuth credential by session-based interface.
+//! An example to sign in with GitHub OAuth credential by session-based interface.
 //!
 //! ```shell
-//! $ cargo run --example sign_in_with_google_oauth_credential --features oauth
+//! $ cargo run --example sign_in_with_github_oauth_credential --features oauth
 //! ```
 
 #![cfg(feature = "oauth")]
@@ -18,7 +18,7 @@ use fars::oauth::OAuthAuthorizationCode;
 use fars::oauth::OAuthAuthorizationState;
 use fars::oauth::OAuthClientId;
 use fars::oauth::OAuthClientSecret;
-use fars::oauth::OAuthGoogleClient;
+use fars::oauth::OAuthGitHubClient;
 use fars::oauth::OAuthRedirectUrl;
 use fars::oauth::OAuthScope;
 use fars::oauth::OAuthSession;
@@ -38,9 +38,6 @@ struct ServerState {
 #[derive(Deserialize)]
 struct QueryParameters {
     code: Option<String>,
-    scope: Option<String>,
-    authuser: Option<usize>,
-    prompt: Option<String>,
     state: Option<String>,
     error: Option<String>,
 }
@@ -74,7 +71,7 @@ async fn handle_redirect(
     // Continue to sign in process.
     match continue_sign_in(state, auth_code, auth_state).await {
         | Ok(_) => {
-            "Succeeded to sign in with Google OAuth credential.".to_string()
+            "Succeeded to sign in with GitHub OAuth credential.".to_string()
         },
         | Err(e) => {
             eprintln!("Error: {:?}", e);
@@ -116,7 +113,7 @@ async fn continue_sign_in(
     let session = config
         .sign_in_with_oauth_credential(
             OAuthRequestUri::new("http://localhost:8080"),
-            token.create_idp_post_body(ProviderId::Google)?,
+            token.create_idp_post_body(ProviderId::GitHub)?,
         )
         .await
         .map_err(|e| {
@@ -128,7 +125,7 @@ async fn continue_sign_in(
         })?;
 
     println!(
-        "Succeeded to sign in with Google OAuth credential: {:?}",
+        "Succeeded to sign in with GitHub OAuth credential: {:?}",
         session
     );
 
@@ -142,23 +139,22 @@ async fn continue_sign_in(
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Get secrets from the environment variables.
-    let google_client_id =
-        OAuthClientId::new(std::env::var("GOOGLE_CLIENT_ID")?);
-    let google_client_secret =
-        OAuthClientSecret::new(std::env::var("GOOGLE_CLIENT_SECRET")?);
+    let github_client_id =
+        OAuthClientId::new(std::env::var("GITHUB_CLIENT_ID")?);
+    let github_client_secret =
+        OAuthClientSecret::new(std::env::var("GITHUB_CLIENT_SECRET")?);
 
     // Create an OAuth client.
-    let oauth_client = OAuthGoogleClient::new(
-        google_client_id,
-        google_client_secret,
-        OAuthRedirectUrl::new("http://localhost:8080/auth/google-callback")?,
+    let oauth_client = OAuthGitHubClient::new(
+        github_client_id,
+        github_client_secret,
+        OAuthRedirectUrl::new("http://localhost:8080/auth/github-callback")?,
     )?;
 
     // Generate an OAuth session with authorization URL.
     let session = oauth_client.generate_authorization_session(HashSet::from([
-        OAuthScope::new("https://www.googleapis.com/auth/userinfo.email"),
-        OAuthScope::new("https://www.googleapis.com/auth/userinfo.profile"),
-        OAuthScope::new("openid"),
+        OAuthScope::new("user.email"),
+        OAuthScope::new("read:user"),
     ]));
 
     // Open the authorization URL in the default browser.
@@ -179,7 +175,7 @@ async fn main() -> anyhow::Result<()> {
     // Build application with redirection handler.
     let app = Router::new()
         .route(
-            "/auth/google-callback",
+            "/auth/github-callback",
             get(handle_redirect),
         )
         .with_state(server_state);

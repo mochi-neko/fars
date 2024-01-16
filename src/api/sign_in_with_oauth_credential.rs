@@ -73,7 +73,7 @@ pub struct SignInWithOAuthCredentialResponsePayload {
     pub email_verified: bool,
     /// The email for the authenticated user.
     #[serde(rename = "email")]
-    pub email: String,
+    pub email: Option<String>,
     /// The OIDC id token if available.
     #[serde(rename = "oauthIdToken")]
     pub oauth_id_token: Option<String>,
