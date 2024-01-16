@@ -17,8 +17,6 @@ pub enum ProviderId {
     Google,
     /// Google Play Games.
     GooglePlayGames,
-    /// LinkedIn.
-    LinkedIn,
     /// Microsoft.
     Microsoft,
     /// Twitter (X).
@@ -42,7 +40,6 @@ impl Display for ProviderId {
             | ProviderId::GitHub => write!(f, "github.com"),
             | ProviderId::Google => write!(f, "google.com"),
             | ProviderId::GooglePlayGames => write!(f, "playgames.google.com"),
-            | ProviderId::LinkedIn => write!(f, "linkedin.com"),
             | ProviderId::Microsoft => write!(f, "microsoft.com"),
             | ProviderId::Twitter => write!(f, "twitter.com"),
             | ProviderId::Yahoo => write!(f, "yahoo.com"),
@@ -65,7 +62,6 @@ impl ProviderId {
             | ProviderId::GitHub => "github.com".to_string(),
             | ProviderId::Google => "google.com".to_string(),
             | ProviderId::GooglePlayGames => "playgames.google.com".to_string(),
-            | ProviderId::LinkedIn => "linkedin.com".to_string(),
             | ProviderId::Microsoft => "microsoft.com".to_string(),
             | ProviderId::Twitter => "twitter.com".to_string(),
             | ProviderId::Yahoo => "yahoo.com".to_string(),
@@ -89,7 +85,6 @@ impl ProviderId {
             | "github.com" => ProviderId::GitHub,
             | "google.com" => ProviderId::Google,
             | "playgames.google.com" => ProviderId::GooglePlayGames,
-            | "linkedin.com" => ProviderId::LinkedIn,
             | "microsoft.com" => ProviderId::Microsoft,
             | "twitter.com" => ProviderId::Twitter,
             | "yahoo.com" => ProviderId::Yahoo,

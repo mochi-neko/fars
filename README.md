@@ -68,7 +68,6 @@ Supported OAuth ID provides are as follows:
 - [x] GitHub (`github.com`)
 - [x] Google (`google.com`)
 - [ ] (Not tested) Google Play Games (`playgames.google.com`)
-- [ ] (Not tested) LinkedIn (`linkedin.com`)
 - [ ] (Not tested) Microsoft (`microsoft.com`)
 - [ ] (Not tested) Twitter (`twitter.com`)
 - [ ] (Not tested) Yahoo (`yahoo.com`)

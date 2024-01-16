@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change specification of `fars::IdpPostBody` for flexibility.
 - Change namespaces of `verify` feature, e.g. `fars::VerificationConfig` -> `fars::verification::VerificationConfig`.
 
+### Removed
+
+- Remove `ProviderId::LinkedIn` because this option is not found in Firebase Auth console.
+
 ## [0.2.0] - 2024-01-11
 
 ### Added
