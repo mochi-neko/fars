@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-/// ID provider identifiers defined at [document](https://firebase.google.com/docs/projects/provisioning/configure-oauth#add-idp).
+/// Identity provider IDs defined at [document](https://firebase.google.com/docs/projects/provisioning/configure-oauth#add-idp).
 #[derive(Clone, Debug, PartialEq, Hash, Eq)]
 pub enum ProviderId {
     /// Password,
@@ -49,10 +49,10 @@ impl Display for ProviderId {
 }
 
 impl ProviderId {
-    /// Formats the provider ID to a string representation of the Firebase Auth.
+    /// Formats the identity provider ID to a string representation of the Firebase Auth.
     ///
     /// ## Returns
-    /// String representation of the provider ID of the Firebase Auth.
+    /// String representation of the identity provider ID of the Firebase Auth.
     pub fn format(&self) -> String {
         match self {
             | ProviderId::Password => "password".to_string(),
@@ -69,13 +69,13 @@ impl ProviderId {
         }
     }
 
-    /// Tries to parse a string to a provider ID.
+    /// Tries to parse a string to a identity provider ID.
     ///
     /// ## Arguments
     /// - `string` - String to parse.
     ///
     /// ## Returns
-    /// Provider ID if the string is a valid provider ID.
+    /// Identity provider ID if the string is a valid ID.
     pub fn parse(string: String) -> Self {
         match string.as_str() {
             | "password" => ProviderId::Password,

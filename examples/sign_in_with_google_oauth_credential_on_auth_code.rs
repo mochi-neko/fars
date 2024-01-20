@@ -1,7 +1,8 @@
-//! An example to sign in with Google OAuth credential by session-based interface.
+//! An example to sign in with Google OAuth credential by session-based interface
+//! on the Authorization Code grant type of the OAuth 2.0.
 //!
 //! ```shell
-//! $ cargo run --example sign_in_with_google_oauth_credential --features oauth
+//! $ cargo run --example sign_in_with_google_oauth_credential_on_auth_code --features oauth
 //! ```
 
 #![cfg(feature = "oauth")]
@@ -14,14 +15,13 @@ use axum::{routing::get, Router};
 use serde::Deserialize;
 use tokio::sync::{mpsc, Mutex};
 
-use fars::oauth::OAuthAuthorizationCode;
-use fars::oauth::OAuthAuthorizationState;
-use fars::oauth::OAuthClientId;
-use fars::oauth::OAuthClientSecret;
-use fars::oauth::OAuthGoogleClient;
-use fars::oauth::OAuthRedirectUrl;
-use fars::oauth::OAuthScope;
-use fars::oauth::OAuthSession;
+use fars::oauth::AuthorizationCode;
+use fars::oauth::ClientId;
+use fars::oauth::ClientSecret;
+use fars::oauth::GoogleAuthorizationCodeClient;
+use fars::oauth::RedirectUrl;
+use fars::oauth::Scope;
+use fars::oauth::AuthorizationCodeSession;
 use fars::ApiKey;
 use fars::Config;
 use fars::OAuthRequestUri;
@@ -30,7 +30,7 @@ use fars::ProviderId;
 #[derive(Clone)]
 struct ServerState {
     config: Arc<Mutex<Config>>,
-    oauth_session: Arc<Mutex<OAuthSession>>,
+    oauth_session: Arc<Mutex<AuthorizationCodeSession>>,
     tx: mpsc::Sender<()>,
 }
 
@@ -97,8 +97,8 @@ async fn continue_sign_in(
     // Exchange authorization code into OAuth token.
     let token = oauth_session
         .exchange_code_into_token(
-            OAuthAuthorizationCode::new(auth_code),
-            OAuthAuthorizationState::new(auth_state),
+            AuthorizationCode::new(auth_code),
+            fars::oauth::State::new(auth_state),
         )
         .await
         .map_err(|e| {
@@ -142,22 +142,22 @@ async fn continue_sign_in(
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Get secrets from the environment variables.
-    let client_id = OAuthClientId::new(std::env::var("GOOGLE_CLIENT_ID")?);
+    let client_id = ClientId::new(std::env::var("GOOGLE_CLIENT_ID")?);
     let client_secret =
-        OAuthClientSecret::new(std::env::var("GOOGLE_CLIENT_SECRET")?);
+        ClientSecret::new(std::env::var("GOOGLE_CLIENT_SECRET")?);
 
     // Create an OAuth client.
-    let oauth_client = OAuthGoogleClient::new(
+    let oauth_client = GoogleAuthorizationCodeClient::new(
         client_id,
         client_secret,
-        OAuthRedirectUrl::new("http://localhost:8080/auth/google-callback")?,
+        RedirectUrl::new("http://localhost:8080/auth/google-callback")?,
     )?;
 
     // Generate an OAuth session with authorization URL.
-    let session = oauth_client.generate_authorization_session(HashSet::from([
-        OAuthScope::new("https://www.googleapis.com/auth/userinfo.email"),
-        OAuthScope::new("https://www.googleapis.com/auth/userinfo.profile"),
-        OAuthScope::new("openid"),
+    let session = oauth_client.generate_session(HashSet::from([
+        Scope::new("https://www.googleapis.com/auth/userinfo.email"),
+        Scope::new("https://www.googleapis.com/auth/userinfo.profile"),
+        Scope::new("openid"),
     ]));
 
     // Open the authorization URL in the default browser.

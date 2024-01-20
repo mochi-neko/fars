@@ -17,7 +17,7 @@ pub struct UserData {
     /// The display name for the account.
     #[serde(rename = "displayName")]
     pub display_name: Option<String>,
-    /// List of all linked provider objects which contain "providerId" and "federatedId".
+    /// List of all linked identity provider objects which contain "providerId" and "federatedId".
     #[serde(rename = "providerUserInfo")]
     pub provider_user_info: Option<Vec<ProviderUserInfo>>,
     /// The photo url of the account.
@@ -42,7 +42,7 @@ pub struct UserData {
     #[serde(rename = "createdAt")]
     pub created_at: String,
     /// The timestamp, in milliseconds, that the account was last refreshed at.
-    #[serde(rename = "lastResheshAt")]
+    #[serde(rename = "lastRefreshAt")]
     pub last_refresh_at: Option<String>,
     /// Whether the account is authenticated by the developer.
     #[serde(rename = "customAuth")]

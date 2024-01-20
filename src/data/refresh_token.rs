@@ -1,4 +1,4 @@
-/// Refresh token of the Firebase Auth to exchange for a new ID token and refresh token.
+/// Refresh token of the Firebase Auth.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct RefreshToken {
     inner: String,

@@ -1,15 +1,15 @@
 use std::collections::HashSet;
 
-use crate::oauth::OAuthAuthUrl;
-use crate::oauth::OAuthClient;
-use crate::oauth::OAuthClientId;
-use crate::oauth::OAuthClientSecret;
-use crate::oauth::OAuthCodeChallengeOption;
-use crate::oauth::OAuthRedirectUrl;
+use crate::oauth::AuthorizeEndpoint;
+use crate::oauth::AuthorizationCodeClient;
+use crate::oauth::ClientId;
+use crate::oauth::ClientSecret;
+use crate::oauth::PkceOption;
+use crate::oauth::RedirectUrl;
 use crate::oauth::OAuthResult;
-use crate::oauth::OAuthScope;
-use crate::oauth::OAuthSession;
-use crate::oauth::OAuthTokenUrl;
+use crate::oauth::Scope;
+use crate::oauth::AuthorizationCodeSession;
+use crate::oauth::TokenEndpoint;
 
 /// The OAuth client for Facebook.
 ///
@@ -18,7 +18,7 @@ use crate::oauth::OAuthTokenUrl;
 ///
 /// ## Example
 pub struct OAuthFacebookClient {
-    inner: OAuthClient,
+    inner: AuthorizationCodeClient,
 }
 
 impl OAuthFacebookClient {
@@ -27,20 +27,19 @@ impl OAuthFacebookClient {
     /// ## Arguments
     /// - `client_id` - Client ID of.
     pub fn new(
-        client_id: OAuthClientId,
-        client_secret: OAuthClientSecret,
-        redirect_url: OAuthRedirectUrl,
+        client_id: ClientId,
+        client_secret: ClientSecret,
+        redirect_url: RedirectUrl,
     ) -> OAuthResult<Self> {
-        let client = OAuthClient::new(
+        let client = AuthorizationCodeClient::new(
             client_id,
             Some(client_secret),
-            OAuthAuthUrl::new("https://www.facebook.com/v18.0/dialog/oauth")?,
-            Some(OAuthTokenUrl::new(
+            AuthorizeEndpoint::new("https://www.facebook.com/v18.0/dialog/oauth")?,
+            Some(TokenEndpoint::new(
                 "https://graph.facebook.com/v18.0/oauth/access_token",
             )?),
             redirect_url,
-            None,
-            OAuthCodeChallengeOption::S256, // https://developers.facebook.com/docs/facebook-login/guides/advanced/oidc-token
+            PkceOption::S256, // https://developers.facebook.com/docs/facebook-login/guides/advanced/oidc-token
         )?;
 
         Ok(Self {
@@ -52,9 +51,9 @@ impl OAuthFacebookClient {
     /// https://developers.facebook.com/docs/facebook-login/guides/permissions
     pub fn generate_authorization_session(
         &self,
-        scopes: HashSet<OAuthScope>,
-    ) -> OAuthSession {
+        scopes: HashSet<Scope>,
+    ) -> AuthorizationCodeSession {
         self.inner
-            .generate_authorization_session(scopes)
+            .generate_session(scopes)
     }
 }

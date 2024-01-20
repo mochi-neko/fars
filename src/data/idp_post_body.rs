@@ -11,11 +11,11 @@ pub struct IdpPostBody {
 }
 
 impl IdpPostBody {
-    /// Creates a new post body for ID providers.
+    /// Creates a new post body for identity providers.
     ///
     /// ## Arguments
-    /// - `provider_id` - The ID of the ID provider.
-    /// - `credentials` - The credentials of the ID provider as hash map.
+    /// - `provider_id` - The ID of the identity provider.
+    /// - `credentials` - The credentials of the identity provider as hash map.
     ///
     /// ## Errors
     /// - `UrlEncodeFailed` - Failed to encode the post body as URL encoded string.

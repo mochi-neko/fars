@@ -14,14 +14,14 @@ use axum::{routing::get, Router};
 use serde::Deserialize;
 use tokio::sync::{mpsc, Mutex};
 
-use fars::oauth::OAuthAuthorizationCode;
-use fars::oauth::OAuthAuthorizationState;
-use fars::oauth::OAuthClientId;
-use fars::oauth::OAuthClientSecret;
+use fars::oauth::AuthorizationCode;
+use fars::oauth::State;
+use fars::oauth::ClientId;
+use fars::oauth::ClientSecret;
 use fars::oauth::OAuthFacebookClient;
-use fars::oauth::OAuthRedirectUrl;
-use fars::oauth::OAuthScope;
-use fars::oauth::OAuthSession;
+use fars::oauth::RedirectUrl;
+use fars::oauth::Scope;
+use fars::oauth::AuthorizationCodeSession;
 use fars::ApiKey;
 use fars::Config;
 use fars::OAuthRequestUri;
@@ -30,7 +30,7 @@ use fars::ProviderId;
 #[derive(Clone)]
 struct ServerState {
     config: Arc<Mutex<Config>>,
-    oauth_session: Arc<Mutex<OAuthSession>>,
+    oauth_session: Arc<Mutex<AuthorizationCodeSession>>,
     tx: mpsc::Sender<()>,
 }
 
@@ -106,8 +106,8 @@ async fn continue_sign_in(
     // Exchange authorization code into OAuth token.
     let token = oauth_session
         .exchange_code_into_token(
-            OAuthAuthorizationCode::new(auth_code),
-            OAuthAuthorizationState::new(auth_state),
+            AuthorizationCode::new(auth_code),
+            State::new(auth_state),
         )
         .await
         .map_err(|e| {
@@ -151,20 +151,20 @@ async fn continue_sign_in(
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Get secrets from the environment variables.
-    let client_id = OAuthClientId::new(std::env::var("FACEBOOK_CLIENT_ID")?);
+    let client_id = ClientId::new(std::env::var("FACEBOOK_CLIENT_ID")?);
     let client_secret =
-        OAuthClientSecret::new(std::env::var("FACEBOOK_CLIENT_SECRET")?);
+        ClientSecret::new(std::env::var("FACEBOOK_CLIENT_SECRET")?);
 
     // Create an OAuth client.
     let oauth_client = OAuthFacebookClient::new(
         client_id,
         client_secret,
-        OAuthRedirectUrl::new("http://localhost:8080/auth/facebook-callback")?,
+        RedirectUrl::new("http://localhost:8080/auth/facebook-callback")?,
     )?;
 
     // Generate an OAuth session with authorization URL.
     let session = oauth_client.generate_authorization_session(HashSet::from([
-        OAuthScope::new("openid"),
+        Scope::new("openid"),
     ]));
 
     // Open the authorization URL in the default browser.

@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 use std::time::Duration;
 
-use crate::oauth::OAuthAccessToken;
-use crate::oauth::OAuthRefreshToken;
+use crate::oauth::AccessToken;
+use crate::oauth::RefreshToken;
 use crate::IdpPostBody;
 use crate::ProviderId;
 
-/// The OAuth 2.0 token.
+/// The OAuth 2.0 token set.
 ///
 /// ## NOTE
 /// This is only available when the feature "oauth" is enabled.
@@ -14,31 +14,29 @@ use crate::ProviderId;
 /// ## Example
 /// ```
 /// use std::collections::HashSet;
-/// use fars::oauth::OAuthClient;
-/// use fars::oauth::OAuthClientId;
-/// use fars::oauth::OAuthClientSecret;
-/// use fars::oauth::OAuthAuthUrl;
-/// use fars::oauth::OAuthTokenUrl;
-/// use fars::oauth::OAuthRedirectUrl;
-/// use fars::oauth::OAuthRevocationUrl;
-/// use fars::oauth::OAuthCodeChallengeOption;
-/// use fars::oauth::OAuthScope;
-/// use fars::oauth::OAuthAuthorizationCode;
-/// use fars::oauth::OAuthAuthorizationState;
+/// use fars::oauth::AuthorizationCodeClient;
+/// use fars::oauth::ClientId;
+/// use fars::oauth::ClientSecret;
+/// use fars::oauth::AuthorizeEndpoint;
+/// use fars::oauth::TokenEndpoint;
+/// use fars::oauth::RedirectUrl;
+/// use fars::oauth::PkceOption;
+/// use fars::oauth::Scope;
+/// use fars::oauth::AuthorizationCode;
+/// use fars::oauth::State;
 ///
-/// let client = OAuthClient::new(
-///     OAuthClientId::new("client-id"),
-///     Some(OAuthClientSecret::new("client-secret")),
-///     OAuthAuthUrl::new("https://example.com/auth")?,
-///     Some(OAuthTokenUrl::new("https://example.com/token")?),
-///     OAuthRedirectUrl::new("https://my.app.com/callback")?,
-///     Some(OAuthRevocationUrl::new("https://example.com/revoke")?),
-///     OAuthCodeChallengeOption::S256,
+/// let client = AuthorizationCodeClient::new(
+///     ClientId::new("client-id"),
+///     Some(ClientSecret::new("client-secret")),
+///     AuthorizeEndpoint::new("https://example.com/auth")?,
+///     Some(TokenEndpoint::new("https://example.com/token")?),
+///     RedirectUrl::new("https://my.app.com/callback")?,
+///     PkceOption::S256,
 /// )?;
 ///
-/// let session = client.generate_authorization_session(HashSet::from([
-///     OAuthScope::new("scope1"),
-///     OAuthScope::new("scope2"),
+/// let session = client.generate_session(HashSet::from([
+///     Scope::new("scope1"),
+///     Scope::new("scope2"),
 /// ]));
 ///
 /// let authorize_url = session.authorize_url.inner().clone();
@@ -48,27 +46,27 @@ use crate::ProviderId;
 /// let state = "state";
 ///
 /// let token = session.exchange_code_into_token(
-///     OAuthAuthorizationCode::new(code),
-///     OAuthAuthorizationState::new(state),
+///     AuthorizationCode::new(code),
+///     State::new(state),
 /// )?;
 /// ```
 pub struct OAuthToken {
     /// The access token.
-    pub(crate) access_token: OAuthAccessToken,
+    pub(crate) access_token: AccessToken,
     /// The refresh token.
-    pub(crate) refresh_token: Option<OAuthRefreshToken>,
+    pub(crate) refresh_token: Option<RefreshToken>,
     /// The expiration time.
     pub(crate) expires_in: Option<Duration>,
 }
 
 impl OAuthToken {
     /// Returns the access token.
-    pub fn access_token(&self) -> &OAuthAccessToken {
+    pub fn access_token(&self) -> &AccessToken {
         &self.access_token
     }
 
     /// Returns the refresh token.
-    pub fn refresh_token(&self) -> Option<&OAuthRefreshToken> {
+    pub fn refresh_token(&self) -> Option<&RefreshToken> {
         self.refresh_token.as_ref()
     }
 
@@ -85,32 +83,30 @@ impl OAuthToken {
     /// ## Example
     /// ```
     /// use std::collections::HashSet;
-    /// use fars::oauth::OAuthClient;
-    /// use fars::oauth::OAuthClientId;
-    /// use fars::oauth::OAuthClientSecret;
-    /// use fars::oauth::OAuthAuthUrl;
-    /// use fars::oauth::OAuthTokenUrl;
-    /// use fars::oauth::OAuthRedirectUrl;
-    /// use fars::oauth::OAuthRevocationUrl;
-    /// use fars::oauth::OAuthCodeChallengeOption;
-    /// use fars::oauth::OAuthScope;
-    /// use fars::oauth::OAuthAuthorizationCode;
-    /// use fars::oauth::OAuthAuthorizationState;
+    /// use fars::oauth::AuthorizationCodeClient;
+    /// use fars::oauth::ClientId;
+    /// use fars::oauth::ClientSecret;
+    /// use fars::oauth::AuthorizeEndpoint;
+    /// use fars::oauth::TokenEndpoint;
+    /// use fars::oauth::RedirectUrl;
+    /// use fars::oauth::PkceOption;
+    /// use fars::oauth::Scope;
+    /// use fars::oauth::AuthorizationCode;
+    /// use fars::oauth::State;
     /// use fars::ProviderId;
     ///
-    /// let client = OAuthClient::new(
-    ///     OAuthClientId::new("client-id"),
-    ///     Some(OAuthClientSecret::new("client-secret")),
-    ///     OAuthAuthUrl::new("https://example.com/auth")?,
-    ///     Some(OAuthTokenUrl::new("https://example.com/token")?),
-    ///     OAuthRedirectUrl::new("https://my.app.com/callback")?,
-    ///     Some(OAuthRevocationUrl::new("https://example.com/revoke")?),
-    ///     OAuthCodeChallengeOption::S256,
+    /// let client = AuthorizationCodeClient::new(
+    ///     ClientId::new("client-id"),
+    ///     Some(ClientSecret::new("client-secret")),
+    ///     AuthorizeEndpoint::new("https://example.com/auth")?,
+    ///     Some(TokenEndpoint::new("https://example.com/token")?),
+    ///     RedirectUrl::new("https://my.app.com/callback")?,
+    ///     PkceOption::S256,
     /// )?;
     ///
-    /// let session = client.generate_authorization_session(HashSet::from([
-    ///     OAuthScope::new("scope1"),
-    ///     OAuthScope::new("scope2"),
+    /// let session = client.generate_session(HashSet::from([
+    ///     Scope::new("scope1"),
+    ///     Scope::new("scope2"),
     /// ]));
     ///
     /// let authorize_url = session.authorize_url.inner().clone();
@@ -120,8 +116,8 @@ impl OAuthToken {
     /// let state = "state";
     ///
     /// let token = session.exchange_code_into_token(
-    ///     OAuthAuthorizationCode::new(code),
-    ///     OAuthAuthorizationState::new(state),
+    ///     AuthorizationCode::new(code),
+    ///     State::new(state),
     /// )?;
     ///
     /// let idp_post_body = token.create_idp_post_body(

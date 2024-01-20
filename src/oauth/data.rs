@@ -1,17 +1,21 @@
 use crate::oauth::OAuthError;
 use crate::oauth::OAuthResult;
 
+/// The PKCE code challenge option.
 #[derive(Clone, Eq, PartialEq, Hash)]
-pub enum OAuthCodeChallengeOption {
+pub enum PkceOption {
+    /// (Recommended) S256 (SHA-256) code challenge method.
     S256,
+    /// (Not recommended) Plain code challenge method.
     NotSupported,
 }
 
-pub struct OAuthClientId {
+/// The client ID of the OAuth 2.0.
+pub struct ClientId {
     inner: oauth2::ClientId,
 }
 
-impl OAuthClientId {
+impl ClientId {
     pub fn new<S>(client_id: S) -> Self
     where
         S: Into<String>,
@@ -25,11 +29,13 @@ impl OAuthClientId {
         &self.inner
     }
 }
-pub struct OAuthClientSecret {
+
+/// The client secret of the OAuth 2.0.
+pub struct ClientSecret {
     inner: oauth2::ClientSecret,
 }
 
-impl OAuthClientSecret {
+impl ClientSecret {
     pub fn new<S>(client_id: S) -> Self
     where
         S: Into<String>,
@@ -44,11 +50,12 @@ impl OAuthClientSecret {
     }
 }
 
-pub struct OAuthAuthUrl {
+/// The authorization endpoint of the OAuth 2.0.
+pub struct AuthorizeEndpoint {
     inner: oauth2::AuthUrl,
 }
 
-impl OAuthAuthUrl {
+impl AuthorizeEndpoint {
     pub fn new<S>(url: S) -> OAuthResult<Self>
     where
         S: Into<String> + Clone,
@@ -64,11 +71,12 @@ impl OAuthAuthUrl {
     }
 }
 
-pub struct OAuthTokenUrl {
+/// The token endpoint of the OAuth 2.0.
+pub struct TokenEndpoint {
     inner: oauth2::TokenUrl,
 }
 
-impl OAuthTokenUrl {
+impl TokenEndpoint {
     pub fn new<S>(url: S) -> OAuthResult<Self>
     where
         S: Into<String> + Clone,
@@ -84,11 +92,12 @@ impl OAuthTokenUrl {
     }
 }
 
-pub struct OAuthRedirectUrl {
+/// The redirect URL of the OAuth 2.0.
+pub struct RedirectUrl {
     inner: oauth2::RedirectUrl,
 }
 
-impl OAuthRedirectUrl {
+impl RedirectUrl {
     pub fn new<S>(url: S) -> OAuthResult<Self>
     where
         S: Into<String> + Clone,
@@ -104,32 +113,13 @@ impl OAuthRedirectUrl {
     }
 }
 
-pub struct OAuthRevocationUrl {
-    inner: oauth2::RevocationUrl,
-}
-
-impl OAuthRevocationUrl {
-    pub fn new<S>(url: S) -> OAuthResult<Self>
-    where
-        S: Into<String> + Clone,
-    {
-        Ok(Self {
-            inner: oauth2::RevocationUrl::new(url.clone().into())
-                .map_err(|_| OAuthError::InvalidRevocationUrl(url.into()))?,
-        })
-    }
-
-    pub(crate) fn inner(&self) -> &oauth2::RevocationUrl {
-        &self.inner
-    }
-}
-
+/// The scope of the OAuth 2.0.
 #[derive(Clone, Eq, PartialEq, Hash)]
-pub struct OAuthScope {
+pub struct Scope {
     inner: oauth2::Scope,
 }
 
-impl OAuthScope {
+impl Scope {
     pub fn new<S>(scope: S) -> Self
     where
         S: Into<String>,
@@ -142,14 +132,30 @@ impl OAuthScope {
     pub(crate) fn inner(&self) -> &oauth2::Scope {
         &self.inner
     }
+
+    /// The "openid" scope for the OpenID Connect.
+    pub fn open_id() -> Self {
+        Self::new("openid")
+    }
+
+    /// The "email" scope for the OpenID Connect.
+    pub fn open_id_email() -> Self {
+        Self::new("email")
+    }
+
+    /// The "profile" scope for the OpenID Connect.
+    pub fn open_id_profile() -> Self {
+        Self::new("profile")
+    }
 }
 
-pub struct OAuthAuthorizeUrl {
+/// The authorize request URL of the OAuth 2.0.
+pub struct AuthorizeUrl {
     inner: String,
 }
 
-impl OAuthAuthorizeUrl {
-    pub fn new<S>(url: S) -> Self
+impl AuthorizeUrl {
+    pub(crate) fn new<S>(url: S) -> Self
     where
         S: Into<String>,
     {
@@ -158,16 +164,18 @@ impl OAuthAuthorizeUrl {
         }
     }
 
+    /// Returns the URL as a string representation.
     pub fn inner(&self) -> &str {
         &self.inner
     }
 }
 
-pub struct OAuthAuthorizationCode {
+/// The authorization code of the OAuth 2.0.
+pub struct AuthorizationCode {
     inner: oauth2::AuthorizationCode,
 }
 
-impl OAuthAuthorizationCode {
+impl AuthorizationCode {
     pub fn new<S>(code: S) -> Self
     where
         S: Into<String>,
@@ -177,16 +185,17 @@ impl OAuthAuthorizationCode {
         }
     }
 
-    pub fn inner(&self) -> &oauth2::AuthorizationCode {
+    pub(crate) fn inner(&self) -> &oauth2::AuthorizationCode {
         &self.inner
     }
 }
 
-pub struct OAuthAuthorizationState {
+/// The CSRF state of the OAuth 2.0.
+pub struct State {
     inner: String,
 }
 
-impl OAuthAuthorizationState {
+impl State {
     pub fn new<S>(state: S) -> Self
     where
         S: Into<String>,
@@ -196,16 +205,17 @@ impl OAuthAuthorizationState {
         }
     }
 
-    pub fn inner(&self) -> &str {
+    pub(crate) fn inner(&self) -> &str {
         &self.inner
     }
 }
 
-pub struct OAuthAccessToken {
+/// The access token of the OAuth 2.0.
+pub struct AccessToken {
     inner: String,
 }
 
-impl OAuthAccessToken {
+impl AccessToken {
     pub(crate) fn new<S>(token: S) -> Self
     where
         S: Into<String>,
@@ -220,11 +230,12 @@ impl OAuthAccessToken {
     }
 }
 
-pub struct OAuthRefreshToken {
+/// The refresh token of the OAuth 2.0.
+pub struct RefreshToken {
     inner: String,
 }
 
-impl OAuthRefreshToken {
+impl RefreshToken {
     pub(crate) fn new<S>(token: S) -> Self
     where
         S: Into<String>,
