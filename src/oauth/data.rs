@@ -191,11 +191,11 @@ impl AuthorizationCode {
 }
 
 /// The CSRF state of the OAuth 2.0.
-pub struct State {
+pub struct CsrfState {
     inner: String,
 }
 
-impl State {
+impl CsrfState {
     pub fn new<S>(state: S) -> Self
     where
         S: Into<String>,

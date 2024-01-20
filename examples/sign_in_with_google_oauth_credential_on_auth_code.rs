@@ -98,7 +98,7 @@ async fn continue_sign_in(
     let token = oauth_session
         .exchange_code_into_token(
             AuthorizationCode::new(auth_code),
-            fars::oauth::State::new(auth_state),
+            fars::oauth::CsrfState::new(auth_state),
         )
         .await
         .map_err(|e| {

@@ -1,7 +1,8 @@
-//! An example to sign in with GitHub OAuth credential by session-based interface.
+//! An example to sign in with GitHub OAuth credential by session-based interface
+//! on the Authorization Code grant type of the OAuth 2.0.
 //!
 //! ```shell
-//! $ cargo run --example sign_in_with_github_oauth_credential --features oauth
+//! $ cargo run --example sign_in_with_github_oauth_credential_on_auth_code --features oauth
 //! ```
 
 #![cfg(feature = "oauth")]
@@ -15,10 +16,10 @@ use serde::Deserialize;
 use tokio::sync::{mpsc, Mutex};
 
 use fars::oauth::AuthorizationCode;
-use fars::oauth::State;
+use fars::oauth::CsrfState;
 use fars::oauth::ClientId;
 use fars::oauth::ClientSecret;
-use fars::oauth::OAuthGitHubClient;
+use fars::oauth::GitHubAuthorizationCodeClient;
 use fars::oauth::RedirectUrl;
 use fars::oauth::Scope;
 use fars::oauth::AuthorizationCodeSession;
@@ -95,7 +96,7 @@ async fn continue_sign_in(
     let token = oauth_session
         .exchange_code_into_token(
             AuthorizationCode::new(auth_code),
-            State::new(auth_state),
+            CsrfState::new(auth_state),
         )
         .await
         .map_err(|e| {
@@ -144,7 +145,7 @@ async fn main() -> anyhow::Result<()> {
         ClientSecret::new(std::env::var("GITHUB_CLIENT_SECRET")?);
 
     // Create an OAuth client.
-    let oauth_client = OAuthGitHubClient::new(
+    let oauth_client = GitHubAuthorizationCodeClient::new(
         client_id,
         client_secret,
         RedirectUrl::new("http://localhost:8080/auth/github-callback")?,

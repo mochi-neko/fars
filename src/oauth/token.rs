@@ -23,7 +23,7 @@ use crate::ProviderId;
 /// use fars::oauth::PkceOption;
 /// use fars::oauth::Scope;
 /// use fars::oauth::AuthorizationCode;
-/// use fars::oauth::State;
+/// use fars::oauth::CsrfState;
 ///
 /// let client = AuthorizationCodeClient::new(
 ///     ClientId::new("client-id"),
@@ -47,7 +47,7 @@ use crate::ProviderId;
 ///
 /// let token = session.exchange_code_into_token(
 ///     AuthorizationCode::new(code),
-///     State::new(state),
+///     CsrfState::new(state),
 /// )?;
 /// ```
 pub struct OAuthToken {
@@ -92,7 +92,7 @@ impl OAuthToken {
     /// use fars::oauth::PkceOption;
     /// use fars::oauth::Scope;
     /// use fars::oauth::AuthorizationCode;
-    /// use fars::oauth::State;
+    /// use fars::oauth::CsrfState;
     /// use fars::ProviderId;
     ///
     /// let client = AuthorizationCodeClient::new(
@@ -117,7 +117,7 @@ impl OAuthToken {
     ///
     /// let token = session.exchange_code_into_token(
     ///     AuthorizationCode::new(code),
-    ///     State::new(state),
+    ///     CsrfState::new(state),
     /// )?;
     ///
     /// let idp_post_body = token.create_idp_post_body(

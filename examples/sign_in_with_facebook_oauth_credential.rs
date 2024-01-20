@@ -15,7 +15,7 @@ use serde::Deserialize;
 use tokio::sync::{mpsc, Mutex};
 
 use fars::oauth::AuthorizationCode;
-use fars::oauth::State;
+use fars::oauth::CsrfState;
 use fars::oauth::ClientId;
 use fars::oauth::ClientSecret;
 use fars::oauth::OAuthFacebookClient;
@@ -46,7 +46,7 @@ struct QueryParameters {
 }
 
 async fn handle_redirect(
-    state: State<ServerState>,
+    state: CsrfState<ServerState>,
     Query(params): Query<QueryParameters>,
 ) -> String {
     // Check query parameters.
@@ -93,7 +93,7 @@ async fn handle_redirect(
 }
 
 async fn continue_sign_in(
-    state: State<ServerState>,
+    state: CsrfState<ServerState>,
     auth_code: String,
     auth_state: String,
 ) -> anyhow::Result<()> {
@@ -107,7 +107,7 @@ async fn continue_sign_in(
     let token = oauth_session
         .exchange_code_into_token(
             AuthorizationCode::new(auth_code),
-            State::new(auth_state),
+            CsrfState::new(auth_state),
         )
         .await
         .map_err(|e| {

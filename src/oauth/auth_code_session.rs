@@ -2,7 +2,7 @@ use oauth2::{CsrfToken, PkceCodeVerifier, TokenResponse};
 
 use crate::oauth::AccessToken;
 use crate::oauth::AuthorizationCode;
-use crate::oauth::State;
+use crate::oauth::CsrfState;
 use crate::oauth::AuthorizeUrl;
 use crate::oauth::AuthorizationCodeClient;
 use crate::oauth::OAuthError;
@@ -71,7 +71,7 @@ impl AuthorizationCodeSession {
     /// use fars::oauth::PkceOption;
     /// use fars::oauth::Scope;
     /// use fars::oauth::AuthorizationCode;
-    /// use fars::oauth::State;
+    /// use fars::oauth::CsrfState;
     ///
     /// let client = AuthorizationCodeClient::new(
     ///     ClientId::new("client-id"),
@@ -95,13 +95,13 @@ impl AuthorizationCodeSession {
     ///
     /// let token = session.exchange_code_into_token(
     ///     AuthorizationCode::new(code),
-    ///     State::new(state),
+    ///     CsrfState::new(state),
     /// )?;
     /// ```
     pub async fn exchange_code_into_token(
         &self,
         code: AuthorizationCode,
-        state: State,
+        state: CsrfState,
     ) -> OAuthResult<OAuthToken> {
         // Check the CSRF state.
         if state
