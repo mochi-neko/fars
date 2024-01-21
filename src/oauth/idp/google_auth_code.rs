@@ -11,7 +11,7 @@ use crate::oauth::AuthScope;
 use crate::oauth::AuthorizationCodeSession;
 use crate::oauth::TokenEndpoint;
 
-/// A client for the Google's Authorization Code grant type of the OAuth 2.0.
+/// A client for the Google's Authorization Code grant type with PKCE and Client Secret of the OAuth 2.0.
 ///
 /// See also [the official guide](https://developers.google.com/identity/protocols/oauth2/web-server).
 ///
@@ -19,13 +19,13 @@ use crate::oauth::TokenEndpoint;
 /// This is only available when the feature "oauth" is enabled.
 ///
 /// ## Recommended use cases
-/// - Web-Server apps (= Confidential Clients) with PKCE **and client secret**.
+/// - Web-Server apps (= Confidential Clients) with PKCE **and Client Secret**.
 ///
 /// ## Not recommended use cases
 /// - Public Clients, such as Web-Client, Mobile and Desktop apps.
 ///
 /// ## Not supported use cases
-/// - Any clients with PKCE **without client secret**.
+/// - Any clients with PKCE **without Client Secret**.
 ///
 /// ## Example
 /// ```

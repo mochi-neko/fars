@@ -3,7 +3,6 @@ use std::collections::HashSet;
 use crate::oauth::AuthorizeEndpoint;
 use crate::oauth::AuthorizationCodeClient;
 use crate::oauth::ClientId;
-use crate::oauth::ClientSecret;
 use crate::oauth::PkceOption;
 use crate::oauth::RedirectUrl;
 use crate::oauth::OAuthResult;
@@ -11,7 +10,7 @@ use crate::oauth::AuthScope;
 use crate::oauth::AuthorizationCodeSession;
 use crate::oauth::TokenEndpoint;
 
-/// A client for the Facebook's Authorization Code grant type of the OAuth 2.0.
+/// A client for the Facebook's Authorization Code grant type with PKCE of the OAuth 2.0.
 ///
 /// See also [the official document](https://developers.facebook.com/docs/facebook-login/guides/advanced/oidc-token).
 ///

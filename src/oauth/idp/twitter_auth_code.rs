@@ -3,7 +3,6 @@ use std::collections::HashSet;
 use crate::oauth::AuthorizeEndpoint;
 use crate::oauth::AuthorizationCodeClient;
 use crate::oauth::ClientId;
-use crate::oauth::ClientSecret;
 use crate::oauth::PkceOption;
 use crate::oauth::RedirectUrl;
 use crate::oauth::OAuthResult;
@@ -11,45 +10,36 @@ use crate::oauth::AuthScope;
 use crate::oauth::AuthorizationCodeSession;
 use crate::oauth::TokenEndpoint;
 
-/// A client for the GitHub's Authorization Code grant type with Client Secret of the OAuth 2.0.
+/// A client for the Twitter's Authorization Code grant type with PKCE of the OAuth 2.0.
 ///
-/// See also [the official document](https://docs.github.com/en/developers/apps/authorizing-oauth-apps#web-application-flow).
+/// See also [the official document](https://developer.twitter.com/en/docs/authentication/oauth-2-0/authorization-code).
 ///
 /// ## NOTE
 /// This is only available when the feature "oauth" is enabled.
 ///
-/// ## IMPORTANT
-/// GitHub OAuth 2.0 does not support PKCE.
+/// ## WARNING
+/// Twitter OAuth 2.0 Access Token may not be supported by the Firebase Auth.
 ///
 /// ## Recommended use cases
-/// - Web-Server apps (= Confidential Clients) **with Client Secret** without PKCE.
-///
-/// ## Not recommended use cases
-/// - Public Clients, such as Web-Client, Mobile and Desktop apps, because Client Secret is not secret in public clients.
-///
-/// ## Not supported use cases
-/// - Any apps **with PKCE**.
+/// - Web-Server, Web-Client, Mobile and Desktop apps with PKCE.
 ///
 /// ## Example
 /// ```
-/// use fars::oauth::GitHubAuthorizationCodeClient;
+/// use fars::oauth::TwitterAuthorizationCodeClient;
 /// use fars::oauth::ClientId;
-/// use fars::oauth::ClientSecret;
 /// use fars::oauth::RedirectUrl;
+/// use std::collections::HashSet;
 /// use fars::oauth::AuthScope;
 /// use fars::oauth::AuthorizationCode;
 /// use fars::oauth::CsrfState;
-/// use std::collections::HashSet;
 ///
-/// let client = GitHubAuthorizationCodeClient::new(
+/// let client = TwitterAuthorizationCodeClient::new(
 ///     ClientId::new("client-id"),
-///     ClientSecret::new("client-secret"),
 ///     RedirectUrl::new("https://my.app.com/callback")?,
 /// )?;
 ///
 /// let session = client.generate_authorization_session(HashSet::from([
-///     AuthScope::new("read:user"),
-///     AuthScope::new("user:email"),
+///     AuthScope::open_id(),
 /// ]));
 ///
 /// let authorize_url = session.authorize_url.inner();
@@ -65,45 +55,41 @@ use crate::oauth::TokenEndpoint;
 ///
 /// let access_token = token.access_token.inner();
 /// ```
-pub struct GitHubAuthorizationCodeClient {
+pub struct TwitterAuthorizationCodeClient {
     inner: AuthorizationCodeClient,
 }
 
-impl GitHubAuthorizationCodeClient {
-    /// Creates a new client for the GitHub's Authorization Code grant type of the OAuth 2.0.
+impl TwitterAuthorizationCodeClient {
+    /// Creates a new client for the Twitter's Authorization Code grant type of the OAuth 2.0.
     ///
     /// ## Arguments
-    /// - `client_id` - Client ID of the GitHub.
-    /// - `client_secret` - Client secret of the GitHub.
+    /// - `client_id` - Client ID of the Twitter.
     /// - `redirect_url` - Redirect URL of your app.
     ///
     /// ## Example
     /// ```
-    /// use fars::oauth::GitHubAuthorizationCodeClient;
+    /// use fars::oauth::TwitterAuthorizationCodeClient;
     /// use fars::oauth::ClientId;
-    /// use fars::oauth::ClientSecret;
     /// use fars::oauth::RedirectUrl;
     ///
-    /// let client = GitHubAuthorizationCodeClient::new(
+    /// let client = TwitterAuthorizationCodeClient::new(
     ///     ClientId::new("client-id"),
-    ///     ClientSecret::new("client-secret"),
     ///     RedirectUrl::new("https://my.app.com/callback")?,
     /// )?;
     /// ```
     pub fn new(
         client_id: ClientId,
-        client_secret: ClientSecret,
         redirect_url: RedirectUrl,
     ) -> OAuthResult<Self> {
         let client = AuthorizationCodeClient::new(
             client_id,
-            Some(client_secret),
-            AuthorizeEndpoint::new("https://github.com/login/oauth/authorize")?,
+            None,
+            AuthorizeEndpoint::new("https://twitter.com/i/oauth2/authorize")?,
             Some(TokenEndpoint::new(
-                "https://github.com/login/oauth/access_token",
+                "https://api.twitter.com/2/oauth2/token",
             )?),
             redirect_url,
-            PkceOption::NotSupported,
+            PkceOption::S256,
         )?;
 
         Ok(Self {
@@ -114,26 +100,23 @@ impl GitHubAuthorizationCodeClient {
     /// Generates a new authorization session.
     ///
     /// ## Arguments
-    /// - `scopes` - The scopes to request authorization defined at [here](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps).
+    /// - `scopes` - The scopes to request authorization defined at [here](https://developer.twitter.com/en/docs/authentication/oauth-2-0/authorization-code).
     ///
     /// ## Example
     /// ```
-    /// use fars::oauth::GitHubAuthorizationCodeClient;
+    /// use fars::oauth::TwitterAuthorizationCodeClient;
     /// use fars::oauth::ClientId;
-    /// use fars::oauth::ClientSecret;
     /// use fars::oauth::RedirectUrl;
-    /// use fars::oauth::AuthScope;
     /// use std::collections::HashSet;
+    /// use fars::oauth::AuthScope;
     ///
-    /// let client = GitHubAuthorizationCodeClient::new(
+    /// let client = TwitterAuthorizationCodeClient::new(
     ///     ClientId::new("client-id"),
-    ///     ClientSecret::new("client-secret"),
     ///     RedirectUrl::new("https://my.app.com/callback")?,
     /// )?;
     ///
     /// let session = client.generate_authorization_session(HashSet::from([
-    ///     AuthScope::new("read:user"),
-    ///     AuthScope::new("user:email"),
+    ///     AuthScope::open_id(),
     /// ]));
     ///
     /// let authorize_url = session.authorize_url.inner();

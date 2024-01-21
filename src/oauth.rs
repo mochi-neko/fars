@@ -18,6 +18,7 @@
 //!     - [ ] Device grant type for limited-input devices.
 //! - [Twitter (X)](https://developer.twitter.com/en/docs/authentication/oauth-2-0)
 //!     - [ ] Authorization Code grant type with PKCE for Web-Server, Web-Client, Mobile, and Desktop apps.
+//!         - Implemented but may not be supported by the Firebase Auth.
 //!     - [ ] Client Credentials grant type for Server-to-Server apps.
 //! - [ ] Apple
 //! - [ ] Microsoft
@@ -54,6 +55,7 @@ pub use error::OAuthError;
 pub use idp::facebook_auth_code::FacebookAuthorizationCodeClient;
 pub use idp::github_auth_code::GitHubAuthorizationCodeClient;
 pub use idp::google_auth_code::GoogleAuthorizationCodeClient;
+pub use idp::twitter_auth_code::TwitterAuthorizationCodeClient;
 pub use result::OAuthResult;
 pub use auth_code_session::AuthorizationCodeSession;
 pub use token::OAuthToken;
