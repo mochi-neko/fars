@@ -21,7 +21,7 @@ use fars::oauth::ClientId;
 use fars::oauth::ClientSecret;
 use fars::oauth::GitHubAuthorizationCodeClient;
 use fars::oauth::RedirectUrl;
-use fars::oauth::Scope;
+use fars::oauth::AuthScope;
 use fars::oauth::AuthorizationCodeSession;
 use fars::ApiKey;
 use fars::Config;
@@ -139,10 +139,10 @@ async fn continue_sign_in(
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    // Get secrets from the environment variables.
-    let client_id = ClientId::new(std::env::var("GITHUB_CLIENT_ID")?);
+    // Get Client ID and Client Secret from the environment variables.
+    let client_id = ClientId::from_env("GITHUB_CLIENT_ID")?;
     let client_secret =
-        ClientSecret::new(std::env::var("GITHUB_CLIENT_SECRET")?);
+        ClientSecret::from_env("GITHUB_CLIENT_SECRET")?;
 
     // Create an OAuth client.
     let oauth_client = GitHubAuthorizationCodeClient::new(
@@ -153,8 +153,8 @@ async fn main() -> anyhow::Result<()> {
 
     // Generate an OAuth session with authorization URL.
     let session = oauth_client.generate_authorization_session(HashSet::from([
-        Scope::new("user.email"),
-        Scope::new("read:user"),
+        AuthScope::new("user.email"),
+        AuthScope::new("read:user"),
     ]));
 
     // Open the authorization URL in the default browser.
@@ -166,7 +166,7 @@ async fn main() -> anyhow::Result<()> {
     // Create a server state.
     let server_state = ServerState {
         config: Arc::new(Mutex::new(Config::new(ApiKey::new(
-            std::env::var("FIREBASE_API_KEY")?,
+        ApiKey::from_env()?
         )))),
         oauth_session: Arc::new(Mutex::new(session)),
         tx,

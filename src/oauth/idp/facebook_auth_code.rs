@@ -11,45 +11,33 @@ use crate::oauth::AuthScope;
 use crate::oauth::AuthorizationCodeSession;
 use crate::oauth::TokenEndpoint;
 
-/// A client for the GitHub's Authorization Code grant type of the OAuth 2.0.
+/// A client for the Facebook's Authorization Code grant type of the OAuth 2.0.
 ///
-/// See also [the official document](https://docs.github.com/en/developers/apps/authorizing-oauth-apps#web-application-flow).
+/// See also [the official document](https://developers.facebook.com/docs/facebook-login/guides/advanced/oidc-token).
 ///
 /// ## NOTE
 /// This is only available when the feature "oauth" is enabled.
 ///
-/// ## IMPORTANT
-/// GitHub OAuth 2.0 does not support PKCE.
-///
 /// ## Recommended use cases
-/// - Web-Server apps (= Confidential Clients) **with client secret** without PKCE.
-///
-/// ## Not recommended use cases
-/// - Public Clients, such as Web-Client, Mobile and Desktop apps, because client secret is not secret in public clients.
-///
-/// ## Not supported use cases
-/// - Any clients **with PKCE**.
+/// - Web-Server, Web-Client, Mobile and Desktop apps with PKCE.
 ///
 /// ## Example
 /// ```
-/// use fars::oauth::GitHubAuthorizationCodeClient;
+/// use fars::oauth::FacebookAuthorizationCodeClient;
 /// use fars::oauth::ClientId;
-/// use fars::oauth::ClientSecret;
 /// use fars::oauth::RedirectUrl;
+/// use std::collections::HashSet;
 /// use fars::oauth::AuthScope;
 /// use fars::oauth::AuthorizationCode;
 /// use fars::oauth::CsrfState;
-/// use std::collections::HashSet;
 ///
-/// let client = GitHubAuthorizationCodeClient::new(
+/// let client = FacebookAuthorizationCodeClient::new(
 ///     ClientId::new("client-id"),
-///     ClientSecret::new("client-secret"),
 ///     RedirectUrl::new("https://my.app.com/callback")?,
 /// )?;
 ///
 /// let session = client.generate_authorization_session(HashSet::from([
-///     AuthScope::new("read:user"),
-///     AuthScope::new("user:email"),
+///     AuthScope::new("email"),
 /// ]));
 ///
 /// let authorize_url = session.authorize_url.inner();
@@ -65,45 +53,41 @@ use crate::oauth::TokenEndpoint;
 ///
 /// let access_token = token.access_token.inner();
 /// ```
-pub struct GitHubAuthorizationCodeClient {
+pub struct FacebookAuthorizationCodeClient {
     inner: AuthorizationCodeClient,
 }
 
-impl GitHubAuthorizationCodeClient {
-    /// Creates a new client for the GitHub's Authorization Code grant type of the OAuth 2.0.
+impl FacebookAuthorizationCodeClient {
+    /// Creates a new client for the Facebook's Authorization Code grant type of the OAuth 2.0.
     ///
     /// ## Arguments
-    /// - `client_id` - Client ID of the GitHub.
-    /// - `client_secret` - Client secret of the GitHub.
+    /// - `client_id` - Client ID of the Facebook.
     /// - `redirect_url` - Redirect URL of your app.
     ///
     /// ## Example
     /// ```
-    /// use fars::oauth::GitHubAuthorizationCodeClient;
+    /// use fars::oauth::FacebookAuthorizationCodeClient;
     /// use fars::oauth::ClientId;
-    /// use fars::oauth::ClientSecret;
     /// use fars::oauth::RedirectUrl;
     ///
-    /// let client = GitHubAuthorizationCodeClient::new(
+    /// let client = FacebookAuthorizationCodeClient::new(
     ///     ClientId::new("client-id"),
-    ///     ClientSecret::new("client-secret"),
     ///     RedirectUrl::new("https://my.app.com/callback")?,
     /// )?;
     /// ```
     pub fn new(
         client_id: ClientId,
-        client_secret: ClientSecret,
         redirect_url: RedirectUrl,
     ) -> OAuthResult<Self> {
         let client = AuthorizationCodeClient::new(
             client_id,
-            Some(client_secret),
-            AuthorizeEndpoint::new("https://github.com/login/oauth/authorize")?,
+            None,
+            AuthorizeEndpoint::new("https://www.facebook.com/v18.0/dialog/oauth")?,
             Some(TokenEndpoint::new(
-                "https://github.com/login/oauth/access_token",
+                "https://graph.facebook.com/v18.0/oauth/access_token",
             )?),
             redirect_url,
-            PkceOption::NotSupported,
+            PkceOption::S256,
         )?;
 
         Ok(Self {
@@ -114,26 +98,23 @@ impl GitHubAuthorizationCodeClient {
     /// Generates a new authorization session.
     ///
     /// ## Arguments
-    /// - `scopes` - The scopes to request authorization defined at [here](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps).
+    /// - `scopes` - The scopes to request authorization defined at [here](https://developers.facebook.com/docs/permissions).
     ///
     /// ## Example
     /// ```
-    /// use fars::oauth::GitHubAuthorizationCodeClient;
+    /// use fars::oauth::FacebookAuthorizationCodeClient;
     /// use fars::oauth::ClientId;
-    /// use fars::oauth::ClientSecret;
     /// use fars::oauth::RedirectUrl;
-    /// use fars::oauth::AuthScope;
     /// use std::collections::HashSet;
+    /// use fars::oauth::AuthScope;
     ///
-    /// let client = GitHubAuthorizationCodeClient::new(
+    /// let client = FacebookAuthorizationCodeClient::new(
     ///     ClientId::new("client-id"),
-    ///     ClientSecret::new("client-secret"),
     ///     RedirectUrl::new("https://my.app.com/callback")?,
     /// )?;
     ///
     /// let session = client.generate_authorization_session(HashSet::from([
-    ///     AuthScope::new("read:user"),
-    ///     AuthScope::new("user:email"),
+    ///     AuthScope::new("email"),
     /// ]));
     ///
     /// let authorize_url = session.authorize_url.inner();

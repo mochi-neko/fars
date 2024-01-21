@@ -10,7 +10,7 @@ use fars::Config;
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Read API key from the environment variable.
-    let api_key = ApiKey::new(std::env::var("FIREBASE_API_KEY")?);
+    let api_key = ApiKey::from_env()?;
 
     // Create a config.
     let config = Config::new(api_key);

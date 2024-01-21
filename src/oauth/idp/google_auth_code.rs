@@ -7,7 +7,7 @@ use crate::oauth::ClientSecret;
 use crate::oauth::PkceOption;
 use crate::oauth::RedirectUrl;
 use crate::oauth::OAuthResult;
-use crate::oauth::Scope;
+use crate::oauth::AuthScope;
 use crate::oauth::AuthorizationCodeSession;
 use crate::oauth::TokenEndpoint;
 
@@ -33,7 +33,7 @@ use crate::oauth::TokenEndpoint;
 /// use fars::oauth::ClientId;
 /// use fars::oauth::ClientSecret;
 /// use fars::oauth::RedirectUrl;
-/// use fars::oauth::Scope;
+/// use fars::oauth::AuthScope;
 /// use fars::oauth::AuthorizationCode;
 /// use fars::oauth::CsrfState;
 /// use std::collections::HashSet;
@@ -45,14 +45,14 @@ use crate::oauth::TokenEndpoint;
 /// )?;
 ///
 /// let session = client.generate_session(HashSet::from([
-///    Scope::open_id(),
-///    Scope::open_id_email(),
-///    Scope::open_id_profile()
+///    AuthScope::open_id(),
+///    AuthScope::open_id_email(),
+///    AuthScope::open_id_profile()
 /// ]));
 ///
 /// let authorize_url = session.authorize_url.inner();
 ///
-/// // Redirect the user to the authorize URL and get the code and state from fragments.
+/// // Redirect the user to the authorize URL and get the code and state from URL.
 /// let code = "code";
 /// let state = "state";
 ///
@@ -120,7 +120,7 @@ impl GoogleAuthorizationCodeClient {
     /// use fars::oauth::ClientId;
     /// use fars::oauth::ClientSecret;
     /// use fars::oauth::RedirectUrl;
-    /// use fars::oauth::Scope;
+    /// use fars::oauth::AuthScope;
     /// use std::collections::HashSet;
     ///
     /// let client = GoogleAuthorizationCodeClient::new(
@@ -130,18 +130,18 @@ impl GoogleAuthorizationCodeClient {
     /// )?;
     ///
     /// let session = client.generate_session(HashSet::from([
-    ///    Scope::open_id(),
-    ///    Scope::open_id_email(),
-    ///    Scope::open_id_profile()
+    ///    AuthScope::open_id(),
+    ///    AuthScope::open_id_email(),
+    ///    AuthScope::open_id_profile()
     /// ]));
     ///
     /// let authorize_url = session.authorize_url.inner();
     ///
-    /// // Redirect the user to the authorize URL and get the code and state from fragments.
+    /// // Redirect the user to the authorize URL and get the code and state from URL.
     /// ```
     pub fn generate_session(
         &self,
-        scopes: HashSet<Scope>,
+        scopes: HashSet<AuthScope>,
     ) -> AuthorizationCodeSession {
         self.inner
             .generate_session(scopes)

@@ -11,7 +11,7 @@ use crate::oauth::ClientSecret;
 use crate::oauth::PkceOption;
 use crate::oauth::RedirectUrl;
 use crate::oauth::OAuthResult;
-use crate::oauth::Scope;
+use crate::oauth::AuthScope;
 use crate::oauth::AuthorizationCodeSession;
 use crate::oauth::TokenEndpoint;
 
@@ -132,7 +132,7 @@ impl AuthorizationCodeClient {
     /// use fars::oauth::TokenEndpoint;
     /// use fars::oauth::RedirectUrl;
     /// use fars::oauth::PkceOption;
-    /// use fars::oauth::Scope;
+    /// use fars::oauth::AuthScope;
     ///
     /// let client = AuthorizationCodeClient::new(
     ///     ClientId::new("client-id"),
@@ -144,8 +144,8 @@ impl AuthorizationCodeClient {
     /// )?;
     ///
     /// let session = client.generate_session(HashSet::from([
-    ///     Scope::new("scope1"),
-    ///     Scope::new("scope2"),
+    ///     AuthScope::new("scope1"),
+    ///     AuthScope::new("scope2"),
     /// ]));
     ///
     /// let authorize_url = session.authorize_url.inner().clone();
@@ -154,7 +154,7 @@ impl AuthorizationCodeClient {
     /// ```
     pub fn generate_session(
         &self,
-        scopes: HashSet<Scope>,
+        scopes: HashSet<AuthScope>,
     ) -> AuthorizationCodeSession {
         // Generate an authorization request.
         let mut request = self

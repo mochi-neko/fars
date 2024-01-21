@@ -21,7 +21,7 @@ use crate::ProviderId;
 /// use fars::oauth::TokenEndpoint;
 /// use fars::oauth::RedirectUrl;
 /// use fars::oauth::PkceOption;
-/// use fars::oauth::Scope;
+/// use fars::oauth::AuthScope;
 /// use fars::oauth::AuthorizationCode;
 /// use fars::oauth::CsrfState;
 ///
@@ -35,8 +35,8 @@ use crate::ProviderId;
 /// )?;
 ///
 /// let session = client.generate_session(HashSet::from([
-///     Scope::new("scope1"),
-///     Scope::new("scope2"),
+///     AuthScope::new("scope1"),
+///     AuthScope::new("scope2"),
 /// ]));
 ///
 /// let authorize_url = session.authorize_url.inner().clone();
@@ -90,7 +90,7 @@ impl OAuthToken {
     /// use fars::oauth::TokenEndpoint;
     /// use fars::oauth::RedirectUrl;
     /// use fars::oauth::PkceOption;
-    /// use fars::oauth::Scope;
+    /// use fars::oauth::AuthScope;
     /// use fars::oauth::AuthorizationCode;
     /// use fars::oauth::CsrfState;
     /// use fars::ProviderId;
@@ -105,8 +105,8 @@ impl OAuthToken {
     /// )?;
     ///
     /// let session = client.generate_session(HashSet::from([
-    ///     Scope::new("scope1"),
-    ///     Scope::new("scope2"),
+    ///     AuthScope::new("scope1"),
+    ///     AuthScope::new("scope2"),
     /// ]));
     ///
     /// let authorize_url = session.authorize_url.inner().clone();

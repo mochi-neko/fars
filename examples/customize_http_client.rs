@@ -4,7 +4,17 @@
 //! $ cargo run --example customize_http_client --features custom_client -- --email <email> --password <password>
 //! ```
 
+#![cfg(feature = "custom_client")]
+
 use clap::Parser;
+
+use std::time::Duration;
+
+use fars::ApiKey;
+use fars::Client;
+use fars::Config;
+use fars::Email;
+use fars::Password;
 
 #[derive(Parser)]
 struct Arguments {
@@ -16,54 +26,36 @@ struct Arguments {
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    #[cfg(not(feature = "custom_client"))]
-    {
-        return Err(anyhow::anyhow!(
-            "Feature \"custom_client\" is not enabled.",
-        ));
-    }
+    // Parse the command line arguments.
+    let arguments = Arguments::parse();
 
-    #[cfg(feature = "custom_client")]
-    {
-        use std::time::Duration;
+    // Read API key from the environment variable.
+    let api_key = ApiKey::from_env()?;
 
-        use fars::ApiKey;
-        use fars::Client;
-        use fars::Config;
-        use fars::Email;
-        use fars::Password;
+    // Create a custom reqwest client with timeout.
+    let client = fars::reqwest::ClientBuilder::new()
+        .timeout(Duration::from_secs(60))
+        .connect_timeout(Duration::from_secs(10))
+        .build()?;
 
-        // Parse the command line arguments.
-        let arguments = Arguments::parse();
+    // Customize HTTP client.
+    let client = Client::custom(client);
 
-        // Read API key from the environment variable.
-        let api_key = ApiKey::new(std::env::var("FIREBASE_API_KEY")?);
+    // Create a config.
+    let config = Config::custom(api_key, client);
 
-        // Create a custom reqwest client with timeout.
-        let client = fars::reqwest::ClientBuilder::new()
-            .timeout(Duration::from_secs(60))
-            .connect_timeout(Duration::from_secs(10))
-            .build()?;
+    // Get a session by signing in with email and password.
+    let session = config
+        .sign_in_with_email_password(
+            Email::new(arguments.email.clone()),
+            Password::new(arguments.password.clone()),
+        )
+        .await?;
 
-        // Customize HTTP client.
-        let client = Client::custom(client);
+    println!(
+        "Succeeded to sign in with email/password: {:?}",
+        session
+    );
 
-        // Create a config.
-        let config = Config::custom(api_key, client);
-
-        // Get a session by signing in with email and password.
-        let session = config
-            .sign_in_with_email_password(
-                Email::new(arguments.email.clone()),
-                Password::new(arguments.password.clone()),
-            )
-            .await?;
-
-        println!(
-            "Succeeded to sign in with email/password: {:?}",
-            session
-        );
-
-        Ok(())
-    }
+    Ok(())
 }

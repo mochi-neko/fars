@@ -11,7 +11,7 @@
 //!     - [ ] (Not recommended) **Implicit** grant type  for Web-Client apps.
 //!     - [ ] Device grant type for limited-input devices.
 //! - [Facebook](https://developers.facebook.com/docs/facebook-login/guides/advanced/oidc-token)
-//!     - [ ] Authorization Code grant type with PKCE for Web-Server, Web-Client, Mobile and Desktop apps.
+//!     - [x] Authorization Code grant type with PKCE for Web-Server, Web-Client, Mobile and Desktop apps.
 //! - [GitHub](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)
 //!     - [x] Authorization Code grant type with client secret for Web-Server apps.
 //!     - [ ] (Not recommended) Authorization Code grant type with **client secret** for Web-Client, Mobile, and Desktop apps.
@@ -48,10 +48,10 @@ pub use data::ClientSecret;
 pub use data::PkceOption;
 pub use data::RedirectUrl;
 pub use data::RefreshToken;
-pub use data::Scope;
+pub use data::AuthScope;
 pub use data::TokenEndpoint;
 pub use error::OAuthError;
-pub use idp::facebook::OAuthFacebookClient;
+pub use idp::facebook_auth_code::FacebookAuthorizationCodeClient;
 pub use idp::github_auth_code::GitHubAuthorizationCodeClient;
 pub use idp::google_auth_code::GoogleAuthorizationCodeClient;
 pub use result::OAuthResult;

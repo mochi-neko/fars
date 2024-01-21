@@ -1,3 +1,4 @@
+use std::env::VarError;
 use crate::oauth::OAuthError;
 use crate::oauth::OAuthResult;
 
@@ -25,6 +26,13 @@ impl ClientId {
         }
     }
 
+    /// Loads from specified environment variable.
+    pub fn from_env(key: &str) -> std::result::Result<Self, VarError> {
+        let id = std::env::var(key)?;
+
+        Ok(Self::new(id))
+    }
+
     pub(crate) fn inner(&self) -> &oauth2::ClientId {
         &self.inner
     }
@@ -43,6 +51,13 @@ impl ClientSecret {
         Self {
             inner: oauth2::ClientSecret::new(client_id.into()),
         }
+    }
+
+    /// Loads from specified environment variable.
+    pub fn from_env(key: &str) -> std::result::Result<Self, VarError> {
+        let secret = std::env::var(key)?;
+
+        Ok(Self::new(secret))
     }
 
     pub(crate) fn inner(&self) -> &oauth2::ClientSecret {
@@ -115,11 +130,11 @@ impl RedirectUrl {
 
 /// The scope of the OAuth 2.0.
 #[derive(Clone, Eq, PartialEq, Hash)]
-pub struct Scope {
+pub struct AuthScope {
     inner: oauth2::Scope,
 }
 
-impl Scope {
+impl AuthScope {
     pub fn new<S>(scope: S) -> Self
     where
         S: Into<String>,

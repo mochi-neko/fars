@@ -1,3 +1,5 @@
+use std::env::VarError;
+
 /// The Firebase project ID.
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub struct ProjectId {
@@ -13,6 +15,13 @@ impl ProjectId {
         Self {
             inner: inner.into(),
         }
+    }
+
+    /// Loads API key from environment variable: `"FIREBASE_PROJECT_ID"`.
+    pub fn from_env() -> std::result::Result<Self, VarError> {
+        let id = std::env::var("FIREBASE_PROJECT_ID")?;
+
+        Ok(Self::new(id))
     }
 
     /// Returns the inner representation.

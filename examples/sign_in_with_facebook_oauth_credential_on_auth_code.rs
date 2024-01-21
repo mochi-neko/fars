@@ -1,7 +1,8 @@
-//! An example to sign in with Facebook OAuth credential by session-based interface.
+//! An example to sign in with Facebook OAuth credential by session-based interface
+//! on the Authorization Code grant type of the OAuth 2.0.
 //!
 //! ```shell
-//! $ cargo run --example sign_in_with_facebook_oauth_credential --features oauth
+//! $ cargo run --example sign_in_with_facebook_oauth_credential_on_auth_code --features oauth
 //! ```
 
 #![cfg(feature = "oauth")]
@@ -18,9 +19,9 @@ use fars::oauth::AuthorizationCode;
 use fars::oauth::CsrfState;
 use fars::oauth::ClientId;
 use fars::oauth::ClientSecret;
-use fars::oauth::OAuthFacebookClient;
+use fars::oauth::FacebookAuthorizationCodeClient;
 use fars::oauth::RedirectUrl;
-use fars::oauth::Scope;
+use fars::oauth::AuthScope;
 use fars::oauth::AuthorizationCodeSession;
 use fars::ApiKey;
 use fars::Config;
@@ -46,7 +47,7 @@ struct QueryParameters {
 }
 
 async fn handle_redirect(
-    state: CsrfState<ServerState>,
+    state: State<ServerState>,
     Query(params): Query<QueryParameters>,
 ) -> String {
     // Check query parameters.
@@ -93,7 +94,7 @@ async fn handle_redirect(
 }
 
 async fn continue_sign_in(
-    state: CsrfState<ServerState>,
+    state: State<ServerState>,
     auth_code: String,
     auth_state: String,
 ) -> anyhow::Result<()> {
@@ -150,21 +151,19 @@ async fn continue_sign_in(
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    // Get secrets from the environment variables.
-    let client_id = ClientId::new(std::env::var("FACEBOOK_CLIENT_ID")?);
-    let client_secret =
-        ClientSecret::new(std::env::var("FACEBOOK_CLIENT_SECRET")?);
+    // Get Client ID from the environment variables.
+    let client_id = ClientId::from_env("FACEBOOK_CLIENT_ID")?;
 
     // Create an OAuth client.
-    let oauth_client = OAuthFacebookClient::new(
+    let oauth_client = FacebookAuthorizationCodeClient::new(
         client_id,
-        client_secret,
         RedirectUrl::new("http://localhost:8080/auth/facebook-callback")?,
     )?;
 
     // Generate an OAuth session with authorization URL.
     let session = oauth_client.generate_authorization_session(HashSet::from([
-        Scope::new("openid"),
+        AuthScope::open_id(),
+        AuthScope::open_id_email(),
     ]));
 
     // Open the authorization URL in the default browser.
@@ -175,9 +174,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Create a server state.
     let server_state = ServerState {
-        config: Arc::new(Mutex::new(Config::new(ApiKey::new(
-            std::env::var("FIREBASE_API_KEY")?,
-        )))),
+        config: Arc::new(Mutex::new(Config::new(ApiKey::from_env()?))),
         oauth_session: Arc::new(Mutex::new(session)),
         tx,
     };
