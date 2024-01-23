@@ -168,9 +168,9 @@ async fn main() -> anyhow::Result<()> {
 
     // Create a server state.
     let server_state = ServerState {
-        config: Arc::new(Mutex::new(Config::new(ApiKey::new(
+        config: Arc::new(Mutex::new(Config::new(
         ApiKey::from_env()?
-        )))),
+        ))),
         oauth_session: Arc::new(Mutex::new(session)),
         tx,
     };

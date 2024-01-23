@@ -99,7 +99,7 @@ impl AuthorizationCodeClient {
         let token_url = token_endpoint.map(|token_url| token_url.inner().to_owned());
 
         // Create an internal OAuth client with settings.
-        let mut client = BasicClient::new(
+        let client = BasicClient::new(
             client_id.inner().to_owned(),
             client_secret,
             authorize_endpoint.inner().to_owned(),

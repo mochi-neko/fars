@@ -1,8 +1,8 @@
-//! An example to sign in with Twitter OAuth credential by session-based interface
+//! An example to sign in with Microsoft OAuth credential by session-based interface
 //! on the Authorization Code grant type of the OAuth 2.0.
 //!
 //! ```shell
-//! $ cargo run --example sign_in_with_twitter_oauth_credential_on_auth_code --features oauth
+//! $ cargo run --example sign_in_with_microsoft_oauth_credential_on_auth_code --features oauth
 //! ```
 
 #![cfg(feature = "oauth")]
@@ -15,10 +15,10 @@ use axum::{routing::get, Router};
 use serde::Deserialize;
 use tokio::sync::{mpsc, Mutex};
 
-use fars::oauth::AuthorizationCode;
+use fars::oauth::{AuthorizationCode, MicrosoftIssuer};
 use fars::oauth::CsrfState;
 use fars::oauth::ClientId;
-use fars::oauth::TwitterAuthorizationCodeClient;
+use fars::oauth::MicrosoftAuthorizationCodeClient;
 use fars::oauth::RedirectUrl;
 use fars::oauth::AuthScope;
 use fars::oauth::AuthorizationCodeSession;
@@ -75,7 +75,7 @@ async fn handle_redirect(
     // Continue to sign in process.
     match continue_sign_in(state, auth_code, auth_state).await {
         | Ok(_) => {
-            "Succeeded to sign in with Twitter OAuth credential.".to_string()
+            "Succeeded to sign in with Microsoft OAuth credential.".to_string()
         },
         | Err(e) => {
             eprintln!("Error: {:?}", e);
@@ -113,11 +113,11 @@ async fn continue_sign_in(
     let config = state.config.lock().await;
     let sender = state.tx.clone();
 
-    // Get a session by signing in Twitter OAuth credential.
+    // Get a session by signing in Microsoft OAuth credential.
     let session = config
         .sign_in_with_oauth_credential(
             OAuthRequestUri::new("http://localhost:8080"),
-            token.create_idp_post_body(ProviderId::Twitter)?,
+            token.create_idp_post_body(ProviderId::Microsoft)?,
         )
         .await
         .map_err(|e| {
@@ -143,18 +143,20 @@ async fn continue_sign_in(
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Get Client ID from the environment variables.
-    let client_id = ClientId::from_env("TWITTER_CLIENT_ID")?;
+    let client_id = ClientId::from_env("MICROSOFT_CLIENT_ID")?;
 
     // Create an OAuth client.
-    let oauth_client = TwitterAuthorizationCodeClient::new(
+    let oauth_client = MicrosoftAuthorizationCodeClient::new(
         client_id,
-        RedirectUrl::new("http://localhost:8080/auth/twitter-callback")?,
+        None,
+        RedirectUrl::new("http://localhost:8080/auth/microsoft-callback")?,
+        MicrosoftIssuer::Consumers,
     )?;
 
     // Generate an OAuth session with authorization URL.
     let session = oauth_client.generate_authorization_session(HashSet::from([
-        AuthScope::new("offline.access"),
-        AuthScope::new("users.read"),
+        AuthScope::open_id(),
+        AuthScope::open_id_email(),
     ]));
 
     // Open the authorization URL in the default browser.
@@ -173,7 +175,7 @@ async fn main() -> anyhow::Result<()> {
     // Build application with redirection handler.
     let app = Router::new()
         .route(
-            "/auth/twitter-callback",
+            "/auth/microsoft-callback",
             get(handle_redirect),
         )
         .with_state(server_state);

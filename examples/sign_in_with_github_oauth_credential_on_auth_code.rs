@@ -110,7 +110,7 @@ async fn continue_sign_in(
     let config = state.config.lock().await;
     let sender = state.tx.clone();
 
-    // Get a session by signing in Google OAuth credential.
+    // Get a session by signing in GitHub OAuth credential.
     let session = config
         .sign_in_with_oauth_credential(
             OAuthRequestUri::new("http://localhost:8080"),
@@ -165,9 +165,9 @@ async fn main() -> anyhow::Result<()> {
 
     // Create a server state.
     let server_state = ServerState {
-        config: Arc::new(Mutex::new(Config::new(ApiKey::new(
+        config: Arc::new(Mutex::new(Config::new(
         ApiKey::from_env()?
-        )))),
+        ))),
         oauth_session: Arc::new(Mutex::new(session)),
         tx,
     };

@@ -42,8 +42,6 @@ struct QueryParameters {
     scope: Option<String>,
     state: Option<String>,
     error: Option<String>,
-    error_reason: Option<String>,
-    error_description: Option<String>,
 }
 
 async fn handle_redirect(
@@ -122,7 +120,7 @@ async fn continue_sign_in(
     let config = state.config.lock().await;
     let sender = state.tx.clone();
 
-    // Get a session by signing in Google OAuth credential.
+    // Get a session by signing in Facebook OAuth credential.
     let session = config
         .sign_in_with_oauth_credential(
             OAuthRequestUri::new("http://localhost:8080"),

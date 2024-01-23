@@ -162,6 +162,21 @@ impl AuthScope {
     pub fn open_id_profile() -> Self {
         Self::new("profile")
     }
+
+    /// The "offline_access" scope for the OpenID Connect.
+    pub fn open_id_offline_access() -> Self {
+        Self::new("offline_access")
+    }
+
+    /// The "address" scope for the OpenID Connect.
+    pub fn open_id_address() -> Self {
+        Self::new("address")
+    }
+
+    /// The "phone" scope for the OpenID Connect.
+    pub fn open_id_phone() -> Self {
+        Self::new("phone")
+    }
 }
 
 /// The authorize request URL of the OAuth 2.0.

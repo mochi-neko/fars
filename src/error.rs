@@ -131,6 +131,8 @@ pub enum CommonErrorCode {
     InvalidPassword,
     /// INVALID_IDP_RESPONSE: The supplied auth credential is malformed or has expired.
     InvalidIdpResponse,
+    /// INVALID_CREDENTIAL_OR_PROVIDER_ID: Invalid IdP response/credential: ...
+    InvalidCredentialOrProviderId(String),
     /// INVALID_EMAIL: The email address is badly formatted.
     InvalidEmail,
     /// INVALID_LOGIN_CREDENTIALS: The supplied auth credential is malformed or has expired.
@@ -179,6 +181,13 @@ impl From<String> for CommonErrorCode {
             .starts_with("OPERATION_NOT_ALLOWED")
         {
             return CommonErrorCode::OperationNotAllowed(val);
+        }
+
+        if val
+            .as_str()
+            .starts_with("INVALID_CREDENTIAL_OR_PROVIDER_ID")
+        {
+            return CommonErrorCode::InvalidCredentialOrProviderId(val);
         }
 
         match val.as_str() {
