@@ -15,13 +15,13 @@ use axum::{routing::get, Router};
 use serde::Deserialize;
 use tokio::sync::{mpsc, Mutex};
 
-use fars::oauth::AuthorizationCode;
 use fars::oauth::AuthorizationCodeSession;
 use fars::oauth::ClientId;
 use fars::oauth::ClientSecret;
 use fars::oauth::GoogleAuthorizationCodeClient;
 use fars::oauth::OAuthScope;
 use fars::oauth::RedirectUrl;
+use fars::oauth::{AuthorizationCode, CsrfState};
 use fars::ApiKey;
 use fars::Config;
 use fars::OAuthRequestUri;
@@ -98,7 +98,7 @@ async fn continue_sign_in(
     let token = oauth_session
         .exchange_code_into_token(
             AuthorizationCode::new(auth_code),
-            fars::oauth::CsrfState::new(auth_state),
+            CsrfState::new(auth_state),
         )
         .await
         .map_err(|e| {

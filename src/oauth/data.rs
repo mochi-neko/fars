@@ -66,6 +66,7 @@ impl ClientSecret {
 }
 
 /// The authorization endpoint of the OAuth 2.0.
+#[derive(Clone)]
 pub struct AuthorizeEndpoint {
     inner: oauth2::AuthUrl,
 }
@@ -87,6 +88,7 @@ impl AuthorizeEndpoint {
 }
 
 /// The device endpoint of the OAuth 2.0.
+#[derive(Clone)]
 pub struct DeviceEndpoint {
     inner: oauth2::DeviceAuthorizationUrl,
 }
@@ -108,6 +110,7 @@ impl DeviceEndpoint {
 }
 
 /// The token endpoint of the OAuth 2.0.
+#[derive(Clone)]
 pub struct TokenEndpoint {
     inner: oauth2::TokenUrl,
 }
@@ -129,6 +132,7 @@ impl TokenEndpoint {
 }
 
 /// The redirect URL of the OAuth 2.0.
+#[derive(Clone)]
 pub struct RedirectUrl {
     inner: oauth2::RedirectUrl,
 }
@@ -201,6 +205,7 @@ impl OAuthScope {
 }
 
 /// The authorize request URL of the OAuth 2.0.
+#[derive(Clone)]
 pub struct AuthorizeUrl {
     inner: String,
 }
@@ -222,6 +227,7 @@ impl AuthorizeUrl {
 }
 
 /// The authorization code of the OAuth 2.0.
+#[derive(Clone)]
 pub struct AuthorizationCode {
     inner: oauth2::AuthorizationCode,
 }
@@ -262,6 +268,7 @@ impl CsrfState {
 }
 
 /// The verification URI of the OAuth 2.0 Device Code Grant type.
+#[derive(Clone)]
 pub struct VerificationUri {
     pub(crate) inner: oauth2::EndUserVerificationUrl,
 }
@@ -273,6 +280,7 @@ impl VerificationUri {
 }
 
 /// The verification URI complete of the OAuth 2.0 Device Code Grant type.
+#[derive(Clone)]
 pub struct VerificationUriComplete {
     pub(crate) inner: oauth2::VerificationUriComplete,
 }
@@ -284,6 +292,7 @@ impl VerificationUriComplete {
 }
 
 /// The device code of the OAuth 2.0 Device Code Grant type.
+#[derive(Clone)]
 pub struct UserCode {
     pub(crate) inner: oauth2::UserCode,
 }
@@ -295,6 +304,7 @@ impl UserCode {
 }
 
 /// The access token of the OAuth 2.0.
+#[derive(Clone)]
 pub struct AccessToken {
     inner: String,
 }
@@ -315,6 +325,7 @@ impl AccessToken {
 }
 
 /// The refresh token of the OAuth 2.0.
+#[derive(Clone)]
 pub struct RefreshToken {
     inner: String,
 }

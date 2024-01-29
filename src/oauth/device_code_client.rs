@@ -2,8 +2,6 @@ use std::collections::HashSet;
 
 use oauth2::basic::BasicClient;
 
-use crate::oauth::data::VerificationUriComplete;
-use crate::oauth::AuthorizeEndpoint;
 use crate::oauth::ClientId;
 use crate::oauth::ClientSecret;
 use crate::oauth::DeviceCodeSession;
@@ -14,6 +12,7 @@ use crate::oauth::OAuthScope;
 use crate::oauth::TokenEndpoint;
 use crate::oauth::UserCode;
 use crate::oauth::VerificationUri;
+use crate::oauth::VerificationUriComplete;
 
 /// A client for the Device Code grant type of the OAuth 2.0.
 ///

@@ -50,7 +50,8 @@ use crate::oauth::TokenEndpoint;
 ///     let verification_uri = session.verification_uri();
 ///     let user_code = session.user_code();
 ///
-///     // Display the verification URI and user code to the user.
+///     // Display the verification URI and user code to the user,
+///     // then authorize on another device.
 ///
 ///     let token = session.poll_exchange_token(
 ///         tokio::time::sleep,

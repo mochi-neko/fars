@@ -1,7 +1,6 @@
 use oauth2::{StandardDeviceAuthorizationResponse, TokenResponse};
 use std::time::Duration;
 
-use crate::oauth::data::VerificationUriComplete;
 use crate::oauth::AccessToken;
 use crate::oauth::DeviceCodeClient;
 use crate::oauth::OAuthError;
@@ -10,6 +9,7 @@ use crate::oauth::OAuthToken;
 use crate::oauth::RefreshToken;
 use crate::oauth::UserCode;
 use crate::oauth::VerificationUri;
+use crate::oauth::VerificationUriComplete;
 
 /// A session published by ['crate::oauth::DeviceCodeClient'].
 ///
@@ -56,7 +56,7 @@ pub struct DeviceCodeSession {
 }
 
 impl DeviceCodeSession {
-    /// Polls to exchange a device code into an access token to token endpoint.
+    /// Polls to token endpoint to exchange a device code into an access token.
     ///
     /// ## Arguments
     /// - `sleep_fn` - The function to sleep.

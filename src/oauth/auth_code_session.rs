@@ -99,7 +99,7 @@ impl AuthorizationCodeSession {
     /// )?;
     /// ```
     pub async fn exchange_code_into_token(
-        self,
+        &self,
         code: AuthorizationCode,
         state: CsrfState,
     ) -> OAuthResult<OAuthToken> {
