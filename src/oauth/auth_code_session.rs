@@ -2,13 +2,13 @@ use oauth2::{CsrfToken, PkceCodeVerifier, TokenResponse};
 
 use crate::oauth::AccessToken;
 use crate::oauth::AuthorizationCode;
-use crate::oauth::CsrfState;
-use crate::oauth::AuthorizeUrl;
 use crate::oauth::AuthorizationCodeClient;
+use crate::oauth::AuthorizeUrl;
+use crate::oauth::CsrfState;
 use crate::oauth::OAuthError;
-use crate::oauth::RefreshToken;
 use crate::oauth::OAuthResult;
 use crate::oauth::OAuthToken;
+use crate::oauth::RefreshToken;
 
 /// A session published by ['crate::oauth::AuthorizationCodeClient'].
 ///
@@ -25,20 +25,20 @@ use crate::oauth::OAuthToken;
 /// use fars::oauth::TokenEndpoint;
 /// use fars::oauth::RedirectUrl;
 /// use fars::oauth::PkceOption;
-/// use fars::oauth::AuthScope;
+/// use fars::oauth::OAuthScope;
 ///
 /// let client = AuthorizationCodeClient::new(
 ///     ClientId::new("client-id"),
 ///     Some(ClientSecret::new("client-secret")),
 ///     AuthorizeEndpoint::new("https://example.com/auth").unwrap(),
-///     Some(TokenEndpoint::new("https://example.com/token").unwrap()),
+///     TokenEndpoint::new("https://example.com/token").unwrap(),
 ///     RedirectUrl::new("https://my.app.com/callback").unwrap(),
 ///     PkceOption::S256,
 /// )?;
 ///
 /// let session = client.generate_session(HashSet::from([
-///     AuthScope::new("scope1"),
-///     AuthScope::new("scope2"),
+///     OAuthScope::new("scope1"),
+///     OAuthScope::new("scope2"),
 /// ]));
 /// ```
 pub struct AuthorizationCodeSession {
@@ -69,7 +69,7 @@ impl AuthorizationCodeSession {
     /// use fars::oauth::TokenEndpoint;
     /// use fars::oauth::RedirectUrl;
     /// use fars::oauth::PkceOption;
-    /// use fars::oauth::AuthScope;
+    /// use fars::oauth::OAuthScope;
     /// use fars::oauth::AuthorizationCode;
     /// use fars::oauth::CsrfState;
     ///
@@ -77,14 +77,14 @@ impl AuthorizationCodeSession {
     ///     ClientId::new("client-id"),
     ///     Some(ClientSecret::new("client-secret")),
     ///     AuthorizeEndpoint::new("https://example.com/auth")?,
-    ///     Some(TokenEndpoint::new("https://example.com/token")?),
+    ///     TokenEndpoint::new("https://example.com/token")?,
     ///     RedirectUrl::new("https://my.app.com/callback")?,
     ///     PkceOption::S256,
     /// )?;
     ///
     /// let session = client.generate_session(HashSet::from([
-    ///     AuthScope::new("scope1"),
-    ///     AuthScope::new("scope2"),
+    ///     OAuthScope::new("scope1"),
+    ///     OAuthScope::new("scope2"),
     /// ]));
     ///
     /// let authorize_url = session.authorize_url.inner().clone();
@@ -99,7 +99,7 @@ impl AuthorizationCodeSession {
     /// )?;
     /// ```
     pub async fn exchange_code_into_token(
-        &self,
+        self,
         code: AuthorizationCode,
         state: CsrfState,
     ) -> OAuthResult<OAuthToken> {
@@ -128,7 +128,7 @@ impl AuthorizationCodeSession {
         let token_response = request
             .request_async(oauth2::reqwest::async_http_client)
             .await
-            .map_err(OAuthError::ExchangeTokenFailed)?;
+            .map_err(OAuthError::AuthCodeExchangeTokenFailed)?;
 
         Ok(OAuthToken {
             access_token: AccessToken::new(

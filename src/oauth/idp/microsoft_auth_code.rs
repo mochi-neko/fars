@@ -1,22 +1,22 @@
 use std::collections::HashSet;
 
-use crate::oauth::{AuthorizeEndpoint, ClientSecret};
 use crate::oauth::AuthorizationCodeClient;
+use crate::oauth::AuthorizationCodeSession;
 use crate::oauth::ClientId;
+use crate::oauth::MicrosoftIssuer;
+use crate::oauth::OAuthResult;
+use crate::oauth::OAuthScope;
 use crate::oauth::PkceOption;
 use crate::oauth::RedirectUrl;
-use crate::oauth::OAuthResult;
-use crate::oauth::AuthScope;
-use crate::oauth::AuthorizationCodeSession;
 use crate::oauth::TokenEndpoint;
-use crate::oauth::MicrosoftIssuer;
+use crate::oauth::{AuthorizeEndpoint, ClientSecret};
 
 /// A client for the Microsoft's Authorization Code grant type with PKCE of the OAuth 2.0.
 ///
 /// See also [the official document](https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow).
 ///
 /// ## NOTE
-/// This is only available when the feature "oauth" is enabled.
+/// This is only available when the feature `oauth` is enabled.
 ///
 /// ## Recommended use cases
 /// - Web-Server, Web-Client, Mobile and Desktop apps with PKCE.
@@ -28,7 +28,7 @@ use crate::oauth::MicrosoftIssuer;
 /// use fars::oauth::RedirectUrl;
 /// use fars::oauth::MicrosoftIssuer;
 /// use std::collections::HashSet;
-/// use fars::oauth::AuthScope;
+/// use fars::oauth::OAuthScope;
 /// use fars::oauth::AuthorizationCode;
 /// use fars::oauth::CsrfState;
 ///
@@ -40,7 +40,7 @@ use crate::oauth::MicrosoftIssuer;
 /// )?;
 ///
 /// let session = client.generate_authorization_session(HashSet::from([
-///     AuthScope::open_id(),
+///     OAuthScope::open_id(),
 /// ]));
 ///
 /// let authorize_url = session.authorize_url.inner();
@@ -91,12 +91,14 @@ impl MicrosoftAuthorizationCodeClient {
         let client = AuthorizationCodeClient::new(
             client_id,
             client_secret,
-            AuthorizeEndpoint::new(
-                format!("https://login.microsoftonline.com/{}/oauth2/v2.0/authorize", issuer.format())
-            )?,
-            Some(TokenEndpoint::new(
-                format!("https://login.microsoftonline.com/{}/oauth2/v2.0/token", issuer.format())
-            )?),
+            AuthorizeEndpoint::new(format!(
+                "https://login.microsoftonline.com/{}/oauth2/v2.0/authorize",
+                issuer.format()
+            ))?,
+            TokenEndpoint::new(format!(
+                "https://login.microsoftonline.com/{}/oauth2/v2.0/token",
+                issuer.format()
+            ))?,
             redirect_url,
             PkceOption::S256,
         )?;
@@ -118,7 +120,7 @@ impl MicrosoftAuthorizationCodeClient {
     /// use fars::oauth::RedirectUrl;
     /// use fars::oauth::MicrosoftIssuer;
     /// use std::collections::HashSet;
-    /// use fars::oauth::AuthScope;
+    /// use fars::oauth::OAuthScope;
     ///
     /// let client = MicrosoftAuthorizationCodeClient::new(
     ///     ClientId::new("client-id"),
@@ -128,14 +130,14 @@ impl MicrosoftAuthorizationCodeClient {
     /// )?;
     ///
     /// let session = client.generate_authorization_session(HashSet::from([
-    ///     AuthScope::open_id(),
+    ///     OAuthScope::open_id(),
     /// ]));
     ///
     /// let authorize_url = session.authorize_url.inner();
     /// ```
     pub fn generate_authorization_session(
         &self,
-        scopes: HashSet<AuthScope>,
+        scopes: HashSet<OAuthScope>,
     ) -> AuthorizationCodeSession {
         self.inner
             .generate_session(scopes)

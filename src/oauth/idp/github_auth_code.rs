@@ -1,14 +1,14 @@
 use std::collections::HashSet;
 
-use crate::oauth::AuthorizeEndpoint;
 use crate::oauth::AuthorizationCodeClient;
+use crate::oauth::AuthorizationCodeSession;
+use crate::oauth::AuthorizeEndpoint;
 use crate::oauth::ClientId;
 use crate::oauth::ClientSecret;
+use crate::oauth::OAuthResult;
+use crate::oauth::OAuthScope;
 use crate::oauth::PkceOption;
 use crate::oauth::RedirectUrl;
-use crate::oauth::OAuthResult;
-use crate::oauth::AuthScope;
-use crate::oauth::AuthorizationCodeSession;
 use crate::oauth::TokenEndpoint;
 
 /// A client for the GitHub's Authorization Code grant type with Client Secret of the OAuth 2.0.
@@ -16,19 +16,19 @@ use crate::oauth::TokenEndpoint;
 /// See also [the official document](https://docs.github.com/en/developers/apps/authorizing-oauth-apps#web-application-flow).
 ///
 /// ## NOTE
-/// This is only available when the feature "oauth" is enabled.
+/// This is only available when the feature `oauth` is enabled.
 ///
 /// ## IMPORTANT
 /// GitHub OAuth 2.0 does not support PKCE.
 ///
 /// ## Recommended use cases
-/// - Web-Server apps (= Confidential Clients) **with Client Secret** without PKCE.
+/// - Confidential Clients (Web-Server apps) **with Client Secret** without PKCE.
 ///
 /// ## Not recommended use cases
-/// - Public Clients, such as Web-Client, Mobile and Desktop apps, because Client Secret is not secret in public clients.
+/// - Public Clients (Web-Client, Mobile and Desktop apps) because Client Secret is no longer secret in public clients.
 ///
 /// ## Not supported use cases
-/// - Any apps **with PKCE**.
+/// - Any clients **with PKCE**.
 ///
 /// ## Example
 /// ```
@@ -36,7 +36,7 @@ use crate::oauth::TokenEndpoint;
 /// use fars::oauth::ClientId;
 /// use fars::oauth::ClientSecret;
 /// use fars::oauth::RedirectUrl;
-/// use fars::oauth::AuthScope;
+/// use fars::oauth::OAuthScope;
 /// use fars::oauth::AuthorizationCode;
 /// use fars::oauth::CsrfState;
 /// use std::collections::HashSet;
@@ -48,8 +48,8 @@ use crate::oauth::TokenEndpoint;
 /// )?;
 ///
 /// let session = client.generate_authorization_session(HashSet::from([
-///     AuthScope::new("read:user"),
-///     AuthScope::new("user:email"),
+///     OAuthScope::new("read:user"),
+///     OAuthScope::new("user:email"),
 /// ]));
 ///
 /// let authorize_url = session.authorize_url.inner();
@@ -99,9 +99,7 @@ impl GitHubAuthorizationCodeClient {
             client_id,
             Some(client_secret),
             AuthorizeEndpoint::new("https://github.com/login/oauth/authorize")?,
-            Some(TokenEndpoint::new(
-                "https://github.com/login/oauth/access_token",
-            )?),
+            TokenEndpoint::new("https://github.com/login/oauth/access_token")?,
             redirect_url,
             PkceOption::NotSupported,
         )?;
@@ -122,7 +120,7 @@ impl GitHubAuthorizationCodeClient {
     /// use fars::oauth::ClientId;
     /// use fars::oauth::ClientSecret;
     /// use fars::oauth::RedirectUrl;
-    /// use fars::oauth::AuthScope;
+    /// use fars::oauth::OAuthScope;
     /// use std::collections::HashSet;
     ///
     /// let client = GitHubAuthorizationCodeClient::new(
@@ -132,15 +130,15 @@ impl GitHubAuthorizationCodeClient {
     /// )?;
     ///
     /// let session = client.generate_authorization_session(HashSet::from([
-    ///     AuthScope::new("read:user"),
-    ///     AuthScope::new("user:email"),
+    ///     OAuthScope::new("read:user"),
+    ///     OAuthScope::new("user:email"),
     /// ]));
     ///
     /// let authorize_url = session.authorize_url.inner();
     /// ```
     pub fn generate_authorization_session(
         &self,
-        scopes: HashSet<AuthScope>,
+        scopes: HashSet<OAuthScope>,
     ) -> AuthorizationCodeSession {
         self.inner
             .generate_session(scopes)

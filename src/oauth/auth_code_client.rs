@@ -4,15 +4,15 @@ use oauth2::basic::BasicClient;
 use oauth2::CsrfToken;
 use oauth2::PkceCodeChallenge;
 
+use crate::oauth::AuthorizationCodeSession;
 use crate::oauth::AuthorizeEndpoint;
 use crate::oauth::AuthorizeUrl;
 use crate::oauth::ClientId;
 use crate::oauth::ClientSecret;
+use crate::oauth::OAuthResult;
+use crate::oauth::OAuthScope;
 use crate::oauth::PkceOption;
 use crate::oauth::RedirectUrl;
-use crate::oauth::OAuthResult;
-use crate::oauth::AuthScope;
-use crate::oauth::AuthorizationCodeSession;
 use crate::oauth::TokenEndpoint;
 
 /// A client for the Authorization Code grant type of the OAuth 2.0.
@@ -21,11 +21,11 @@ use crate::oauth::TokenEndpoint;
 /// This is only available when the feature "oauth" is enabled.
 ///
 /// ## Recommended use cases
-/// - Web-Server apps (= Confidential Clients) with PKCE and/or client secret.
-/// - Web-Client, Mobile and Desktop apps (= Public Clients) with PKCE **without client secret**.
+/// - Confidential Clients (Web-Server apps) with PKCE and/or client secret.
+/// - Public Clients (Web-Client, Mobile and Desktop apps) with PKCE **without client secret**.
 ///
 /// ## Not recommended use cases
-/// - Web-Client, Mobile and Desktop apps (= Public Clients) with PKCE **and client secret**, because secret is not secret in public clients.
+/// - Public Clients (Web-Client, Mobile and Desktop apps) with **client secret**, because secret is no longer secret in public clients.
 ///
 /// ## Example
 /// ```
@@ -41,7 +41,7 @@ use crate::oauth::TokenEndpoint;
 ///     ClientId::new("client-id"),
 ///     Some(ClientSecret::new("client-secret")),
 ///     AuthorizeEndpoint::new("https://example.com/auth")?,
-///     Some(TokenEndpoint::new("https://example.com/token")?),
+///     TokenEndpoint::new("https://example.com/token")?,
 ///     RedirectUrl::new("https://my.app.com/callback")?,
 ///     PkceOption::S256,
 /// )?;
@@ -61,7 +61,6 @@ impl AuthorizationCodeClient {
     /// - `authorize_endpoint` - Authorization API URL.
     /// - `token_endpoint` - Token API URL.
     /// - `redirect_url` - Redirect URL to receive authorization code.
-    /// - `revocation_endpoint` - Revocation API URL.
     /// - `pkce_option` - The PKCE code challenge option.
     ///
     /// ## Example
@@ -78,7 +77,7 @@ impl AuthorizationCodeClient {
     ///     ClientId::new("client-id"),
     ///     Some(ClientSecret::new("client-secret")),
     ///     AuthorizeEndpoint::new("https://example.com/auth")?,
-    ///     Some(TokenEndpoint::new("https://example.com/token")?),
+    ///     TokenEndpoint::new("https://example.com/token")?,
     ///     RedirectUrl::new("https://my.app.com/callback")?,
     ///     PkceOption::S256,
     /// )?;
@@ -87,7 +86,7 @@ impl AuthorizationCodeClient {
         client_id: ClientId,
         client_secret: Option<ClientSecret>,
         authorize_endpoint: AuthorizeEndpoint,
-        token_endpoint: Option<TokenEndpoint>,
+        token_endpoint: TokenEndpoint,
         redirect_url: RedirectUrl,
         pkce_option: PkceOption,
     ) -> OAuthResult<Self> {
@@ -96,14 +95,19 @@ impl AuthorizationCodeClient {
                 .inner()
                 .to_owned()
         });
-        let token_url = token_endpoint.map(|token_url| token_url.inner().to_owned());
 
         // Create an internal OAuth client with settings.
         let client = BasicClient::new(
             client_id.inner().to_owned(),
             client_secret,
-            authorize_endpoint.inner().to_owned(),
-            token_url,
+            authorize_endpoint
+                .inner()
+                .to_owned(),
+            Some(
+                token_endpoint
+                    .inner()
+                    .to_owned(),
+            ),
         )
         .set_redirect_uri(
             redirect_url
@@ -132,20 +136,20 @@ impl AuthorizationCodeClient {
     /// use fars::oauth::TokenEndpoint;
     /// use fars::oauth::RedirectUrl;
     /// use fars::oauth::PkceOption;
-    /// use fars::oauth::AuthScope;
+    /// use fars::oauth::OAuthScope;
     ///
     /// let client = AuthorizationCodeClient::new(
     ///     ClientId::new("client-id"),
     ///     Some(ClientSecret::new("client-secret")),
     ///     AuthorizeEndpoint::new("https://example.com/auth").unwrap(),
-    ///     Some(TokenEndpoint::new("https://example.com/token").unwrap()),
+    ///     TokenEndpoint::new("https://example.com/token").unwrap(),
     ///     RedirectUrl::new("https://my.app.com/callback").unwrap(),
     ///     PkceOption::S256,
     /// )?;
     ///
     /// let session = client.generate_session(HashSet::from([
-    ///     AuthScope::new("scope1"),
-    ///     AuthScope::new("scope2"),
+    ///     OAuthScope::new("scope1"),
+    ///     OAuthScope::new("scope2"),
     /// ]));
     ///
     /// let authorize_url = session.authorize_url.inner().clone();
@@ -154,7 +158,7 @@ impl AuthorizationCodeClient {
     /// ```
     pub fn generate_session(
         &self,
-        scopes: HashSet<AuthScope>,
+        scopes: HashSet<OAuthScope>,
     ) -> AuthorizationCodeSession {
         // Generate an authorization request.
         let mut request = self

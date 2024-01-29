@@ -1,13 +1,13 @@
 use std::collections::HashSet;
 
-use crate::oauth::AuthorizeEndpoint;
 use crate::oauth::AuthorizationCodeClient;
+use crate::oauth::AuthorizationCodeSession;
+use crate::oauth::AuthorizeEndpoint;
 use crate::oauth::ClientId;
+use crate::oauth::OAuthResult;
+use crate::oauth::OAuthScope;
 use crate::oauth::PkceOption;
 use crate::oauth::RedirectUrl;
-use crate::oauth::OAuthResult;
-use crate::oauth::AuthScope;
-use crate::oauth::AuthorizationCodeSession;
 use crate::oauth::TokenEndpoint;
 
 /// A client for the Twitter's Authorization Code grant type with PKCE of the OAuth 2.0.
@@ -15,7 +15,7 @@ use crate::oauth::TokenEndpoint;
 /// See also [the official document](https://developer.twitter.com/en/docs/authentication/oauth-2-0/authorization-code).
 ///
 /// ## NOTE
-/// This is only available when the feature "oauth" is enabled.
+/// This is only available when the feature `oauth` is enabled.
 ///
 /// ## WARNING
 /// Twitter OAuth 2.0 Access Token may not be supported by the Firebase Auth.
@@ -29,7 +29,7 @@ use crate::oauth::TokenEndpoint;
 /// use fars::oauth::ClientId;
 /// use fars::oauth::RedirectUrl;
 /// use std::collections::HashSet;
-/// use fars::oauth::AuthScope;
+/// use fars::oauth::OAuthScope;
 /// use fars::oauth::AuthorizationCode;
 /// use fars::oauth::CsrfState;
 ///
@@ -39,7 +39,7 @@ use crate::oauth::TokenEndpoint;
 /// )?;
 ///
 /// let session = client.generate_authorization_session(HashSet::from([
-///     AuthScope::open_id(),
+///     OAuthScope::open_id(),
 /// ]));
 ///
 /// let authorize_url = session.authorize_url.inner();
@@ -85,9 +85,7 @@ impl TwitterAuthorizationCodeClient {
             client_id,
             None,
             AuthorizeEndpoint::new("https://twitter.com/i/oauth2/authorize")?,
-            Some(TokenEndpoint::new(
-                "https://api.twitter.com/2/oauth2/token",
-            )?),
+            TokenEndpoint::new("https://api.twitter.com/2/oauth2/token")?,
             redirect_url,
             PkceOption::S256,
         )?;
@@ -108,7 +106,7 @@ impl TwitterAuthorizationCodeClient {
     /// use fars::oauth::ClientId;
     /// use fars::oauth::RedirectUrl;
     /// use std::collections::HashSet;
-    /// use fars::oauth::AuthScope;
+    /// use fars::oauth::OAuthScope;
     ///
     /// let client = TwitterAuthorizationCodeClient::new(
     ///     ClientId::new("client-id"),
@@ -116,14 +114,14 @@ impl TwitterAuthorizationCodeClient {
     /// )?;
     ///
     /// let session = client.generate_authorization_session(HashSet::from([
-    ///     AuthScope::open_id(),
+    ///     OAuthScope::open_id(),
     /// ]));
     ///
     /// let authorize_url = session.authorize_url.inner();
     /// ```
     pub fn generate_authorization_session(
         &self,
-        scopes: HashSet<AuthScope>,
+        scopes: HashSet<OAuthScope>,
     ) -> AuthorizationCodeSession {
         self.inner
             .generate_session(scopes)

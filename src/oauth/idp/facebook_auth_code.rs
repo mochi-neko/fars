@@ -1,13 +1,13 @@
 use std::collections::HashSet;
 
-use crate::oauth::AuthorizeEndpoint;
 use crate::oauth::AuthorizationCodeClient;
+use crate::oauth::AuthorizationCodeSession;
+use crate::oauth::AuthorizeEndpoint;
 use crate::oauth::ClientId;
+use crate::oauth::OAuthResult;
+use crate::oauth::OAuthScope;
 use crate::oauth::PkceOption;
 use crate::oauth::RedirectUrl;
-use crate::oauth::OAuthResult;
-use crate::oauth::AuthScope;
-use crate::oauth::AuthorizationCodeSession;
 use crate::oauth::TokenEndpoint;
 
 /// A client for the Facebook's Authorization Code grant type with PKCE of the OAuth 2.0.
@@ -15,10 +15,10 @@ use crate::oauth::TokenEndpoint;
 /// See also [the official document](https://developers.facebook.com/docs/facebook-login/guides/advanced/oidc-token).
 ///
 /// ## NOTE
-/// This is only available when the feature "oauth" is enabled.
+/// This is only available when the feature `oauth` is enabled.
 ///
 /// ## Recommended use cases
-/// - Web-Server, Web-Client, Mobile and Desktop apps with PKCE.
+/// - Confidential and Public Clients (Web-Server, Web-Client, Mobile and Desktop apps) with PKCE.
 ///
 /// ## Example
 /// ```
@@ -26,7 +26,7 @@ use crate::oauth::TokenEndpoint;
 /// use fars::oauth::ClientId;
 /// use fars::oauth::RedirectUrl;
 /// use std::collections::HashSet;
-/// use fars::oauth::AuthScope;
+/// use fars::oauth::OAuthScope;
 /// use fars::oauth::AuthorizationCode;
 /// use fars::oauth::CsrfState;
 ///
@@ -36,7 +36,7 @@ use crate::oauth::TokenEndpoint;
 /// )?;
 ///
 /// let session = client.generate_authorization_session(HashSet::from([
-///     AuthScope::new("email"),
+///     OAuthScope::new("email"),
 /// ]));
 ///
 /// let authorize_url = session.authorize_url.inner();
@@ -81,10 +81,12 @@ impl FacebookAuthorizationCodeClient {
         let client = AuthorizationCodeClient::new(
             client_id,
             None,
-            AuthorizeEndpoint::new("https://www.facebook.com/v18.0/dialog/oauth")?,
-            Some(TokenEndpoint::new(
+            AuthorizeEndpoint::new(
+                "https://www.facebook.com/v18.0/dialog/oauth",
+            )?,
+            TokenEndpoint::new(
                 "https://graph.facebook.com/v18.0/oauth/access_token",
-            )?),
+            )?,
             redirect_url,
             PkceOption::S256,
         )?;
@@ -105,7 +107,7 @@ impl FacebookAuthorizationCodeClient {
     /// use fars::oauth::ClientId;
     /// use fars::oauth::RedirectUrl;
     /// use std::collections::HashSet;
-    /// use fars::oauth::AuthScope;
+    /// use fars::oauth::OAuthScope;
     ///
     /// let client = FacebookAuthorizationCodeClient::new(
     ///     ClientId::new("client-id"),
@@ -113,14 +115,14 @@ impl FacebookAuthorizationCodeClient {
     /// )?;
     ///
     /// let session = client.generate_authorization_session(HashSet::from([
-    ///     AuthScope::new("email"),
+    ///     OAuthScope::new("email"),
     /// ]));
     ///
     /// let authorize_url = session.authorize_url.inner();
     /// ```
     pub fn generate_authorization_session(
         &self,
-        scopes: HashSet<AuthScope>,
+        scopes: HashSet<OAuthScope>,
     ) -> AuthorizationCodeSession {
         self.inner
             .generate_session(scopes)

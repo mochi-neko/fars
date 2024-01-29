@@ -15,13 +15,13 @@ use axum::{routing::get, Router};
 use serde::Deserialize;
 use tokio::sync::{mpsc, Mutex};
 
-use fars::oauth::{AuthorizationCode, MicrosoftIssuer};
-use fars::oauth::CsrfState;
-use fars::oauth::ClientId;
-use fars::oauth::MicrosoftAuthorizationCodeClient;
-use fars::oauth::RedirectUrl;
-use fars::oauth::AuthScope;
 use fars::oauth::AuthorizationCodeSession;
+use fars::oauth::ClientId;
+use fars::oauth::CsrfState;
+use fars::oauth::MicrosoftAuthorizationCodeClient;
+use fars::oauth::OAuthScope;
+use fars::oauth::RedirectUrl;
+use fars::oauth::{AuthorizationCode, MicrosoftIssuer};
 use fars::ApiKey;
 use fars::Config;
 use fars::OAuthRequestUri;
@@ -49,10 +49,7 @@ async fn handle_redirect(
 ) -> String {
     // Check query parameters.
     if let Some(error) = params.error {
-        eprintln!(
-            "Error: {}",
-            error,
-        );
+        eprintln!("Error: {}", error,);
         return "Error".to_string();
     }
 
@@ -155,8 +152,8 @@ async fn main() -> anyhow::Result<()> {
 
     // Generate an OAuth session with authorization URL.
     let session = oauth_client.generate_authorization_session(HashSet::from([
-        AuthScope::open_id(),
-        AuthScope::open_id_email(),
+        OAuthScope::open_id(),
+        OAuthScope::open_id_email(),
     ]));
 
     // Open the authorization URL in the default browser.
@@ -167,7 +164,9 @@ async fn main() -> anyhow::Result<()> {
 
     // Create a server state.
     let server_state = ServerState {
-        config: Arc::new(Mutex::new(Config::new(ApiKey::from_env()?))),
+        config: Arc::new(Mutex::new(Config::new(
+            ApiKey::from_env()?,
+        ))),
         oauth_session: Arc::new(Mutex::new(session)),
         tx,
     };

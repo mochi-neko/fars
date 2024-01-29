@@ -17,10 +17,12 @@ pub enum MicrosoftIssuer {
 impl MicrosoftIssuer {
     pub(crate) fn format(&self) -> &str {
         match self {
-            Self::Common => "common",
-            Self::Organizations => "organizations",
-            Self::Consumers => "consumers",
-            Self::Tenant { tenant_id } => tenant_id.as_str(),
+            | Self::Common => "common",
+            | Self::Organizations => "organizations",
+            | Self::Consumers => "consumers",
+            | Self::Tenant {
+                tenant_id,
+            } => tenant_id.as_str(),
         }
     }
 }

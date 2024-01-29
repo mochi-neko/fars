@@ -1,6 +1,6 @@
-use std::env::VarError;
 use crate::oauth::OAuthError;
 use crate::oauth::OAuthResult;
+use std::env::VarError;
 
 /// The PKCE code challenge option.
 #[derive(Clone, Eq, PartialEq, Hash)]
@@ -86,6 +86,27 @@ impl AuthorizeEndpoint {
     }
 }
 
+/// The device endpoint of the OAuth 2.0.
+pub struct DeviceEndpoint {
+    inner: oauth2::DeviceAuthorizationUrl,
+}
+
+impl DeviceEndpoint {
+    pub fn new<S>(url: S) -> OAuthResult<Self>
+    where
+        S: Into<String> + Clone,
+    {
+        Ok(Self {
+            inner: oauth2::DeviceAuthorizationUrl::new(url.clone().into())
+                .map_err(|_| OAuthError::InvalidAuthUrl(url.into()))?,
+        })
+    }
+
+    pub(crate) fn inner(&self) -> &oauth2::DeviceAuthorizationUrl {
+        &self.inner
+    }
+}
+
 /// The token endpoint of the OAuth 2.0.
 pub struct TokenEndpoint {
     inner: oauth2::TokenUrl,
@@ -130,11 +151,11 @@ impl RedirectUrl {
 
 /// The scope of the OAuth 2.0.
 #[derive(Clone, Eq, PartialEq, Hash)]
-pub struct AuthScope {
+pub struct OAuthScope {
     inner: oauth2::Scope,
 }
 
-impl AuthScope {
+impl OAuthScope {
     pub fn new<S>(scope: S) -> Self
     where
         S: Into<String>,
@@ -237,6 +258,39 @@ impl CsrfState {
 
     pub(crate) fn inner(&self) -> &str {
         &self.inner
+    }
+}
+
+/// The verification URI of the OAuth 2.0 Device Code Grant type.
+pub struct VerificationUri {
+    pub(crate) inner: oauth2::EndUserVerificationUrl,
+}
+
+impl VerificationUri {
+    pub fn inner(&self) -> &str {
+        &self.inner
+    }
+}
+
+/// The verification URI complete of the OAuth 2.0 Device Code Grant type.
+pub struct VerificationUriComplete {
+    pub(crate) inner: oauth2::VerificationUriComplete,
+}
+
+impl VerificationUriComplete {
+    pub fn inner(&self) -> &str {
+        &self.inner.secret()
+    }
+}
+
+/// The device code of the OAuth 2.0 Device Code Grant type.
+pub struct UserCode {
+    pub(crate) inner: oauth2::UserCode,
+}
+
+impl UserCode {
+    pub fn inner(&self) -> &str {
+        &self.inner.secret()
     }
 }
 
