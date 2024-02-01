@@ -1,5 +1,6 @@
 use crate::oauth::OAuthError;
 use crate::oauth::OAuthResult;
+use std::collections::HashSet;
 use std::env::VarError;
 
 /// The PKCE code challenge option.

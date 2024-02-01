@@ -18,7 +18,6 @@ use tokio::sync::{mpsc, Mutex};
 use fars::oauth::AuthorizationCode;
 use fars::oauth::AuthorizationCodeSession;
 use fars::oauth::ClientId;
-use fars::oauth::ClientSecret;
 use fars::oauth::CsrfState;
 use fars::oauth::FacebookAuthorizationCodeClient;
 use fars::oauth::OAuthScope;
@@ -50,16 +49,7 @@ async fn handle_redirect(
 ) -> String {
     // Check query parameters.
     if let Some(error) = params.error {
-        eprintln!(
-            "Error: {}, {:}, {:}",
-            error,
-            params
-                .error_reason
-                .unwrap_or_default(),
-            params
-                .error_description
-                .unwrap_or_default(),
-        );
+        eprintln!("Error: {}", error,);
         return "Error".to_string();
     }
 

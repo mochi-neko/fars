@@ -21,11 +21,14 @@ use crate::oauth::TokenEndpoint;
 /// This is only available when the feature "oauth" is enabled.
 ///
 /// ## Recommended use cases
-/// - Confidential Clients (Web-Server apps) with PKCE and/or client secret.
-/// - Public Clients (Web-Client, Mobile and Desktop apps) with PKCE **without client secret**.
+/// - Confidential clients (Web-Server apps) with PKCE and/or client secret.
+/// - Public clients (Web-Client, Mobile and Desktop apps) with PKCE **without client secret**.
 ///
 /// ## Not recommended use cases
-/// - Public Clients (Web-Client, Mobile and Desktop apps) with **client secret**, because secret is no longer secret in public clients.
+/// - Public clients (Web-Client, Mobile and Desktop apps) with **client secret**, because secret is no longer secret in public clients.
+///
+/// ## Not supported use cases
+/// - Browserless or input-constrained devices, use Device Code grant type: [`crate::oauth::DeviceCodeClient`] instead.
 ///
 /// ## Example
 /// ```

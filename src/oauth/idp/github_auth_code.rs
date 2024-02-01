@@ -22,10 +22,10 @@ use crate::oauth::TokenEndpoint;
 /// GitHub OAuth 2.0 does not support PKCE.
 ///
 /// ## Recommended use cases
-/// - Confidential Clients (Web-Server apps) **with Client Secret** without PKCE.
+/// - Confidential clients (Web-Server apps) **with Client Secret** without PKCE.
 ///
 /// ## Not recommended use cases
-/// - Public Clients (Web-Client, Mobile and Desktop apps) because Client Secret is no longer secret in public clients.
+/// - Public clients (Web-Client, Mobile and Desktop apps) because Client Secret is no longer secret in public clients.
 ///
 /// ## Not supported use cases
 /// - Any clients **with PKCE**.

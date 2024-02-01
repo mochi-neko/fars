@@ -18,7 +18,7 @@ use crate::oauth::TokenEndpoint;
 /// This is only available when the feature `oauth` is enabled.
 ///
 /// ## Recommended use cases
-/// - Confidential and Public Clients (Web-Server, Web-Client, Mobile and Desktop apps) with PKCE.
+/// - Confidential clients (Web-Server apps) and public clients (Web-Client, Mobile and Desktop apps) with PKCE.
 ///
 /// ## Example
 /// ```
@@ -115,7 +115,7 @@ impl FacebookAuthorizationCodeClient {
     /// )?;
     ///
     /// let session = client.generate_authorization_session(HashSet::from([
-    ///     OAuthScope::new("email"),
+    ///     OAuthScope::open_id_email(),
     /// ]));
     ///
     /// let authorize_url = session.authorize_url.inner();

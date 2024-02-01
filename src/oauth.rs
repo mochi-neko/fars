@@ -6,22 +6,23 @@
 //! ## Supported identity providers and grant types
 //!
 //! - [Google](https://developers.google.com/identity/protocols/oauth2)
-//!     - [x] Authorization Code grant type with client secret and PKCE for Web-Server apps.
-//!     - [x] Device grant type for limited-input devices.
+//!     - [x] Authorization Code grant type with client secret and PKCE for public clients (Web-Server apps).
+//!     - [x] Device Code grant type for browserless or input-constrained devices.
 //! - [Facebook](https://developers.facebook.com/docs/facebook-login/guides/advanced/oidc-token)
-//!     - [x] Authorization Code grant type with PKCE for Web-Server, Web-Client, Mobile and Desktop apps.
+//!     - [x] Authorization Code grant type with PKCE for confidential clients (Web-Server apps) and public clients (Web-Client, Mobile and Desktop apps).
+//!     - [x] Device Code grant type for browserless or input-constrained devices.
 //! - [GitHub](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)
-//!     - [x] Authorization Code grant type with client secret for Web-Server apps.
-//!     - [ ] Device grant type for limited-input devices.
+//!     - [x] Authorization Code grant type with client secret for confidential clients (Web-Server apps).
+//!     - [ ] Device Code grant type for browserless or input-constrained devices.
 //! - [Twitter (X)](https://developer.twitter.com/en/docs/authentication/oauth-2-0)
-//!     - [ ] Authorization Code grant type with PKCE for Web-Server, Web-Client, Mobile, and Desktop apps.
+//!     - [ ] Authorization Code grant type with PKCE for confidential clients (Web-Server apps) and public clients (Web-Client, Mobile, and Desktop apps).
 //!         - Implemented but may not be supported by the Firebase Auth.
 //! - [Microsoft](https://learn.microsoft.com/en-us/entra/identity-platform/v2-app-types)
-//!     - [ ] Authorization Code grant type with PKCE for Web-Server, Web-Client, Mobile, and Desktop apps.
+//!     - [ ] Authorization Code grant type with PKCE for confidential clients (Web-Server apps) and public clients (Web-Client, Mobile, and Desktop apps).
 //!         - Implemented but may not be supported by the Firebase Auth.
-//!     - [ ] Device grant type for limited-input devices.
-//! - [ ] Yahoo
+//!     - [ ] Device Code grant type for browserless or input-constrained devices.
 //! - [ ] Apple
+//! - [ ] Yahoo
 //! - [ ] Google Play Games
 //! - [ ] Apple Game Center
 //!
@@ -61,6 +62,7 @@ pub use device_code_client::DeviceCodeClient;
 pub use device_code_session::DeviceCodeSession;
 pub use error::OAuthError;
 pub use idp::facebook_auth_code::FacebookAuthorizationCodeClient;
+pub use idp::facebook_device_code::FacebookDeviceCodeClient;
 pub use idp::github_auth_code::GitHubAuthorizationCodeClient;
 pub use idp::google_auth_code::GoogleAuthorizationCodeClient;
 pub use idp::google_device_code::GoogleDeviceCodeClient;

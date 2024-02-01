@@ -22,7 +22,7 @@ pub enum OAuthError {
     #[error("State mismatch")]
     StateMismatch,
     /// Exchange token failed on the authorization code flow.
-    #[error("Auth code exchange token failed: {0}")]
+    #[error("Auth code exchange token failed: {0:?}")]
     AuthCodeExchangeTokenFailed(
         RequestTokenError<
             oauth2::reqwest::Error<reqwest::Error>,
@@ -31,15 +31,40 @@ pub enum OAuthError {
             >,
         >,
     ),
-    /// Device authorization failed.
-    #[error("Device authorization failed: {0}")]
-    DeviceAuthorizationFailed(ConfigurationError),
+    /// Device authorization request error.
+    #[error("Device authorization request error: {0:?}")]
+    DeviceAuthorizationRequestError(ConfigurationError),
+    /// Exchange device code failed on the device code flow.
+    #[error("Device code exchange token failed: {0:?}")]
+    DeviceCodeExchangeFailed(
+        RequestTokenError<
+            oauth2::reqwest::Error<reqwest::Error>,
+            oauth2::StandardErrorResponse<
+                oauth2::basic::BasicErrorResponseType,
+            >,
+        >,
+    ),
     /// Exchange token failed on the device code flow.
-    #[error("Device exchange token failed: {0}")]
+    #[error("Device exchange token failed: {0:?}")]
     DeviceExchangeTokenFailed(
         RequestTokenError<
             oauth2::reqwest::Error<reqwest::Error>,
             oauth2::DeviceCodeErrorResponse,
         >,
     ),
+    /// Internal reqwest error.
+    #[error("Internal reqwest error: {0:?}")]
+    ReqwestError(reqwest::Error),
+    /// JSON deserialization failed.
+    #[error("JSON deserialization failed: {0:?}, {1:?}")]
+    JsonDeserializationFailed(serde_json::Error, String),
+    /// Manual API call failed.
+    #[error("Manual API call failed: {0:?}, {1:?}")]
+    ManualApiCallFailed(reqwest::StatusCode, String),
+    /// Continue polling.
+    #[error("Continue polling")]
+    ContinuePolling,
+    /// Timeout.
+    #[error("Timeout")]
+    Timeout,
 }

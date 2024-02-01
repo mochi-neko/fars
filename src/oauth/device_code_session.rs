@@ -21,7 +21,6 @@ use crate::oauth::VerificationUriComplete;
 /// use std::collections::HashSet;
 /// use fars::oauth::DeviceCodeClient;
 /// use fars::oauth::ClientId;
-/// use fars::oauth::ClientSecret;
 /// use fars::oauth::DeviceEndpoint;
 /// use fars::oauth::TokenEndpoint;
 /// use fars::oauth::OAuthScope;
@@ -30,7 +29,7 @@ use crate::oauth::VerificationUriComplete;
 /// async fn main() -> anyhow::Result<()> {
 ///     let client = DeviceCodeClient::new(
 ///         ClientId::new("client-id"),
-///         Some(ClientSecret::new("client-secret")),
+///         None,
 ///         DeviceEndpoint::new("https://example.com/device")?,
 ///         TokenEndpoint::new("https://example.com/token")?,
 ///     )?;
@@ -67,7 +66,6 @@ impl DeviceCodeSession {
     /// use std::collections::HashSet;
     /// use fars::oauth::DeviceCodeClient;
     /// use fars::oauth::ClientId;
-    /// use fars::oauth::ClientSecret;
     /// use fars::oauth::DeviceEndpoint;
     /// use fars::oauth::TokenEndpoint;
     /// use fars::oauth::OAuthScope;
@@ -76,7 +74,7 @@ impl DeviceCodeSession {
     /// async fn main() -> anyhow::Result<()> {
     ///     let client = DeviceCodeClient::new(
     ///         ClientId::new("client-id"),
-    ///         Some(ClientSecret::new("client-secret")),
+    ///         None,
     ///         DeviceEndpoint::new("https://example.com/device")?,
     ///         TokenEndpoint::new("https://example.com/token")?,
     ///     )?;

@@ -20,23 +20,21 @@ use crate::oauth::VerificationUriComplete;
 /// This is only available when the feature "oauth" is enabled.
 ///
 /// ## Recommended use cases
-/// - Confidential Clients (Web-Server apps) with client secret.
-/// - Public Clients (Web-Client, Mobile and Desktop apps) without client secret.
+/// - Browserless or input-constrained devices.
 ///
 /// ## Not recommended use cases
-/// - Public Clients (Web-Client, Mobile and Desktop apps) with **client secret**, because secret is not secret in public clients.
+/// - Browser-enabled devices, use Authorization Code grant type: [`crate::oauth::AuthorizationCodeClient`] instead.
 ///
 /// ## Example
 /// ```
 /// use fars::oauth::DeviceCodeClient;
 /// use fars::oauth::ClientId;
-/// use fars::oauth::ClientSecret;
 /// use fars::oauth::DeviceEndpoint;
 /// use fars::oauth::TokenEndpoint;
 ///
 /// let client = DeviceCodeClient::new(
 ///     ClientId::new("client-id"),
-///     Some(ClientSecret::new("client-secret")),
+///     None,
 ///     DeviceEndpoint::new("https://example.com/device")?,
 ///     TokenEndpoint::new("https://example.com/token")?,
 /// )?;
@@ -60,13 +58,12 @@ impl DeviceCodeClient {
     /// ```
     /// use fars::oauth::DeviceCodeClient;
     /// use fars::oauth::ClientId;
-    /// use fars::oauth::ClientSecret;
     /// use fars::oauth::DeviceEndpoint;
     /// use fars::oauth::TokenEndpoint;
     ///
     /// let client = DeviceCodeClient::new(
     ///     ClientId::new("client-id"),
-    ///     Some(ClientSecret::new("client-secret")),
+    ///     None,
     ///     DeviceEndpoint::new("https://example.com/device")?,
     ///     TokenEndpoint::new("https://example.com/token")?,
     /// )?;
@@ -117,7 +114,6 @@ impl DeviceCodeClient {
     /// use std::collections::HashSet;
     /// use fars::oauth::DeviceCodeClient;
     /// use fars::oauth::ClientId;
-    /// use fars::oauth::ClientSecret;
     /// use fars::oauth::DeviceEndpoint;
     /// use fars::oauth::TokenEndpoint;
     /// use fars::oauth::OAuthScope;
@@ -126,7 +122,7 @@ impl DeviceCodeClient {
     /// async fn main() -> anyhow::Result<()> {
     ///     let client = DeviceCodeClient::new(
     ///         ClientId::new("client-id"),
-    ///         Some(ClientSecret::new("client-secret")),
+    ///         None,
     ///         DeviceEndpoint::new("https://example.com/device")?,
     ///         TokenEndpoint::new("https://example.com/token")?,
     ///     )?;
@@ -151,7 +147,7 @@ impl DeviceCodeClient {
         let request = self
             .client
             .exchange_device_code()
-            .map_err(OAuthError::DeviceAuthorizationFailed)?;
+            .map_err(OAuthError::DeviceAuthorizationRequestError)?;
 
         // Set scopes.
         let request = scopes
@@ -164,7 +160,7 @@ impl DeviceCodeClient {
         let response = request
             .request_async(oauth2::reqwest::async_http_client)
             .await
-            .map_err(OAuthError::AuthCodeExchangeTokenFailed)?;
+            .map_err(OAuthError::DeviceCodeExchangeFailed)?;
 
         Ok(DeviceCodeSession {
             verification_uri: VerificationUri {

@@ -9,7 +9,7 @@ use crate::oauth::OAuthResult;
 use crate::oauth::OAuthScope;
 use crate::oauth::TokenEndpoint;
 
-/// A client for the Google's Device Code grant type with PKCE and Client Secret of the OAuth 2.0.
+/// A client for the Google's Device Code grant type with Client Secret of the OAuth 2.0.
 ///
 /// See also [the official guide](https://developers.google.com/identity/protocols/oauth2/limited-input-device).
 ///
@@ -17,10 +17,10 @@ use crate::oauth::TokenEndpoint;
 /// This is only available when the feature `oauth` is enabled.
 ///
 /// ## Recommended use cases
-/// - Limited-Input Device Clients **with Client Secret**.
+/// - Browserless or input-constrained devices **with Client Secret**.
 ///
 /// ## Not recommended use cases
-/// - Not Limited-Input Device Clients, use Authorization Code Grant type: [`crate::oauth::GoogleAuthorizationCodeClient`] instead.
+/// - Browser-enabled devices, use Authorization Code grant type: [`crate::oauth::GoogleAuthorizationCodeClient`] instead.
 ///
 /// ## Not supported use cases
 /// - Any clients **without Client Secret**.

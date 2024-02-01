@@ -18,8 +18,11 @@ use crate::oauth::{AuthorizeEndpoint, ClientSecret};
 /// ## NOTE
 /// This is only available when the feature `oauth` is enabled.
 ///
+/// ## WARNING
+/// Microsoft OAuth 2.0 Access Token may not be supported by the Firebase Auth.
+///
 /// ## Recommended use cases
-/// - Web-Server, Web-Client, Mobile and Desktop apps with PKCE.
+/// - Confidential clients (Web-Server apps) and public clients (Web-Client, Mobile and Desktop apps) with PKCE.
 ///
 /// ## Example
 /// ```

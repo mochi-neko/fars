@@ -19,14 +19,14 @@ use crate::oauth::TokenEndpoint;
 /// This is only available when the feature `oauth` is enabled.
 ///
 /// ## Recommended use cases
-/// - Confidential Clients (Web-Server apps) with PKCE **and Client Secret**.
+/// - Confidential clients (Web-Server apps) with PKCE **and Client Secret**.
 ///
 /// ## Not recommended use cases
-/// - Public Clients (Web-Client, Mobile and Desktop apps) because Client Secret is no longer secret in public clients.
-/// - Limited-Input Device Clients, use Device Code Grant type: [`crate::oauth::G`] instead.
+/// - Public clients (Web-Client, Mobile and Desktop apps) because Client Secret is no longer secret in public clients.
+/// - Browserless or input-constrained devices, use Device Code grant type: [`crate::oauth::GoogleDeviceCodeClient`] instead.
 ///
 /// ## Not supported use cases
-/// - Any clients with PKCE **without Client Secret**.
+/// - Any clients **without Client Secret**.
 ///
 /// ## Example
 /// ```
